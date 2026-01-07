@@ -67,9 +67,12 @@ const CarbonImpactSection = () => {
                 variant="secondary" 
                 size="lg" 
                 className="bg-carbon-foreground text-carbon hover:bg-carbon-foreground/90"
+                asChild
               >
-                Calculer mon impact
-                <ArrowRight className="w-4 h-4" />
+                <a href="/carbon-calculator">
+                  Calculer mon impact
+                  <ArrowRight className="w-4 h-4" />
+                </a>
               </Button>
               <Button 
                 variant="outline" 
