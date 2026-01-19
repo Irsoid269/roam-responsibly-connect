@@ -14,7 +14,485 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      accommodations: {
+        Row: {
+          amenities: string[] | null
+          carbon_score: string | null
+          created_at: string
+          description: string | null
+          destination_id: string
+          distance_to_center: string | null
+          id: string
+          image_url: string | null
+          name: string
+          price_per_night: number | null
+          rating: number | null
+          type: string | null
+        }
+        Insert: {
+          amenities?: string[] | null
+          carbon_score?: string | null
+          created_at?: string
+          description?: string | null
+          destination_id: string
+          distance_to_center?: string | null
+          id?: string
+          image_url?: string | null
+          name: string
+          price_per_night?: number | null
+          rating?: number | null
+          type?: string | null
+        }
+        Update: {
+          amenities?: string[] | null
+          carbon_score?: string | null
+          created_at?: string
+          description?: string | null
+          destination_id?: string
+          distance_to_center?: string | null
+          id?: string
+          image_url?: string | null
+          name?: string
+          price_per_night?: number | null
+          rating?: number | null
+          type?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "accommodations_destination_id_fkey"
+            columns: ["destination_id"]
+            isOneToOne: false
+            referencedRelation: "destinations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      activities: {
+        Row: {
+          carbon_impact: number | null
+          category: string | null
+          created_at: string
+          description: string | null
+          destination_id: string
+          duration_hours: number | null
+          eco_certified: boolean | null
+          id: string
+          image_url: string | null
+          name: string
+          price: number | null
+        }
+        Insert: {
+          carbon_impact?: number | null
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          destination_id: string
+          duration_hours?: number | null
+          eco_certified?: boolean | null
+          id?: string
+          image_url?: string | null
+          name: string
+          price?: number | null
+        }
+        Update: {
+          carbon_impact?: number | null
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          destination_id?: string
+          duration_hours?: number | null
+          eco_certified?: boolean | null
+          id?: string
+          image_url?: string | null
+          name?: string
+          price?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "activities_destination_id_fkey"
+            columns: ["destination_id"]
+            isOneToOne: false
+            referencedRelation: "destinations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      carbon_footprint_history: {
+        Row: {
+          accommodation_carbon: number | null
+          activities_carbon: number | null
+          created_at: string
+          date: string
+          id: string
+          offset_amount: number | null
+          reservation_id: string | null
+          total_carbon: number | null
+          transport_carbon: number | null
+          user_id: string
+        }
+        Insert: {
+          accommodation_carbon?: number | null
+          activities_carbon?: number | null
+          created_at?: string
+          date?: string
+          id?: string
+          offset_amount?: number | null
+          reservation_id?: string | null
+          total_carbon?: number | null
+          transport_carbon?: number | null
+          user_id: string
+        }
+        Update: {
+          accommodation_carbon?: number | null
+          activities_carbon?: number | null
+          created_at?: string
+          date?: string
+          id?: string
+          offset_amount?: number | null
+          reservation_id?: string | null
+          total_carbon?: number | null
+          transport_carbon?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "carbon_footprint_history_reservation_id_fkey"
+            columns: ["reservation_id"]
+            isOneToOne: false
+            referencedRelation: "reservations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      coworking_spaces: {
+        Row: {
+          address: string | null
+          amenities: string[] | null
+          carbon_score: string | null
+          created_at: string
+          description: string | null
+          destination_id: string
+          id: string
+          image_url: string | null
+          name: string
+          opening_hours: string | null
+          price_per_day: number | null
+          price_per_hour: number | null
+          price_per_month: number | null
+          rating: number | null
+          wifi_speed: number | null
+        }
+        Insert: {
+          address?: string | null
+          amenities?: string[] | null
+          carbon_score?: string | null
+          created_at?: string
+          description?: string | null
+          destination_id: string
+          id?: string
+          image_url?: string | null
+          name: string
+          opening_hours?: string | null
+          price_per_day?: number | null
+          price_per_hour?: number | null
+          price_per_month?: number | null
+          rating?: number | null
+          wifi_speed?: number | null
+        }
+        Update: {
+          address?: string | null
+          amenities?: string[] | null
+          carbon_score?: string | null
+          created_at?: string
+          description?: string | null
+          destination_id?: string
+          id?: string
+          image_url?: string | null
+          name?: string
+          opening_hours?: string | null
+          price_per_day?: number | null
+          price_per_hour?: number | null
+          price_per_month?: number | null
+          rating?: number | null
+          wifi_speed?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coworking_spaces_destination_id_fkey"
+            columns: ["destination_id"]
+            isOneToOne: false
+            referencedRelation: "destinations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      destinations: {
+        Row: {
+          avg_price_per_day: number | null
+          carbon_score: string | null
+          city: string
+          country: string
+          coworking_count: number | null
+          created_at: string
+          description: string | null
+          highlight: string | null
+          id: string
+          image_url: string | null
+          name: string
+          rating: number | null
+          wifi_speed: number | null
+        }
+        Insert: {
+          avg_price_per_day?: number | null
+          carbon_score?: string | null
+          city: string
+          country: string
+          coworking_count?: number | null
+          created_at?: string
+          description?: string | null
+          highlight?: string | null
+          id?: string
+          image_url?: string | null
+          name: string
+          rating?: number | null
+          wifi_speed?: number | null
+        }
+        Update: {
+          avg_price_per_day?: number | null
+          carbon_score?: string | null
+          city?: string
+          country?: string
+          coworking_count?: number | null
+          created_at?: string
+          description?: string | null
+          highlight?: string | null
+          id?: string
+          image_url?: string | null
+          name?: string
+          rating?: number | null
+          wifi_speed?: number | null
+        }
+        Relationships: []
+      }
+      mobility_options: {
+        Row: {
+          carbon_per_km: number | null
+          created_at: string
+          description: string | null
+          destination_id: string
+          id: string
+          image_url: string | null
+          name: string
+          price_per_day: number | null
+          price_per_hour: number | null
+          type: string | null
+        }
+        Insert: {
+          carbon_per_km?: number | null
+          created_at?: string
+          description?: string | null
+          destination_id: string
+          id?: string
+          image_url?: string | null
+          name: string
+          price_per_day?: number | null
+          price_per_hour?: number | null
+          type?: string | null
+        }
+        Update: {
+          carbon_per_km?: number | null
+          created_at?: string
+          description?: string | null
+          destination_id?: string
+          id?: string
+          image_url?: string | null
+          name?: string
+          price_per_day?: number | null
+          price_per_hour?: number | null
+          type?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mobility_options_destination_id_fkey"
+            columns: ["destination_id"]
+            isOneToOne: false
+            referencedRelation: "destinations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          carbon_preference: string | null
+          created_at: string
+          full_name: string | null
+          id: string
+          total_carbon_saved: number | null
+          trips_count: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          carbon_preference?: string | null
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          total_carbon_saved?: number | null
+          trips_count?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          carbon_preference?: string | null
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          total_carbon_saved?: number | null
+          trips_count?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      reservation_items: {
+        Row: {
+          carbon_impact: number | null
+          created_at: string
+          end_date: string | null
+          id: string
+          item_id: string
+          item_name: string
+          item_type: string
+          quantity: number | null
+          reservation_id: string
+          start_date: string | null
+          total_price: number | null
+          unit_price: number | null
+        }
+        Insert: {
+          carbon_impact?: number | null
+          created_at?: string
+          end_date?: string | null
+          id?: string
+          item_id: string
+          item_name: string
+          item_type: string
+          quantity?: number | null
+          reservation_id: string
+          start_date?: string | null
+          total_price?: number | null
+          unit_price?: number | null
+        }
+        Update: {
+          carbon_impact?: number | null
+          created_at?: string
+          end_date?: string | null
+          id?: string
+          item_id?: string
+          item_name?: string
+          item_type?: string
+          quantity?: number | null
+          reservation_id?: string
+          start_date?: string | null
+          total_price?: number | null
+          unit_price?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reservation_items_reservation_id_fkey"
+            columns: ["reservation_id"]
+            isOneToOne: false
+            referencedRelation: "reservations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reservations: {
+        Row: {
+          carbon_offset_purchased: boolean | null
+          check_in_date: string
+          check_out_date: string
+          created_at: string
+          destination_id: string | null
+          id: string
+          status: string | null
+          total_carbon_impact: number | null
+          total_price: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          carbon_offset_purchased?: boolean | null
+          check_in_date: string
+          check_out_date: string
+          created_at?: string
+          destination_id?: string | null
+          id?: string
+          status?: string | null
+          total_carbon_impact?: number | null
+          total_price?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          carbon_offset_purchased?: boolean | null
+          check_in_date?: string
+          check_out_date?: string
+          created_at?: string
+          destination_id?: string | null
+          id?: string
+          status?: string | null
+          total_carbon_impact?: number | null
+          total_price?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reservations_destination_id_fkey"
+            columns: ["destination_id"]
+            isOneToOne: false
+            referencedRelation: "destinations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reviews: {
+        Row: {
+          comment: string | null
+          created_at: string
+          id: string
+          rating: number
+          target_id: string
+          target_type: string
+          user_id: string
+        }
+        Insert: {
+          comment?: string | null
+          created_at?: string
+          id?: string
+          rating: number
+          target_id: string
+          target_type: string
+          user_id: string
+        }
+        Update: {
+          comment?: string | null
+          created_at?: string
+          id?: string
+          rating?: number
+          target_id?: string
+          target_type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

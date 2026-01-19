@@ -1,11 +1,14 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, Leaf, User, Search, Globe } from "lucide-react";
+import { Menu, X, Leaf, Search, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { useAuth } from "@/hooks/useAuth";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { user, loading } = useAuth();
 
   const navLinks = [
     { label: "Destinations", href: "/destinations" },
@@ -52,12 +55,24 @@ const Header = () => {
                 <Globe className="w-4 h-4" />
               </Button>
               <div className="w-px h-6 bg-border mx-1" />
-              <Button variant="ghost" size="sm">
-                Se connecter
-              </Button>
-              <Button variant="default" size="sm">
-                Créer un compte
-              </Button>
+              {!loading && (user ? (
+                <Link to="/profile">
+                  <Avatar className="w-9 h-9 cursor-pointer hover:ring-2 hover:ring-primary transition-all">
+                    <AvatarFallback className="bg-primary text-primary-foreground text-sm">
+                      {user.email?.charAt(0).toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                </Link>
+              ) : (
+                <>
+                  <Link to="/login">
+                    <Button variant="ghost" size="sm">Se connecter</Button>
+                  </Link>
+                  <Link to="/signup">
+                    <Button variant="default" size="sm">Créer un compte</Button>
+                  </Link>
+                </>
+              ))}
             </div>
 
             {/* Mobile Menu Button */}
@@ -95,14 +110,20 @@ const Header = () => {
                   </Link>
                 ))}
                 <div className="h-px bg-border my-2" />
-                <div className="flex gap-2 pt-2">
-                  <Button variant="outline" className="flex-1">
-                    Se connecter
-                  </Button>
-                  <Button variant="default" className="flex-1">
-                    Créer un compte
-                  </Button>
-                </div>
+                {!loading && (user ? (
+                  <Link to="/profile" onClick={() => setIsMenuOpen(false)}>
+                    <Button variant="default" className="w-full">Mon profil</Button>
+                  </Link>
+                ) : (
+                  <div className="flex gap-2 pt-2">
+                    <Link to="/login" className="flex-1" onClick={() => setIsMenuOpen(false)}>
+                      <Button variant="outline" className="w-full">Se connecter</Button>
+                    </Link>
+                    <Link to="/signup" className="flex-1" onClick={() => setIsMenuOpen(false)}>
+                      <Button variant="default" className="w-full">Créer un compte</Button>
+                    </Link>
+                  </div>
+                ))}
               </nav>
             </div>
           </motion.div>
