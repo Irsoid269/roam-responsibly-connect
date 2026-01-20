@@ -13,6 +13,25 @@ import DestinationsPage from "./pages/DestinationsPage";
 import DestinationDetailPage from "./pages/DestinationDetailPage";
 import BookingPage from "./pages/BookingPage";
 import CommunityPage from "./pages/CommunityPage";
+import CoworkingsPage from "./pages/CoworkingsPage";
+import ImpactPage from "./pages/ImpactPage";
+import AccommodationsPage from "./pages/AccommodationsPage";
+import ActivitiesPage from "./pages/ActivitiesPage";
+import MobilityPage from "./pages/MobilityPage";
+import BlogPage from "./pages/BlogPage";
+import ReviewsPage from "./pages/ReviewsPage";
+import EventsPage from "./pages/EventsPage";
+import AmbassadorsPage from "./pages/AmbassadorsPage";
+import MissionPage from "./pages/MissionPage";
+import PartnersPage from "./pages/PartnersPage";
+import ImpactReportPage from "./pages/ImpactReportPage";
+import HelpPage from "./pages/HelpPage";
+import BecomePartnerPage from "./pages/BecomePartnerPage";
+import ContactPage from "./pages/ContactPage";
+import FAQPage from "./pages/FAQPage";
+import PrivacyPage from "./pages/PrivacyPage";
+import TermsPage from "./pages/TermsPage";
+import CookiesPage from "./pages/CookiesPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -34,6 +53,25 @@ const App = () => (
             <Route path="/destinations/:id" element={<DestinationDetailPage />} />
             <Route path="/booking/:id" element={<BookingPage />} />
             <Route path="/community" element={<CommunityPage />} />
+            <Route path="/coworkings" element={<CoworkingsPage />} />
+            <Route path="/impact" element={<ImpactPage />} />
+            <Route path="/accommodations" element={<AccommodationsPage />} />
+            <Route path="/activities" element={<ActivitiesPage />} />
+            <Route path="/mobility" element={<MobilityPage />} />
+            <Route path="/blog" element={<BlogPage />} />
+            <Route path="/reviews" element={<ReviewsPage />} />
+            <Route path="/events" element={<EventsPage />} />
+            <Route path="/ambassadors" element={<AmbassadorsPage />} />
+            <Route path="/mission" element={<MissionPage />} />
+            <Route path="/partners" element={<PartnersPage />} />
+            <Route path="/impact-report" element={<ImpactReportPage />} />
+            <Route path="/help" element={<HelpPage />} />
+            <Route path="/become-partner" element={<BecomePartnerPage />} />
+            <Route path="/contact" element={<ContactPage />} />
+            <Route path="/faq" element={<FAQPage />} />
+            <Route path="/privacy" element={<PrivacyPage />} />
+            <Route path="/terms" element={<TermsPage />} />
+            <Route path="/cookies" element={<CookiesPage />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
