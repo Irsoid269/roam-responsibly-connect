@@ -1,10 +1,10 @@
 import { motion } from "framer-motion";
 import { ArrowRight, Star, Wifi, Leaf } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import destinationLisbon from "@/assets/destination-lisbon.jpg";
-import destinationBali from "@/assets/destination-bali.jpg";
-import destinationBarcelona from "@/assets/destination-barcelona.jpg";
-import destinationCapetown from "@/assets/destination-capetown.jpg";
+import destinationMoroni from "@/assets/destination-moroni.jpg";
+import destinationMutsamudu from "@/assets/destination-mutsamudu.jpg";
+import destinationFomboni from "@/assets/destination-fomboni.jpg";
+import destinationItsandra from "@/assets/destination-itsandra.jpg";
 
 interface Destination {
   id: string;
@@ -23,7 +23,7 @@ const destinations: Destination[] = [
     id: "moroni",
     name: "Moroni",
     country: "Grande Comore",
-    image: destinationLisbon,
+    image: destinationMoroni,
     rating: 4.9,
     coworkingSpaces: 12,
     priceFrom: 35,
@@ -34,7 +34,7 @@ const destinations: Destination[] = [
     id: "mutsamudu",
     name: "Mutsamudu",
     country: "Anjouan",
-    image: destinationBali,
+    image: destinationMutsamudu,
     rating: 4.8,
     coworkingSpaces: 8,
     priceFrom: 28,
@@ -45,7 +45,7 @@ const destinations: Destination[] = [
     id: "fomboni",
     name: "Fomboni",
     country: "Mohéli",
-    image: destinationBarcelona,
+    image: destinationFomboni,
     rating: 4.7,
     coworkingSpaces: 5,
     priceFrom: 25,
@@ -56,7 +56,7 @@ const destinations: Destination[] = [
     id: "itsandra",
     name: "Itsandra",
     country: "Grande Comore",
-    image: destinationCapetown,
+    image: destinationItsandra,
     rating: 4.8,
     coworkingSpaces: 6,
     priceFrom: 30,
