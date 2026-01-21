@@ -1,11 +1,69 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Search, MapPin, Calendar, Users, ChevronDown, Leaf } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Calendar as CalendarComponent } from "@/components/ui/calendar";
+import { format } from "date-fns";
+import { fr } from "date-fns/locale";
 import heroImage from "@/assets/hero-coworking.jpg";
 
+const destinations = [
+  { id: "lisbon", name: "Lisbonne", country: "Portugal" },
+  { id: "barcelona", name: "Barcelone", country: "Espagne" },
+  { id: "bali", name: "Bali", country: "Indonésie" },
+  { id: "capetown", name: "Le Cap", country: "Afrique du Sud" },
+  { id: "medellin", name: "Medellín", country: "Colombie" },
+  { id: "bangkok", name: "Bangkok", country: "Thaïlande" },
+];
+
 const HeroSection = () => {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<"sejour" | "coworking" | "experience">("sejour");
+  const [selectedDestination, setSelectedDestination] = useState<typeof destinations[0] | null>(null);
+  const [dateRange, setDateRange] = useState<{ from: Date | undefined; to: Date | undefined }>({
+    from: undefined,
+    to: undefined,
+  });
+  const [travelers, setTravelers] = useState(2);
+  const [destinationOpen, setDestinationOpen] = useState(false);
+  const [travelersOpen, setTravelersOpen] = useState(false);
+
+  const handleSearch = () => {
+    const params = new URLSearchParams();
+    
+    if (selectedDestination) {
+      params.set("destination", selectedDestination.id);
+    }
+    if (dateRange.from) {
+      params.set("from", dateRange.from.toISOString());
+    }
+    if (dateRange.to) {
+      params.set("to", dateRange.to.toISOString());
+    }
+    params.set("travelers", travelers.toString());
+    params.set("type", activeTab);
+
+    // Navigate based on tab
+    if (activeTab === "coworking") {
+      navigate(`/coworkings?${params.toString()}`);
+    } else if (activeTab === "experience") {
+      navigate(`/activities?${params.toString()}`);
+    } else {
+      navigate(`/destinations?${params.toString()}`);
+    }
+  };
+
+  const formatDateRange = () => {
+    if (dateRange.from && dateRange.to) {
+      return `${format(dateRange.from, "d MMM", { locale: fr })} - ${format(dateRange.to, "d MMM", { locale: fr })}`;
+    }
+    if (dateRange.from) {
+      return format(dateRange.from, "d MMM", { locale: fr });
+    }
+    return "Choisir les dates";
+  };
 
   return (
     <section className="relative min-h-[90vh] flex items-center">
@@ -87,43 +145,125 @@ const HeroSection = () => {
             {/* Search Fields */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-2 p-2">
               {/* Destination */}
-              <div className="relative">
-                <div className="flex items-center gap-3 p-4 rounded-xl bg-muted/50 hover:bg-muted transition-colors cursor-pointer group">
-                  <MapPin className="w-5 h-5 text-primary shrink-0" />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs text-muted-foreground">Destination</p>
-                    <p className="text-sm font-medium text-foreground truncate">Lisbonne, Portugal</p>
+              <Popover open={destinationOpen} onOpenChange={setDestinationOpen}>
+                <PopoverTrigger asChild>
+                  <div className="flex items-center gap-3 p-4 rounded-xl bg-muted/50 hover:bg-muted transition-colors cursor-pointer group">
+                    <MapPin className="w-5 h-5 text-primary shrink-0" />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs text-muted-foreground">Destination</p>
+                      <p className="text-sm font-medium text-foreground truncate">
+                        {selectedDestination 
+                          ? `${selectedDestination.name}, ${selectedDestination.country.slice(0, 5)}...`
+                          : "Où allez-vous ?"
+                        }
+                      </p>
+                    </div>
+                    <ChevronDown className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors" />
                   </div>
-                  <ChevronDown className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors" />
-                </div>
-              </div>
+                </PopoverTrigger>
+                <PopoverContent className="w-64 p-2" align="start">
+                  <div className="space-y-1">
+                    {destinations.map((dest) => (
+                      <button
+                        key={dest.id}
+                        onClick={() => {
+                          setSelectedDestination(dest);
+                          setDestinationOpen(false);
+                        }}
+                        className={`w-full flex items-center gap-3 p-3 rounded-lg text-left transition-colors ${
+                          selectedDestination?.id === dest.id
+                            ? "bg-primary text-primary-foreground"
+                            : "hover:bg-muted"
+                        }`}
+                      >
+                        <MapPin className="w-4 h-4 shrink-0" />
+                        <div>
+                          <p className="font-medium">{dest.name}</p>
+                          <p className={`text-xs ${
+                            selectedDestination?.id === dest.id
+                              ? "text-primary-foreground/80"
+                              : "text-muted-foreground"
+                          }`}>
+                            {dest.country}
+                          </p>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </PopoverContent>
+              </Popover>
 
               {/* Dates */}
-              <div className="relative">
-                <div className="flex items-center gap-3 p-4 rounded-xl bg-muted/50 hover:bg-muted transition-colors cursor-pointer group">
-                  <Calendar className="w-5 h-5 text-primary shrink-0" />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs text-muted-foreground">Dates</p>
-                    <p className="text-sm font-medium text-foreground truncate">15 - 30 Jan</p>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <div className="flex items-center gap-3 p-4 rounded-xl bg-muted/50 hover:bg-muted transition-colors cursor-pointer group">
+                    <Calendar className="w-5 h-5 text-primary shrink-0" />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs text-muted-foreground">Dates</p>
+                      <p className="text-sm font-medium text-foreground truncate">
+                        {formatDateRange()}
+                      </p>
+                    </div>
+                    <ChevronDown className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors" />
                   </div>
-                  <ChevronDown className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors" />
-                </div>
-              </div>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <CalendarComponent
+                    mode="range"
+                    selected={{ from: dateRange.from, to: dateRange.to }}
+                    onSelect={(range) => setDateRange({ from: range?.from, to: range?.to })}
+                    numberOfMonths={2}
+                    disabled={(date) => date < new Date()}
+                    locale={fr}
+                  />
+                </PopoverContent>
+              </Popover>
 
               {/* Voyageurs */}
-              <div className="relative">
-                <div className="flex items-center gap-3 p-4 rounded-xl bg-muted/50 hover:bg-muted transition-colors cursor-pointer group">
-                  <Users className="w-5 h-5 text-primary shrink-0" />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs text-muted-foreground">Voyageurs</p>
-                    <p className="text-sm font-medium text-foreground truncate">2 personnes</p>
+              <Popover open={travelersOpen} onOpenChange={setTravelersOpen}>
+                <PopoverTrigger asChild>
+                  <div className="flex items-center gap-3 p-4 rounded-xl bg-muted/50 hover:bg-muted transition-colors cursor-pointer group">
+                    <Users className="w-5 h-5 text-primary shrink-0" />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs text-muted-foreground">Voyageurs</p>
+                      <p className="text-sm font-medium text-foreground truncate">
+                        {travelers} personne{travelers > 1 ? "s" : ""}
+                      </p>
+                    </div>
+                    <ChevronDown className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors" />
                   </div>
-                  <ChevronDown className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors" />
-                </div>
-              </div>
+                </PopoverTrigger>
+                <PopoverContent className="w-48 p-3" align="start">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium">Voyageurs</span>
+                    <div className="flex items-center gap-3">
+                      <button
+                        onClick={() => setTravelers(Math.max(1, travelers - 1))}
+                        className="w-8 h-8 rounded-full bg-muted hover:bg-muted-foreground/20 flex items-center justify-center transition-colors"
+                        disabled={travelers <= 1}
+                      >
+                        -
+                      </button>
+                      <span className="w-6 text-center font-medium">{travelers}</span>
+                      <button
+                        onClick={() => setTravelers(Math.min(10, travelers + 1))}
+                        className="w-8 h-8 rounded-full bg-muted hover:bg-muted-foreground/20 flex items-center justify-center transition-colors"
+                        disabled={travelers >= 10}
+                      >
+                        +
+                      </button>
+                    </div>
+                  </div>
+                </PopoverContent>
+              </Popover>
 
               {/* Search Button */}
-              <Button variant="hero" size="lg" className="h-full min-h-[72px]">
+              <Button 
+                variant="hero" 
+                size="lg" 
+                className="h-full min-h-[72px]"
+                onClick={handleSearch}
+              >
                 <Search className="w-5 h-5" />
                 <span>Rechercher</span>
               </Button>
