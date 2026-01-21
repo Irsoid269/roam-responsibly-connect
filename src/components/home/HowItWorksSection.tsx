@@ -4,8 +4,8 @@ import { MapPin, Briefcase, Bike, TreePine, Sparkles } from "lucide-react";
 const steps = [
   {
     icon: MapPin,
-    title: "Choisissez votre destination",
-    description: "Explorez plus de 150 destinations et trouvez l'endroit parfait pour votre prochain séjour de travail.",
+    title: "Choisissez votre île",
+    description: "Explorez les îles des Comores et trouvez l'endroit parfait pour votre prochain séjour de travail.",
     color: "bg-secondary",
     iconColor: "text-secondary-foreground",
   },
@@ -63,7 +63,7 @@ const HowItWorksSection = () => {
             className="text-muted-foreground text-lg"
           >
             De la recherche à la réservation, tout est pensé pour simplifier 
-            l'organisation de votre coworkation.
+            l'organisation de votre comworkation aux Comores.
           </motion.p>
         </div>
 
