@@ -44,11 +44,11 @@ const Footer = () => {
                 <Leaf className="w-5 h-5 text-primary-foreground" />
               </div>
               <span className="text-xl font-bold text-background">
-                Cowork<span className="text-primary-glow">ation</span>
+                Comwork<span className="text-primary-glow">ation</span>
               </span>
             </Link>
             <p className="text-background/70 text-sm mb-6 max-w-xs">
-              La plateforme tout-en-un pour planifier vos séjours de travail à distance, 
+              La plateforme tout-en-un pour planifier vos séjours de travail à distance aux Comores, 
               tout en réduisant votre empreinte carbone.
             </p>
             
@@ -78,11 +78,11 @@ const Footer = () => {
             <div className="space-y-2 text-sm text-background/60">
               <div className="flex items-center gap-2">
                 <Mail className="w-4 h-4" />
-                <span>hello@coworkation.com</span>
+                <span>hello@comworkation.com</span>
               </div>
               <div className="flex items-center gap-2">
                 <MapPin className="w-4 h-4" />
-                <span>Paris, France</span>
+                <span>Moroni, Comores</span>
               </div>
             </div>
           </div>
@@ -161,7 +161,7 @@ const Footer = () => {
       <div className="border-t border-background/10">
         <div className="container mx-auto px-4 py-5">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-background/50">
-            <p>© {currentYear} Coworkation. Tous droits réservés.</p>
+            <p>© {currentYear} Comworkation. Tous droits réservés.</p>
             <div className="flex items-center gap-6">
               <Link to="/privacy" className="hover:text-background transition-colors">
                 Confidentialité

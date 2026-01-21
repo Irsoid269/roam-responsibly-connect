@@ -28,7 +28,7 @@ const Header = () => {
                 <Leaf className="w-5 h-5 text-primary-foreground" />
               </div>
               <span className="text-xl font-bold text-foreground">
-                Cowork<span className="text-primary">ation</span>
+                Comwork<span className="text-primary">ation</span>
               </span>
             </Link>
 

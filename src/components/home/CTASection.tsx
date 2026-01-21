@@ -36,7 +36,7 @@ const CTASection = () => {
             >
               Planifiez votre premier
               <br />
-              séjour de coworkation
+              séjour de comworkation aux Comores
             </motion.h2>
 
             <motion.p

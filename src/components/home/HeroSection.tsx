@@ -10,12 +10,12 @@ import { fr } from "date-fns/locale";
 import heroImage from "@/assets/hero-coworking.jpg";
 
 const destinations = [
-  { id: "lisbon", name: "Lisbonne", country: "Portugal" },
-  { id: "barcelona", name: "Barcelone", country: "Espagne" },
-  { id: "bali", name: "Bali", country: "Indonésie" },
-  { id: "capetown", name: "Le Cap", country: "Afrique du Sud" },
-  { id: "medellin", name: "Medellín", country: "Colombie" },
-  { id: "bangkok", name: "Bangkok", country: "Thaïlande" },
+  { id: "moroni", name: "Moroni", country: "Grande Comore" },
+  { id: "mutsamudu", name: "Mutsamudu", country: "Anjouan" },
+  { id: "fomboni", name: "Fomboni", country: "Mohéli" },
+  { id: "itsandra", name: "Itsandra", country: "Grande Comore" },
+  { id: "domoni", name: "Domoni", country: "Anjouan" },
+  { id: "iconi", name: "Iconi", country: "Grande Comore" },
 ];
 
 const HeroSection = () => {
@@ -99,7 +99,7 @@ const HeroSection = () => {
           >
             Votre prochain séjour de
             <br />
-            <span className="text-primary-glow">coworkation</span> vous attend
+            <span className="text-primary-glow">comworkation</span> vous attend
           </motion.h1>
 
           <motion.p

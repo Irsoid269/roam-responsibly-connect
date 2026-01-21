@@ -20,48 +20,48 @@ interface Destination {
 
 const destinations: Destination[] = [
   {
-    id: "lisbon",
-    name: "Lisbonne",
-    country: "Portugal",
+    id: "moroni",
+    name: "Moroni",
+    country: "Grande Comore",
     image: destinationLisbon,
     rating: 4.9,
-    coworkingSpaces: 85,
-    priceFrom: 45,
+    coworkingSpaces: 12,
+    priceFrom: 35,
     carbonScore: "A",
-    highlight: "Meilleur rapport qualité-prix",
+    highlight: "Capitale vibrante",
   },
   {
-    id: "bali",
-    name: "Ubud, Bali",
-    country: "Indonésie",
+    id: "mutsamudu",
+    name: "Mutsamudu",
+    country: "Anjouan",
     image: destinationBali,
     rating: 4.8,
-    coworkingSpaces: 62,
-    priceFrom: 35,
-    carbonScore: "B",
-    highlight: "Communauté nomade active",
+    coworkingSpaces: 8,
+    priceFrom: 28,
+    carbonScore: "A",
+    highlight: "Nature préservée",
   },
   {
-    id: "barcelona",
-    name: "Barcelone",
-    country: "Espagne",
+    id: "fomboni",
+    name: "Fomboni",
+    country: "Mohéli",
     image: destinationBarcelona,
     rating: 4.7,
-    coworkingSpaces: 120,
-    priceFrom: 55,
+    coworkingSpaces: 5,
+    priceFrom: 25,
     carbonScore: "A",
-    highlight: "Plage + City life",
+    highlight: "Île écologique",
   },
   {
-    id: "capetown",
-    name: "Le Cap",
-    country: "Afrique du Sud",
+    id: "itsandra",
+    name: "Itsandra",
+    country: "Grande Comore",
     image: destinationCapetown,
     rating: 4.8,
-    coworkingSpaces: 45,
-    priceFrom: 40,
-    carbonScore: "B",
-    highlight: "Nature & aventure",
+    coworkingSpaces: 6,
+    priceFrom: 30,
+    carbonScore: "A",
+    highlight: "Plage & coworking",
   },
 ];
 
@@ -84,7 +84,7 @@ const DestinationsSection = () => {
               viewport={{ once: true }}
               className="text-primary font-medium text-sm uppercase tracking-wider"
             >
-              Destinations populaires
+              Les îles des Comores
             </motion.span>
             <motion.h2
               initial={{ opacity: 0, y: 10 }}
