@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { 
   Search, Filter, Star, Wifi, Leaf, MapPin, 
-  Coffee, Clock, Users, Laptop
+  Coffee, Clock, Users, Laptop, Loader2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -36,77 +36,16 @@ interface CoworkingSpace {
   opening_hours: string | null;
 }
 
-const mockCoworkings: CoworkingSpace[] = [
-  {
-    id: "1",
-    name: "Hub Créatif Lisbonne",
-    description: "Espace moderne avec vue sur le Tage",
-    address: "Alfama, Lisbonne",
-    image_url: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=800",
-    carbon_score: "A",
-    rating: 4.9,
-    price_per_day: 25,
-    price_per_hour: 5,
-    price_per_month: 350,
-    wifi_speed: 500,
-    amenities: ["Café gratuit", "Salle de réunion", "Terrasse"],
-    opening_hours: "7h - 22h",
-  },
-  {
-    id: "2",
-    name: "Bali Digital Nest",
-    description: "Coworking au cœur de la jungle",
-    address: "Ubud, Bali",
-    image_url: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=800",
-    carbon_score: "A",
-    rating: 4.8,
-    price_per_day: 15,
-    price_per_hour: 3,
-    price_per_month: 200,
-    wifi_speed: 100,
-    amenities: ["Piscine", "Yoga", "Restaurant bio"],
-    opening_hours: "6h - 23h",
-  },
-  {
-    id: "3",
-    name: "Barcelona Tech Hub",
-    description: "Innovation et networking au quotidien",
-    address: "El Born, Barcelone",
-    image_url: "https://images.unsplash.com/photo-1527192491265-7e15c55b1ed2?w=800",
-    carbon_score: "B",
-    rating: 4.7,
-    price_per_day: 30,
-    price_per_hour: 6,
-    price_per_month: 400,
-    wifi_speed: 1000,
-    amenities: ["Event space", "Podcast studio", "Rooftop"],
-    opening_hours: "8h - 21h",
-  },
-  {
-    id: "4",
-    name: "Cape Town Creative",
-    description: "Vue mer et communauté vibrante",
-    address: "Sea Point, Le Cap",
-    image_url: "https://images.unsplash.com/photo-1497215842964-222b430dc094?w=800",
-    carbon_score: "B",
-    rating: 4.6,
-    price_per_day: 20,
-    price_per_hour: 4,
-    price_per_month: 280,
-    wifi_speed: 200,
-    amenities: ["Vue océan", "Café", "Parking vélo"],
-    opening_hours: "7h - 20h",
-  },
-];
-
 const carbonScoreColors: Record<string, string> = {
   A: "bg-success text-success-foreground",
   B: "bg-primary text-primary-foreground",
   C: "bg-warning text-warning-foreground",
 };
 
+const defaultImage = "https://images.unsplash.com/photo-1497366216548-37526070297c?w=800";
+
 const CoworkingsPage = () => {
-  const [coworkings, setCoworkings] = useState<CoworkingSpace[]>(mockCoworkings);
+  const [coworkings, setCoworkings] = useState<CoworkingSpace[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("popular");
   const [loading, setLoading] = useState(true);
@@ -121,7 +60,7 @@ const CoworkingsPage = () => {
       .select("*")
       .order("rating", { ascending: false });
 
-    if (!error && data && data.length > 0) {
+    if (!error && data) {
       setCoworkings(data);
     }
     setLoading(false);
@@ -180,6 +119,18 @@ const CoworkingsPage = () => {
         {/* Results */}
         <section className="py-8">
           <div className="container mx-auto px-4">
+            {loading ? (
+              <div className="flex justify-center items-center py-16">
+                <Loader2 className="w-8 h-8 animate-spin text-primary" />
+              </div>
+            ) : coworkings.length === 0 ? (
+              <div className="text-center py-16">
+                <Laptop className="w-12 h-12 mx-auto mb-4 text-muted-foreground opacity-50" />
+                <h3 className="text-lg font-medium text-foreground">Aucun espace disponible</h3>
+                <p className="text-muted-foreground mt-1">Les espaces de coworking seront ajoutés prochainement</p>
+              </div>
+            ) : (
+            <>
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
               <p className="text-muted-foreground">
                 <span className="font-medium text-foreground">{filteredCoworkings.length}</span> espaces trouvés
@@ -209,7 +160,7 @@ const CoworkingsPage = () => {
                   <Card className="group cursor-pointer card-hover overflow-hidden">
                     <div className="relative aspect-video overflow-hidden">
                       <img
-                        src={coworking.image_url || "https://images.unsplash.com/photo-1497366216548-37526070297c?w=800"}
+                        src={coworking.image_url || defaultImage}
                         alt={coworking.name}
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                       />
@@ -276,12 +227,14 @@ const CoworkingsPage = () => {
               ))}
             </div>
 
-            {filteredCoworkings.length === 0 && (
+            {filteredCoworkings.length === 0 && searchQuery && (
               <div className="text-center py-16">
                 <Laptop className="w-12 h-12 mx-auto mb-4 text-muted-foreground opacity-50" />
                 <h3 className="text-lg font-medium text-foreground">Aucun espace trouvé</h3>
                 <p className="text-muted-foreground mt-1">Essayez une autre recherche</p>
               </div>
+            )}
+            </>
             )}
           </div>
         </section>
