@@ -1,14 +1,16 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, Leaf, Search, Globe } from "lucide-react";
+import { Menu, X, Leaf, Search, Globe, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useAuth } from "@/hooks/useAuth";
+import { useAdminAuth } from "@/hooks/useAdminAuth";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { user, loading } = useAuth();
+  const { isAdmin } = useAdminAuth();
 
   const navLinks = [
     { label: "Destinations", href: "/destinations" },
@@ -56,13 +58,23 @@ const Header = () => {
               </Button>
               <div className="w-px h-6 bg-border mx-1" />
               {!loading && (user ? (
-                <Link to="/profile">
-                  <Avatar className="w-9 h-9 cursor-pointer hover:ring-2 hover:ring-primary transition-all">
-                    <AvatarFallback className="bg-primary text-primary-foreground text-sm">
-                      {user.email?.charAt(0).toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
-                </Link>
+                <div className="flex items-center gap-2">
+                  {isAdmin && (
+                    <Link to="/admin">
+                      <Button variant="outline" size="sm" className="gap-1.5">
+                        <Shield className="w-4 h-4" />
+                        Admin
+                      </Button>
+                    </Link>
+                  )}
+                  <Link to="/profile">
+                    <Avatar className="w-9 h-9 cursor-pointer hover:ring-2 hover:ring-primary transition-all">
+                      <AvatarFallback className="bg-primary text-primary-foreground text-sm">
+                        {user.email?.charAt(0).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                  </Link>
+                </div>
               ) : (
                 <>
                   <Link to="/login">
@@ -111,9 +123,19 @@ const Header = () => {
                 ))}
                 <div className="h-px bg-border my-2" />
                 {!loading && (user ? (
-                  <Link to="/profile" onClick={() => setIsMenuOpen(false)}>
-                    <Button variant="default" className="w-full">Mon profil</Button>
-                  </Link>
+                  <div className="flex flex-col gap-2">
+                    {isAdmin && (
+                      <Link to="/admin" onClick={() => setIsMenuOpen(false)}>
+                        <Button variant="outline" className="w-full gap-2">
+                          <Shield className="w-4 h-4" />
+                          Administration
+                        </Button>
+                      </Link>
+                    )}
+                    <Link to="/profile" onClick={() => setIsMenuOpen(false)}>
+                      <Button variant="default" className="w-full">Mon profil</Button>
+                    </Link>
+                  </div>
                 ) : (
                   <div className="flex gap-2 pt-2">
                     <Link to="/login" className="flex-1" onClick={() => setIsMenuOpen(false)}>
