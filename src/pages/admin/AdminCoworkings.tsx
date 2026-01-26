@@ -36,6 +36,7 @@ import {
 } from "@/components/ui/select";
 import { MoreHorizontal, Plus, Pencil, Trash2, Star, Wifi } from "lucide-react";
 import { toast } from "sonner";
+import ImageUpload from "@/components/admin/ImageUpload";
 
 interface CoworkingSpace {
   id: string;
@@ -411,13 +412,11 @@ const AdminCoworkings = () => {
               />
             </div>
             <div className="col-span-2 space-y-2">
-              <label className="text-sm font-medium">URL de l'image</label>
-              <Input
-                value={formData.image_url || ""}
-                onChange={(e) =>
-                  setFormData({ ...formData, image_url: e.target.value })
-                }
-                placeholder="https://..."
+              <label className="text-sm font-medium">Image</label>
+              <ImageUpload
+                value={formData.image_url || null}
+                onChange={(url) => setFormData({ ...formData, image_url: url })}
+                folder="coworkings"
               />
             </div>
             <div className="col-span-2 space-y-2">

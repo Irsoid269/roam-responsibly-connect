@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { 
   Search, Filter, Star, Wifi, Leaf, MapPin, 
-  SlidersHorizontal, Grid, List
+  SlidersHorizontal, Grid, List, Loader2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,12 +20,6 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { supabase } from "@/integrations/supabase/client";
 
-// Mock data for initial display
-import destinationLisbon from "@/assets/destination-lisbon.jpg";
-import destinationBali from "@/assets/destination-bali.jpg";
-import destinationBarcelona from "@/assets/destination-barcelona.jpg";
-import destinationCapetown from "@/assets/destination-capetown.jpg";
-
 interface Destination {
   id: string;
   name: string;
@@ -41,73 +35,16 @@ interface Destination {
   coworking_count: number | null;
 }
 
-const mockDestinations: Destination[] = [
-  {
-    id: "1",
-    name: "Lisbonne",
-    country: "Portugal",
-    city: "Lisbonne",
-    description: "Capitale ensoleillée avec une scène tech florissante",
-    image_url: destinationLisbon,
-    carbon_score: "A",
-    rating: 4.9,
-    highlight: "Meilleur rapport qualité-prix",
-    avg_price_per_day: 45,
-    wifi_speed: 100,
-    coworking_count: 85,
-  },
-  {
-    id: "2",
-    name: "Ubud, Bali",
-    country: "Indonésie",
-    city: "Ubud",
-    description: "Paradis tropical pour nomades digitaux",
-    image_url: destinationBali,
-    carbon_score: "B",
-    rating: 4.8,
-    highlight: "Communauté nomade active",
-    avg_price_per_day: 35,
-    wifi_speed: 50,
-    coworking_count: 62,
-  },
-  {
-    id: "3",
-    name: "Barcelone",
-    country: "Espagne",
-    city: "Barcelone",
-    description: "Art, plage et innovation au rendez-vous",
-    image_url: destinationBarcelona,
-    carbon_score: "A",
-    rating: 4.7,
-    highlight: "Plage + City life",
-    avg_price_per_day: 55,
-    wifi_speed: 200,
-    coworking_count: 120,
-  },
-  {
-    id: "4",
-    name: "Le Cap",
-    country: "Afrique du Sud",
-    city: "Cape Town",
-    description: "Nature spectaculaire et startups en croissance",
-    image_url: destinationCapetown,
-    carbon_score: "B",
-    rating: 4.8,
-    highlight: "Nature & aventure",
-    avg_price_per_day: 40,
-    wifi_speed: 80,
-    coworking_count: 45,
-  },
-];
-
 const carbonScoreColors: Record<string, string> = {
   A: "bg-success text-success-foreground",
   B: "bg-primary text-primary-foreground",
   C: "bg-warning text-warning-foreground",
 };
 
+const defaultImage = "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800";
+
 const DestinationsPage = () => {
-  const [destinations, setDestinations] = useState<Destination[]>(mockDestinations);
+  const [destinations, setDestinations] = useState<Destination[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("popular");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
@@ -123,7 +60,7 @@ const DestinationsPage = () => {
       .select("*")
       .order("rating", { ascending: false });
 
-    if (!error && data && data.length > 0) {
+    if (!error && data) {
       setDestinations(data);
     }
     setLoading(false);
@@ -178,6 +115,18 @@ const DestinationsPage = () => {
         {/* Filters & Results */}
         <section className="py-8">
           <div className="container mx-auto px-4">
+            {loading ? (
+              <div className="flex justify-center items-center py-16">
+                <Loader2 className="w-8 h-8 animate-spin text-primary" />
+              </div>
+            ) : destinations.length === 0 ? (
+              <div className="text-center py-16">
+                <MapPin className="w-12 h-12 mx-auto mb-4 text-muted-foreground opacity-50" />
+                <h3 className="text-lg font-medium text-foreground">Aucune destination disponible</h3>
+                <p className="text-muted-foreground mt-1">Les destinations seront ajoutées prochainement</p>
+              </div>
+            ) : (
+            <>
             {/* Toolbar */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
               <p className="text-muted-foreground">
@@ -239,7 +188,7 @@ const DestinationsPage = () => {
                         viewMode === "list" ? "w-48 h-32" : "aspect-[4/3]"
                       }`}>
                         <img
-                          src={destination.image_url || destinationLisbon}
+                          src={destination.image_url || defaultImage}
                           alt={destination.name}
                           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                         />
@@ -322,12 +271,14 @@ const DestinationsPage = () => {
               ))}
             </div>
 
-            {filteredDestinations.length === 0 && (
-              <div className="text-center py-16">
-                <MapPin className="w-12 h-12 mx-auto mb-4 text-muted-foreground opacity-50" />
-                <h3 className="text-lg font-medium text-foreground">Aucune destination trouvée</h3>
-                <p className="text-muted-foreground mt-1">Essayez une autre recherche</p>
-              </div>
+              {filteredDestinations.length === 0 && searchQuery && (
+                <div className="text-center py-16">
+                  <MapPin className="w-12 h-12 mx-auto mb-4 text-muted-foreground opacity-50" />
+                  <h3 className="text-lg font-medium text-foreground">Aucune destination trouvée</h3>
+                  <p className="text-muted-foreground mt-1">Essayez une autre recherche</p>
+                </div>
+              )}
+            </>
             )}
           </div>
         </section>
