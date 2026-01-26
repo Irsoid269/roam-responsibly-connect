@@ -33,6 +33,14 @@ import PrivacyPage from "./pages/PrivacyPage";
 import TermsPage from "./pages/TermsPage";
 import CookiesPage from "./pages/CookiesPage";
 import NotFound from "./pages/NotFound";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminReservations from "./pages/admin/AdminReservations";
+import AdminUsers from "./pages/admin/AdminUsers";
+import AdminDestinations from "./pages/admin/AdminDestinations";
+import AdminCoworkings from "./pages/admin/AdminCoworkings";
+import AdminAccommodations from "./pages/admin/AdminAccommodations";
+import AdminMobility from "./pages/admin/AdminMobility";
+import AdminActivities from "./pages/admin/AdminActivities";
 
 const queryClient = new QueryClient();
 
@@ -72,6 +80,15 @@ const App = () => (
             <Route path="/privacy" element={<PrivacyPage />} />
             <Route path="/terms" element={<TermsPage />} />
             <Route path="/cookies" element={<CookiesPage />} />
+            {/* Admin routes */}
+            <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/admin/reservations" element={<AdminReservations />} />
+            <Route path="/admin/users" element={<AdminUsers />} />
+            <Route path="/admin/destinations" element={<AdminDestinations />} />
+            <Route path="/admin/coworkings" element={<AdminCoworkings />} />
+            <Route path="/admin/accommodations" element={<AdminAccommodations />} />
+            <Route path="/admin/mobility" element={<AdminMobility />} />
+            <Route path="/admin/activities" element={<AdminActivities />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
