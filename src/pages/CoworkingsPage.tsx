@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
 import { 
-  Search, Filter, Star, Wifi, Leaf, MapPin, 
-  Coffee, Clock, Users, Laptop, Loader2
+  Search, Filter, Star, Wifi, MapPin, 
+  Clock, Laptop, Loader2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,6 +17,7 @@ import {
 } from "@/components/ui/select";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import BookingDialog from "@/components/coworking/BookingDialog";
 import { supabase } from "@/integrations/supabase/client";
 
 interface CoworkingSpace {
@@ -34,6 +34,7 @@ interface CoworkingSpace {
   wifi_speed: number | null;
   amenities: string[] | null;
   opening_hours: string | null;
+  destination_id: string;
 }
 
 const carbonScoreColors: Record<string, string> = {
@@ -49,6 +50,8 @@ const CoworkingsPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("popular");
   const [loading, setLoading] = useState(true);
+  const [selectedCoworking, setSelectedCoworking] = useState<CoworkingSpace | null>(null);
+  const [bookingDialogOpen, setBookingDialogOpen] = useState(false);
 
   useEffect(() => {
     fetchCoworkings();
@@ -158,7 +161,13 @@ const CoworkingsPage = () => {
                   transition={{ delay: index * 0.05 }}
                 >
                   <Card className="group cursor-pointer card-hover overflow-hidden">
-                    <div className="relative aspect-video overflow-hidden">
+                    <div 
+                      className="relative aspect-video overflow-hidden"
+                      onClick={() => {
+                        setSelectedCoworking(coworking);
+                        setBookingDialogOpen(true);
+                      }}
+                    >
                       <img
                         src={coworking.image_url || defaultImage}
                         alt={coworking.name}
@@ -221,6 +230,16 @@ const CoworkingsPage = () => {
                           <span className="text-sm text-muted-foreground">/jour</span>
                         </div>
                       </div>
+
+                      <Button 
+                        className="w-full mt-4"
+                        onClick={() => {
+                          setSelectedCoworking(coworking);
+                          setBookingDialogOpen(true);
+                        }}
+                      >
+                        Réserver
+                      </Button>
                     </CardContent>
                   </Card>
                 </motion.div>
@@ -241,6 +260,13 @@ const CoworkingsPage = () => {
       </main>
 
       <Footer />
+
+      {/* Booking Dialog */}
+      <BookingDialog
+        coworking={selectedCoworking}
+        open={bookingDialogOpen}
+        onOpenChange={setBookingDialogOpen}
+      />
     </div>
   );
 };

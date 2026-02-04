@@ -25,10 +25,21 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { MoreHorizontal, Eye, CheckCircle, XCircle, Trash2 } from "lucide-react";
+import { MoreHorizontal, Eye, CheckCircle, XCircle, Trash2, Laptop, Home, Car, Activity } from "lucide-react";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { toast } from "sonner";
+
+interface ReservationItem {
+  id: string;
+  item_type: string;
+  item_name: string;
+  quantity: number | null;
+  unit_price: number | null;
+  total_price: number | null;
+  start_date: string | null;
+  end_date: string | null;
+}
 
 interface Reservation {
   id: string;
@@ -47,6 +58,7 @@ interface Reservation {
     name: string;
     city: string;
   };
+  items?: ReservationItem[];
 }
 
 const statusColors: Record<string, string> = {
@@ -82,7 +94,7 @@ const AdminReservations = () => {
       // Fetch related data
       const reservationsWithDetails = await Promise.all(
         (reservationsData || []).map(async (reservation) => {
-          const [profileResult, destinationResult] = await Promise.all([
+          const [profileResult, destinationResult, itemsResult] = await Promise.all([
             supabase
               .from("profiles")
               .select("full_name")
@@ -95,12 +107,17 @@ const AdminReservations = () => {
                   .eq("id", reservation.destination_id)
                   .single()
               : null,
+            supabase
+              .from("reservation_items")
+              .select("id, item_type, item_name, quantity, unit_price, total_price, start_date, end_date")
+              .eq("reservation_id", reservation.id),
           ]);
 
           return {
             ...reservation,
             profile: profileResult.data || undefined,
             destination: destinationResult?.data || undefined,
+            items: itemsResult.data || [],
           };
         })
       );
@@ -180,6 +197,7 @@ const AdminReservations = () => {
               <TableRow>
                 <TableHead>Client</TableHead>
                 <TableHead>Destination</TableHead>
+                <TableHead>Services réservés</TableHead>
                 <TableHead>Dates</TableHead>
                 <TableHead>Montant</TableHead>
                 <TableHead>Statut</TableHead>
@@ -197,6 +215,26 @@ const AdminReservations = () => {
                     {reservation.destination
                       ? `${reservation.destination.name}, ${reservation.destination.city}`
                       : "Non spécifiée"}
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex flex-wrap gap-1">
+                      {reservation.items && reservation.items.length > 0 ? (
+                        reservation.items.map((item) => {
+                          const Icon = item.item_type === "coworking" ? Laptop 
+                            : item.item_type === "accommodation" ? Home 
+                            : item.item_type === "mobility" ? Car 
+                            : Activity;
+                          return (
+                            <Badge key={item.id} variant="secondary" className="text-xs">
+                              <Icon className="w-3 h-3 mr-1" />
+                              {item.item_name}
+                            </Badge>
+                          );
+                        })
+                      ) : (
+                        <span className="text-muted-foreground text-xs">Aucun</span>
+                      )}
+                    </div>
                   </TableCell>
                   <TableCell>
                     {format(new Date(reservation.check_in_date), "dd MMM", {
@@ -335,6 +373,43 @@ const AdminReservations = () => {
                   </p>
                 </div>
               </div>
+
+              {/* Services réservés */}
+              {selectedReservation.items && selectedReservation.items.length > 0 && (
+                <div className="pt-4 border-t">
+                  <p className="text-sm font-medium mb-3">Services réservés</p>
+                  <div className="space-y-2">
+                    {selectedReservation.items.map((item) => {
+                      const Icon = item.item_type === "coworking" ? Laptop 
+                        : item.item_type === "accommodation" ? Home 
+                        : item.item_type === "mobility" ? Car 
+                        : Activity;
+                      const typeLabels: Record<string, string> = {
+                        coworking: "Coworking",
+                        accommodation: "Hébergement",
+                        mobility: "Mobilité",
+                        activity: "Activité",
+                      };
+                      return (
+                        <div key={item.id} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                              <Icon className="w-4 h-4 text-primary" />
+                            </div>
+                            <div>
+                              <p className="font-medium text-sm">{item.item_name}</p>
+                              <p className="text-xs text-muted-foreground">
+                                {typeLabels[item.item_type] || item.item_type} • {item.quantity} jour{(item.quantity || 1) > 1 ? "s" : ""}
+                              </p>
+                            </div>
+                          </div>
+                          <p className="font-medium">{item.total_price} €</p>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </DialogContent>
