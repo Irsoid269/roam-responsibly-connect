@@ -27,10 +27,31 @@ interface Profile {
   trips_count: number;
 }
 
+interface ReservationItem {
+  id: string;
+  item_type: string;
+  item_name: string;
+  quantity: number | null;
+  total_price: number | null;
+  start_date: string | null;
+  end_date: string | null;
+}
+
+interface Reservation {
+  id: string;
+  status: string | null;
+  check_in_date: string;
+  check_out_date: string;
+  total_price: number | null;
+  created_at: string;
+  items: ReservationItem[];
+}
+
 const ProfilePage = () => {
   const { user, signOut, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const [profile, setProfile] = useState<Profile | null>(null);
+  const [reservations, setReservations] = useState<Reservation[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -41,6 +62,7 @@ const ProfilePage = () => {
 
     if (user) {
       fetchProfile();
+      fetchReservations();
     }
   }, [user, authLoading, navigate]);
 
@@ -57,6 +79,28 @@ const ProfilePage = () => {
       setProfile(data);
     }
     setLoading(false);
+  };
+
+  const fetchReservations = async () => {
+    if (!user) return;
+    const { data: resas } = await supabase
+      .from("reservations")
+      .select("id, status, check_in_date, check_out_date, total_price, created_at")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false });
+
+    if (!resas) return;
+
+    const withItems = await Promise.all(
+      resas.map(async (r) => {
+        const { data: items } = await supabase
+          .from("reservation_items")
+          .select("id, item_type, item_name, quantity, total_price, start_date, end_date")
+          .eq("reservation_id", r.id);
+        return { ...r, items: items || [] };
+      })
+    );
+    setReservations(withItems);
   };
 
   const handleSignOut = async () => {
