@@ -3,8 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { 
   User, Mail, Leaf, MapPin, Calendar, Settings, LogOut, 
-  TreePine, Plane, Building2, Bike, Camera
+  TreePine, Plane, Building2, Bike, Camera, Laptop, Home, Car, Sparkles, Clock, CheckCircle2, XCircle
 } from "lucide-react";
+import { format } from "date-fns";
+import { fr } from "date-fns/locale";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -25,10 +27,31 @@ interface Profile {
   trips_count: number;
 }
 
+interface ReservationItem {
+  id: string;
+  item_type: string;
+  item_name: string;
+  quantity: number | null;
+  total_price: number | null;
+  start_date: string | null;
+  end_date: string | null;
+}
+
+interface Reservation {
+  id: string;
+  status: string | null;
+  check_in_date: string;
+  check_out_date: string;
+  total_price: number | null;
+  created_at: string;
+  items: ReservationItem[];
+}
+
 const ProfilePage = () => {
   const { user, signOut, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const [profile, setProfile] = useState<Profile | null>(null);
+  const [reservations, setReservations] = useState<Reservation[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -39,6 +62,7 @@ const ProfilePage = () => {
 
     if (user) {
       fetchProfile();
+      fetchReservations();
     }
   }, [user, authLoading, navigate]);
 
@@ -55,6 +79,28 @@ const ProfilePage = () => {
       setProfile(data);
     }
     setLoading(false);
+  };
+
+  const fetchReservations = async () => {
+    if (!user) return;
+    const { data: resas } = await supabase
+      .from("reservations")
+      .select("id, status, check_in_date, check_out_date, total_price, created_at")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false });
+
+    if (!resas) return;
+
+    const withItems = await Promise.all(
+      resas.map(async (r) => {
+        const { data: items } = await supabase
+          .from("reservation_items")
+          .select("id, item_type, item_name, quantity, total_price, start_date, end_date")
+          .eq("reservation_id", r.id);
+        return { ...r, items: items || [] };
+      })
+    );
+    setReservations(withItems);
   };
 
   const handleSignOut = async () => {
@@ -183,20 +229,82 @@ const ProfilePage = () => {
               <TabsContent value="trips" className="mt-6">
                 <Card>
                   <CardHeader>
-                    <CardTitle>Voyages à venir</CardTitle>
+                    <CardTitle>Mes réservations</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-center py-12 text-muted-foreground">
-                      <Plane className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                      <p className="text-lg font-medium">Pas de voyage prévu</p>
-                      <p className="text-sm mt-1">Explorez nos destinations pour planifier votre prochain coworkation !</p>
-                      <Button className="mt-4" onClick={() => navigate("/destinations")}>
-                        Explorer les destinations
-                      </Button>
-                    </div>
+                    {reservations.length === 0 ? (
+                      <div className="text-center py-12 text-muted-foreground">
+                        <Plane className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                        <p className="text-lg font-medium">Aucune réservation</p>
+                        <p className="text-sm mt-1">Explorez nos destinations pour planifier votre prochain coworkation !</p>
+                        <Button className="mt-4" onClick={() => navigate("/destinations")}>
+                          Explorer les destinations
+                        </Button>
+                      </div>
+                    ) : (
+                      <div className="space-y-4">
+                        {reservations.map((r) => {
+                          const statusConfig: Record<string, { label: string; variant: "default" | "secondary" | "destructive" | "outline"; icon: typeof Clock; className: string }> = {
+                            pending: { label: "En attente", variant: "secondary", icon: Clock, className: "bg-warning/15 text-warning border-warning/30" },
+                            confirmed: { label: "Confirmée", variant: "default", icon: CheckCircle2, className: "bg-success/15 text-success border-success/30" },
+                            cancelled: { label: "Annulée", variant: "destructive", icon: XCircle, className: "" },
+                          };
+                          const cfg = statusConfig[r.status || "pending"] || statusConfig.pending;
+                          const StatusIcon = cfg.icon;
+                          const itemIcon = (type: string) => {
+                            if (type === "coworking") return Laptop;
+                            if (type === "accommodation") return Home;
+                            if (type === "mobility") return Car;
+                            if (type === "activity") return Sparkles;
+                            return Calendar;
+                          };
+                          return (
+                            <div key={r.id} className="border border-border rounded-lg p-4 hover:shadow-md transition-shadow">
+                              <div className="flex items-start justify-between gap-4 mb-3">
+                                <div>
+                                  <p className="text-sm text-muted-foreground">
+                                    Réservation du {format(new Date(r.created_at), "d MMM yyyy", { locale: fr })}
+                                  </p>
+                                  <p className="font-semibold flex items-center gap-2 mt-1">
+                                    <Calendar className="w-4 h-4" />
+                                    {format(new Date(r.check_in_date), "d MMM", { locale: fr })} - {format(new Date(r.check_out_date), "d MMM yyyy", { locale: fr })}
+                                  </p>
+                                </div>
+                                <Badge variant="outline" className={cfg.className}>
+                                  <StatusIcon className="w-3 h-3 mr-1" />
+                                  {cfg.label}
+                                </Badge>
+                              </div>
+                              <div className="space-y-2 pt-3 border-t border-border">
+                                {r.items.map((item) => {
+                                  const Icon = itemIcon(item.item_type);
+                                  return (
+                                    <div key={item.id} className="flex items-center justify-between text-sm">
+                                      <div className="flex items-center gap-2">
+                                        <Icon className="w-4 h-4 text-primary" />
+                                        <span>{item.item_name}</span>
+                                        {item.quantity && item.quantity > 1 && (
+                                          <span className="text-muted-foreground">x{item.quantity}</span>
+                                        )}
+                                      </div>
+                                      <span className="font-medium">{item.total_price}€</span>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                              <div className="flex items-center justify-between pt-3 mt-3 border-t border-border">
+                                <span className="text-sm text-muted-foreground">Total</span>
+                                <span className="text-lg font-bold text-primary">{r.total_price}€</span>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
               </TabsContent>
+
 
               <TabsContent value="carbon" className="mt-6">
                 <Card>
