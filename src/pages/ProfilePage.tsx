@@ -3,8 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { 
   User, Mail, Leaf, MapPin, Calendar, Settings, LogOut, 
-  TreePine, Plane, Building2, Bike, Camera
+  TreePine, Plane, Building2, Bike, Camera, Laptop, Home, Car, Sparkles, Clock, CheckCircle2, XCircle
 } from "lucide-react";
+import { format } from "date-fns";
+import { fr } from "date-fns/locale";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
