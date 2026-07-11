@@ -249,7 +249,7 @@ const AdminActivities = () => {
                   <TableCell>{activity.price} €</TableCell>
                   <TableCell>
                     <Badge
-                      className={`${getCarbonBadgeColor(activity.carbon_impact)} text-white`}
+                      className={`${getCarbonBadgeColor(activity.carbon_impact)} text-primary-foreground`}
                     >
                       <Leaf className="h-3 w-3 mr-1" />
                       {activity.carbon_impact || 0}kg

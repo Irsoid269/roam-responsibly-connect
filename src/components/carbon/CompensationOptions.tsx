@@ -195,7 +195,7 @@ const CompensationOptions = ({ totalCO2 }: CompensationOptionsProps) => {
                       className={cn(
                         "py-3 rounded-lg font-medium transition-all",
                         customAmount === amount
-                          ? "bg-carbon-saved text-white"
+                          ? "bg-carbon-saved text-carbon-foreground"
                           : "bg-muted hover:bg-muted/80"
                       )}
                     >

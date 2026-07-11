@@ -237,7 +237,7 @@ const AdminMobility = () => {
                   <TableCell>{option.price_per_day} €</TableCell>
                   <TableCell>
                     <Badge
-                      className={`${getCarbonBadgeColor(option.carbon_per_km)} text-white`}
+                      className={`${getCarbonBadgeColor(option.carbon_per_km)} text-primary-foreground`}
                     >
                       <Leaf className="h-3 w-3 mr-1" />
                       {option.carbon_per_km || 0}g
