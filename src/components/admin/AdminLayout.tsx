@@ -1,5 +1,6 @@
-import { ReactNode, useEffect } from "react";
-import { useNavigate, Link, useLocation } from "react-router-dom";
+import { ReactNode, useEffect, useState } from "react";
+import { useNavigate, Link, useLocation, NavLink } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
 import { useAuth } from "@/hooks/useAuth";
 import {
@@ -11,36 +12,91 @@ import {
   Home,
   Bike,
   Compass,
+  MessageSquare,
+  PenLine,
+  Megaphone,
+  Inbox,
+  Newspaper,
+  CalendarDays,
+  Award,
   LogOut,
   Menu,
   X,
-  Shield,
+  Target,
+  Leaf,
+  Heart,
+  TrendingUp,
+  ExternalLink,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { pageTransition } from "@/lib/motion";
+import amaniSymbol from "@/assets/amani-symbol-gold.jpg";
 
 interface AdminLayoutProps {
   children: ReactNode;
   title: string;
+  description?: string;
+  actions?: ReactNode;
 }
 
-const navItems = [
-  { label: "Tableau de bord", href: "/admin", icon: LayoutDashboard },
-  { label: "Réservations", href: "/admin/reservations", icon: CalendarCheck },
-  { label: "Utilisateurs", href: "/admin/users", icon: Users },
-  { label: "Destinations", href: "/admin/destinations", icon: MapPin },
-  { label: "Coworkings", href: "/admin/coworkings", icon: Building2 },
-  { label: "Hébergements", href: "/admin/accommodations", icon: Home },
-  { label: "Mobilité", href: "/admin/mobility", icon: Bike },
-  { label: "Activités", href: "/admin/activities", icon: Compass },
+const navGroups = [
+  {
+    label: "Vue d'ensemble",
+    items: [
+      { label: "Tableau de bord", href: "/admin", icon: LayoutDashboard, end: true },
+      { label: "Réservations", href: "/admin/reservations", icon: CalendarCheck },
+      { label: "Utilisateurs", href: "/admin/users", icon: Users },
+    ],
+  },
+  {
+    label: "Pages communauté",
+    items: [
+      { label: "Communauté", href: "/admin/community", icon: PenLine },
+      { label: "Blog & Récits", href: "/admin/blog", icon: Newspaper },
+      { label: "Avis voyageurs", href: "/admin/reviews", icon: MessageSquare },
+      { label: "Événements", href: "/admin/events", icon: CalendarDays },
+      { label: "Ambassadeurs", href: "/admin/ambassadors", icon: Award },
+    ],
+  },
+  {
+    label: "Modération",
+    items: [
+      { label: "Boîte de réception", href: "/admin/inbox", icon: Inbox },
+    ],
+  },
+  {
+    label: "Impact & mission",
+    items: [
+      { label: "Notre Mission", href: "/admin/impact-content?tab=mission", icon: Target },
+      { label: "Calculateur Carbone", href: "/admin/impact-content?tab=carbon", icon: Leaf },
+      { label: "Associations Partenaires", href: "/admin/impact-content?tab=partners", icon: Heart },
+      { label: "Rapport d'Impact", href: "/admin/impact-content?tab=report", icon: TrendingUp },
+    ],
+  },
+  {
+    label: "Page d'accueil",
+    items: [
+      { label: "CTA Accueil", href: "/admin/homepage-cta", icon: Megaphone },
+      { label: "Destinations", href: "/admin/destinations", icon: MapPin },
+    ],
+  },
+  {
+    label: "Catalogue",
+    items: [
+      { label: "Coworkings", href: "/admin/coworkings", icon: Building2 },
+      { label: "Hébergements", href: "/admin/accommodations", icon: Home },
+      { label: "Mobilité", href: "/admin/mobility", icon: Bike },
+      { label: "Activités", href: "/admin/activities", icon: Compass },
+    ],
+  },
 ];
 
-const AdminLayout = ({ children, title }: AdminLayoutProps) => {
+const AdminLayout = ({ children, title, description, actions }: AdminLayoutProps) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { isAdmin, loading } = useAdminAuth();
-  const { signOut } = useAuth();
+  const { user, signOut } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
@@ -49,10 +105,15 @@ const AdminLayout = ({ children, title }: AdminLayoutProps) => {
     }
   }, [isAdmin, loading, navigate]);
 
+  useEffect(() => {
+    setSidebarOpen(false);
+  }, [location.pathname]);
+
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+      <div className="min-h-screen flex flex-col items-center justify-center gap-3 bg-background">
+        <div className="h-10 w-10 rounded-full border-2 border-primary/30 border-t-primary animate-spin" />
+        <p className="text-sm text-muted-foreground">Chargement admin…</p>
       </div>
     );
   }
@@ -66,97 +127,163 @@ const AdminLayout = ({ children, title }: AdminLayoutProps) => {
     navigate("/");
   };
 
+  const sidebar = (
+    <div className="flex flex-col h-full">
+      <div className="p-5 border-b border-border/80">
+        <Link to="/admin" className="flex items-center gap-3 group">
+          <img
+            src={amaniSymbol}
+            alt="Amani"
+            className="w-9 h-9 rounded-full object-cover transition-transform group-hover:scale-105"
+          />
+          <div>
+            <span className="font-display text-xl font-medium leading-none block">
+              AMANI<span className="text-accent"> Admin</span>
+            </span>
+            <p className="text-xs text-muted-foreground mt-1">Espace administration</p>
+          </div>
+        </Link>
+      </div>
+
+      <nav className="flex-1 p-3 space-y-5 overflow-y-auto">
+        {navGroups.map((group) => (
+          <div key={group.label}>
+            <p className="px-3 mb-1.5 text-[10px] font-semibold uppercase tracking-luxury text-muted-foreground/80">
+              {group.label}
+            </p>
+            <div className="space-y-0.5">
+              {group.items.map((item) => (
+                <NavLink
+                  key={item.href}
+                  to={item.href}
+                  end={item.end}
+                  onClick={() => setSidebarOpen(false)}
+                  className={() => {
+                    const [path, query] = item.href.split("?");
+                    const active = query
+                      ? location.pathname === path &&
+                        (location.search === `?${query}` ||
+                          (query === "tab=mission" && !location.search))
+                      : item.end
+                        ? location.pathname === path
+                        : location.pathname === path ||
+                          location.pathname.startsWith(`${path}/`);
+                    return cn(
+                      "flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200",
+                      active
+                        ? "bg-primary text-primary-foreground shadow-sm"
+                        : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                    );
+                  }}
+                >
+                  <item.icon className="h-4 w-4 shrink-0" />
+                  {item.label}
+                </NavLink>
+              ))}
+            </div>
+          </div>
+        ))}
+      </nav>
+
+      <div className="p-3 border-t border-border/80 space-y-1">
+        {user?.email && (
+          <p className="px-3 py-1 text-xs text-muted-foreground truncate" title={user.email}>
+            {user.email}
+          </p>
+        )}
+        <Link
+          to="/"
+          className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+        >
+          <ExternalLink className="h-4 w-4" />
+          Voir le site
+        </Link>
+        <button
+          type="button"
+          onClick={handleSignOut}
+          className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-destructive hover:bg-destructive/10 transition-colors"
+        >
+          <LogOut className="h-4 w-4" />
+          Déconnexion
+        </button>
+      </div>
+    </div>
+  );
+
   return (
-    <div className="min-h-screen bg-muted/30">
-      {/* Mobile header */}
-      <div className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-background border-b px-4 py-3 flex items-center justify-between">
+    <div className="min-h-screen bg-muted/40">
+      {/* Mobile top bar */}
+      <div className="lg:hidden fixed top-0 left-0 right-0 z-50 h-14 bg-background/95 backdrop-blur-xl border-b border-border flex items-center justify-between px-4">
         <div className="flex items-center gap-2">
-          <Shield className="h-6 w-6 text-primary" />
-          <span className="font-bold text-lg">Admin</span>
+          <img src={amaniSymbol} alt="" className="w-8 h-8 rounded-full object-cover" />
+          <span className="font-display text-lg font-medium">Admin</span>
         </div>
         <Button
           variant="ghost"
           size="icon"
           onClick={() => setSidebarOpen(!sidebarOpen)}
+          aria-label={sidebarOpen ? "Fermer le menu" : "Ouvrir le menu"}
         >
           {sidebarOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         </Button>
       </div>
 
-      {/* Sidebar */}
-      <aside
-        className={cn(
-          "fixed inset-y-0 left-0 z-40 w-64 bg-background border-r transform transition-transform duration-200 ease-in-out lg:translate-x-0",
-          sidebarOpen ? "translate-x-0" : "-translate-x-full"
-        )}
-      >
-        <div className="flex flex-col h-full">
-          {/* Logo */}
-          <div className="p-6 border-b hidden lg:block">
-            <Link to="/admin" className="flex items-center gap-2">
-              <Shield className="h-8 w-8 text-primary" />
-              <span className="font-bold text-xl">Comworkation</span>
-            </Link>
-            <p className="text-sm text-muted-foreground mt-1">Administration</p>
-          </div>
-
-          {/* Navigation */}
-          <nav className="flex-1 p-4 space-y-1 overflow-y-auto mt-16 lg:mt-0">
-            {navItems.map((item) => {
-              const isActive = location.pathname === item.href;
-              return (
-                <Link
-                  key={item.href}
-                  to={item.href}
-                  onClick={() => setSidebarOpen(false)}
-                  className={cn(
-                    "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
-                    isActive
-                      ? "bg-primary text-primary-foreground"
-                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                  )}
-                >
-                  <item.icon className="h-5 w-5" />
-                  {item.label}
-                </Link>
-              );
-            })}
-          </nav>
-
-          {/* Footer */}
-          <div className="p-4 border-t space-y-2">
-            <Link
-              to="/"
-              className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
-            >
-              <Home className="h-5 w-5" />
-              Retour au site
-            </Link>
-            <button
-              onClick={handleSignOut}
-              className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-destructive hover:bg-destructive/10 transition-colors"
-            >
-              <LogOut className="h-5 w-5" />
-              Déconnexion
-            </button>
-          </div>
-        </div>
+      {/* Sidebar desktop */}
+      <aside className="hidden lg:flex fixed inset-y-0 left-0 z-40 w-64 flex-col bg-background border-r border-border/80">
+        {sidebar}
       </aside>
 
-      {/* Overlay for mobile */}
-      {sidebarOpen && (
-        <div
-          className="fixed inset-0 bg-black/50 z-30 lg:hidden"
-          onClick={() => setSidebarOpen(false)}
-        />
-      )}
+      {/* Sidebar mobile */}
+      <AnimatePresence>
+        {sidebarOpen && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-foreground/40 backdrop-blur-sm z-40 lg:hidden"
+              onClick={() => setSidebarOpen(false)}
+            />
+            <motion.aside
+              initial={{ x: -280 }}
+              animate={{ x: 0 }}
+              exit={{ x: -280 }}
+              transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+              className="fixed inset-y-0 left-0 z-50 w-64 bg-background border-r shadow-xl lg:hidden"
+            >
+              {sidebar}
+            </motion.aside>
+          </>
+        )}
+      </AnimatePresence>
 
-      {/* Main content */}
-      <main className="lg:ml-64 min-h-screen pt-16 lg:pt-0">
-        <div className="p-6 lg:p-8">
-          <h1 className="text-2xl lg:text-3xl font-bold mb-6">{title}</h1>
-          {children}
+      {/* Main */}
+      <main className="lg:ml-64 min-h-screen pt-14 lg:pt-0">
+        <div className="sticky top-14 lg:top-0 z-20 border-b border-border/60 bg-background/90 backdrop-blur-xl">
+          <div className="px-5 lg:px-8 py-4 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
+            <div>
+              <h1 className="font-display text-2xl lg:text-3xl font-medium text-foreground tracking-tight">
+                {title}
+              </h1>
+              {description && (
+                <p className="mt-1 text-sm text-muted-foreground max-w-2xl leading-relaxed">
+                  {description}
+                </p>
+              )}
+            </div>
+            {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
+          </div>
         </div>
+
+        <motion.div
+          key={location.pathname}
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={pageTransition}
+          className="p-5 lg:p-8"
+        >
+          {children}
+        </motion.div>
       </main>
     </div>
   );

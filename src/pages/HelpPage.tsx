@@ -10,8 +10,6 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
 import { Link } from "react-router-dom";
 
 const categories = [
@@ -56,10 +54,7 @@ const HelpPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
 
   return (
-    <div className="min-h-screen bg-background">
-      <Header />
-      
-      <main className="pt-24 pb-16">
+    <main className="page-main">
         {/* Hero */}
         <section className="bg-gradient-to-b from-muted to-background py-16">
           <div className="container mx-auto px-4">
@@ -194,8 +189,8 @@ const HelpPage = () => {
                     <Mail className="w-8 h-8 mx-auto mb-3 text-primary" />
                     <h3 className="font-semibold mb-1">Email</h3>
                     <p className="text-sm text-muted-foreground mb-3">Réponse sous 24h</p>
-                    <a href="mailto:support@coworkation.com" className="text-primary hover:underline">
-                      support@coworkation.com
+                    <a href="mailto:support@amaniresorts.com" className="text-primary hover:underline">
+                      support@amaniresorts.com
                     </a>
                   </CardContent>
                 </Card>
@@ -215,9 +210,6 @@ const HelpPage = () => {
           </div>
         </section>
       </main>
-
-      <Footer />
-    </div>
   );
 };
 

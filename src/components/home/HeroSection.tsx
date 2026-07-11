@@ -1,27 +1,29 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Search, MapPin, Calendar, Users, ChevronDown, Leaf } from "lucide-react";
+import { Search, MapPin, Calendar, Users, ChevronDown, Leaf, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import heroImage from "@/assets/hero-coworking.jpg";
+import { useHeroDestinations, useCatalogCounts } from "@/hooks/useCatalogQueries";
 
-const destinations = [
-  { id: "moroni", name: "Moroni", country: "Grande Comore" },
-  { id: "mutsamudu", name: "Mutsamudu", country: "Anjouan" },
-  { id: "fomboni", name: "Fomboni", country: "Mohéli" },
-  { id: "itsandra", name: "Itsandra", country: "Grande Comore" },
-  { id: "domoni", name: "Domoni", country: "Anjouan" },
-  { id: "iconi", name: "Iconi", country: "Grande Comore" },
-];
+type HeroDestination = {
+  id: string;
+  name: string;
+  city?: string;
+  country: string;
+};
 
 const HeroSection = () => {
   const navigate = useNavigate();
+  const { data: destinations = [], isLoading: destLoading } = useHeroDestinations();
+  const { data: counts } = useCatalogCounts();
+
   const [activeTab, setActiveTab] = useState<"sejour" | "coworking" | "experience">("sejour");
-  const [selectedDestination, setSelectedDestination] = useState<typeof destinations[0] | null>(null);
+  const [selectedDestination, setSelectedDestination] = useState<HeroDestination | null>(null);
   const [dateRange, setDateRange] = useState<{ from: Date | undefined; to: Date | undefined }>({
     from: undefined,
     to: undefined,
@@ -32,7 +34,7 @@ const HeroSection = () => {
 
   const handleSearch = () => {
     const params = new URLSearchParams();
-    
+
     if (selectedDestination) {
       params.set("destination", selectedDestination.id);
     }
@@ -45,7 +47,12 @@ const HeroSection = () => {
     params.set("travelers", travelers.toString());
     params.set("type", activeTab);
 
-    // Navigate based on tab
+    // Séjour + destination choisie → composer directement le panier avec les dates
+    if (activeTab === "sejour" && selectedDestination) {
+      navigate(`/booking/${selectedDestination.id}?${params.toString()}`);
+      return;
+    }
+
     if (activeTab === "coworking") {
       navigate(`/coworkings?${params.toString()}`);
     } else if (activeTab === "experience") {
@@ -67,7 +74,6 @@ const HeroSection = () => {
 
   return (
     <section className="relative min-h-[90vh] flex items-center">
-      {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <img
           src={heroImage}
@@ -77,7 +83,6 @@ const HeroSection = () => {
         <div className="absolute inset-0 bg-gradient-to-b from-foreground/40 via-foreground/20 to-foreground/60" />
       </div>
 
-      {/* Content */}
       <div className="relative z-10 container mx-auto px-4 pt-24 pb-16">
         <div className="max-w-4xl mx-auto text-center mb-10">
           <motion.div
@@ -97,9 +102,9 @@ const HeroSection = () => {
             transition={{ duration: 0.6, delay: 0.1 }}
             className="text-4xl md:text-5xl lg:text-6xl font-bold text-primary-foreground mb-6 leading-tight"
           >
-            Votre prochain séjour de
+            Votre prochain séjour
             <br />
-            <span className="text-primary-glow">comworkation</span> vous attend
+            <span className="text-primary-glow">Amani</span> aux Comores vous attend
           </motion.h1>
 
           <motion.p
@@ -108,12 +113,11 @@ const HeroSection = () => {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="text-lg md:text-xl text-primary-foreground/80 mb-8 max-w-2xl mx-auto"
           >
-            Combinez travail à distance, hébergement, mobilité douce et activités locales 
+            Combinez travail à distance, hébergement, mobilité douce et activités locales
             — tout en mesurant et réduisant votre empreinte carbone.
           </motion.p>
         </div>
 
-        {/* Search Card */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -121,7 +125,6 @@ const HeroSection = () => {
           className="max-w-4xl mx-auto"
         >
           <div className="glass-strong rounded-2xl p-2 shadow-elevated">
-            {/* Tabs */}
             <div className="flex gap-1 mb-2 p-1">
               {[
                 { id: "sejour", label: "Séjour complet" },
@@ -142,9 +145,7 @@ const HeroSection = () => {
               ))}
             </div>
 
-            {/* Search Fields */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-2 p-2">
-              {/* Destination */}
               <Popover open={destinationOpen} onOpenChange={setDestinationOpen}>
                 <PopoverTrigger asChild>
                   <div className="flex items-center gap-3 p-4 rounded-xl bg-muted/50 hover:bg-muted transition-colors cursor-pointer group">
@@ -152,48 +153,59 @@ const HeroSection = () => {
                     <div className="flex-1 min-w-0">
                       <p className="text-xs text-muted-foreground">Destination</p>
                       <p className="text-sm font-medium text-foreground truncate">
-                        {selectedDestination 
-                          ? `${selectedDestination.name}, ${selectedDestination.country.slice(0, 5)}...`
-                          : "Où allez-vous ?"
-                        }
+                        {selectedDestination
+                          ? `${selectedDestination.name}, ${selectedDestination.country}`
+                          : "Où allez-vous ?"}
                       </p>
                     </div>
                     <ChevronDown className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors" />
                   </div>
                 </PopoverTrigger>
-                <PopoverContent className="w-64 p-2" align="start">
-                  <div className="space-y-1">
-                    {destinations.map((dest) => (
-                      <button
-                        key={dest.id}
-                        onClick={() => {
-                          setSelectedDestination(dest);
-                          setDestinationOpen(false);
-                        }}
-                        className={`w-full flex items-center gap-3 p-3 rounded-lg text-left transition-colors ${
-                          selectedDestination?.id === dest.id
-                            ? "bg-primary text-primary-foreground"
-                            : "hover:bg-muted"
-                        }`}
-                      >
-                        <MapPin className="w-4 h-4 shrink-0" />
-                        <div>
-                          <p className="font-medium">{dest.name}</p>
-                          <p className={`text-xs ${
+                <PopoverContent className="w-72 p-2" align="start">
+                  {destLoading ? (
+                    <div className="flex justify-center py-6">
+                      <Loader2 className="w-5 h-5 animate-spin text-primary" />
+                    </div>
+                  ) : destinations.length === 0 ? (
+                    <p className="p-3 text-sm text-muted-foreground text-center">
+                      Aucune destination disponible. Ajoutez-en depuis l&apos;admin.
+                    </p>
+                  ) : (
+                    <div className="space-y-1 max-h-64 overflow-y-auto">
+                      {destinations.map((dest) => (
+                        <button
+                          key={dest.id}
+                          onClick={() => {
+                            setSelectedDestination(dest);
+                            setDestinationOpen(false);
+                          }}
+                          className={`w-full flex items-center gap-3 p-3 rounded-lg text-left transition-colors ${
                             selectedDestination?.id === dest.id
-                              ? "text-primary-foreground/80"
-                              : "text-muted-foreground"
-                          }`}>
-                            {dest.country}
-                          </p>
-                        </div>
-                      </button>
-                    ))}
-                  </div>
+                              ? "bg-primary text-primary-foreground"
+                              : "hover:bg-muted"
+                          }`}
+                        >
+                          <MapPin className="w-4 h-4 shrink-0" />
+                          <div>
+                            <p className="font-medium">{dest.name}</p>
+                            <p
+                              className={`text-xs ${
+                                selectedDestination?.id === dest.id
+                                  ? "text-primary-foreground/80"
+                                  : "text-muted-foreground"
+                              }`}
+                            >
+                              {dest.city ? `${dest.city} · ` : ""}
+                              {dest.country}
+                            </p>
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </PopoverContent>
               </Popover>
 
-              {/* Dates */}
               <Popover>
                 <PopoverTrigger asChild>
                   <div className="flex items-center gap-3 p-4 rounded-xl bg-muted/50 hover:bg-muted transition-colors cursor-pointer group">
@@ -219,7 +231,6 @@ const HeroSection = () => {
                 </PopoverContent>
               </Popover>
 
-              {/* Voyageurs */}
               <Popover open={travelersOpen} onOpenChange={setTravelersOpen}>
                 <PopoverTrigger asChild>
                   <div className="flex items-center gap-3 p-4 rounded-xl bg-muted/50 hover:bg-muted transition-colors cursor-pointer group">
@@ -257,10 +268,9 @@ const HeroSection = () => {
                 </PopoverContent>
               </Popover>
 
-              {/* Search Button */}
-              <Button 
-                variant="hero" 
-                size="lg" 
+              <Button
+                variant="hero"
+                size="lg"
                 className="h-full min-h-[72px]"
                 onClick={handleSearch}
               >
@@ -270,27 +280,31 @@ const HeroSection = () => {
             </div>
           </div>
 
-          {/* Quick Stats */}
           <div className="flex flex-wrap items-center justify-center gap-6 md:gap-10 mt-8 text-primary-foreground/80">
             <div className="flex items-center gap-2">
-              <span className="text-2xl font-bold text-primary-foreground">150+</span>
+              <span className="text-2xl font-bold text-primary-foreground">
+                {counts?.destinations ?? "—"}
+              </span>
               <span className="text-sm">Destinations</span>
             </div>
             <div className="hidden md:block w-px h-6 bg-primary-foreground/20" />
             <div className="flex items-center gap-2">
-              <span className="text-2xl font-bold text-primary-foreground">2,400+</span>
+              <span className="text-2xl font-bold text-primary-foreground">
+                {counts?.coworkings ?? "—"}
+              </span>
               <span className="text-sm">Espaces coworking</span>
             </div>
             <div className="hidden md:block w-px h-6 bg-primary-foreground/20" />
             <div className="flex items-center gap-2">
-              <span className="text-2xl font-bold text-primary-foreground">12,000+</span>
-              <span className="text-sm">Coworkateurs heureux</span>
+              <span className="text-2xl font-bold text-primary-foreground">
+                {counts?.travelers ?? "—"}
+              </span>
+              <span className="text-sm">Voyageurs Amani</span>
             </div>
           </div>
         </motion.div>
       </div>
 
-      {/* Scroll Indicator */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}

@@ -9,8 +9,6 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
 import { Link } from "react-router-dom";
 
 const categories = [
@@ -25,16 +23,16 @@ const categories = [
 const faqs = {
   general: [
     {
-      question: "Qu'est-ce que Coworkation ?",
-      answer: "Coworkation est une plateforme tout-en-un pour les nomades digitaux et télétravailleurs. Nous proposons des séjours combinant hébergement, espace de coworking et activités, le tout avec un focus sur l'impact environnemental et la transparence carbone.",
+      question: "Qu'est-ce qu'Amani Resorts ?",
+      answer: "Amani Resorts est une plateforme tout-en-un pour les nomades digitaux et télétravailleurs aux Comores. Nous proposons des séjours combinant hébergement, espace de coworking et activités, le tout avec un focus sur l'impact environnemental et la transparence carbone.",
     },
     {
       question: "Comment fonctionne la plateforme ?",
-      answer: "Vous choisissez une destination, sélectionnez votre hébergement, espace de coworking et activités souhaitées. Notre système calcule automatiquement l'empreinte carbone de votre séjour et vous propose des options de compensation. Vous réservez et payez en une seule fois.",
+      answer: "Vous choisissez une destination aux Comores, sélectionnez votre hébergement, espace de coworking et activités souhaitées. Notre système calcule automatiquement l'empreinte carbone de votre séjour et vous propose des options de compensation. Vous réservez et payez en une seule fois.",
     },
     {
       question: "Quelles destinations sont disponibles ?",
-      answer: "Nous proposons plus de 35 destinations à travers le monde, sélectionnées pour leur qualité de vie, infrastructures numériques et engagement environnemental. De Lisbonne à Bali en passant par Barcelone, découvrez notre catalogue complet sur la page Destinations.",
+      answer: "Nous proposons des destinations sur l'archipel des Comores : Moroni, Mutsamudu, Fomboni, Itsandra, Domoni et Iconi. Chaque lieu est sélectionné pour sa qualité de vie, ses infrastructures numériques et son engagement environnemental. Découvrez notre catalogue complet sur la page Destinations.",
     },
   ],
   carbon: [
@@ -102,7 +100,7 @@ const faqs = {
     },
     {
       question: "Comment devenir ambassadeur ?",
-      answer: "Le programme ambassadeur est ouvert aux membres actifs de la communauté. Critères : minimum 3 voyages avec Coworkation, contribution régulière à la communauté, et alignement avec nos valeurs. Postulez via la page Ambassadeurs.",
+      answer: "Le programme ambassadeur est ouvert aux membres actifs de la communauté. Critères : minimum 3 voyages avec Amani Resorts, contribution régulière à la communauté, et alignement avec nos valeurs. Postulez via la page Ambassadeurs.",
     },
   ],
   security: [
@@ -126,10 +124,7 @@ const FAQPage = () => {
   const [activeCategory, setActiveCategory] = useState("general");
 
   return (
-    <div className="min-h-screen bg-background">
-      <Header />
-      
-      <main className="pt-24 pb-16">
+    <main className="page-main">
         {/* Hero */}
         <section className="bg-gradient-to-b from-muted to-background py-16">
           <div className="container mx-auto px-4">
@@ -225,9 +220,6 @@ const FAQPage = () => {
           </div>
         </section>
       </main>
-
-      <Footer />
-    </div>
   );
 };
 

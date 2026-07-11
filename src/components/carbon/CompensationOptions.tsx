@@ -15,6 +15,8 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import EcoScoreLegend from "@/components/carbon/EcoScoreLegend";
+import { ecoScoreFromKg } from "@/lib/eco-score";
 
 interface CompensationOptionsProps {
   totalCO2: number;
@@ -69,9 +71,9 @@ const CompensationOptions = ({ totalCO2 }: CompensationOptionsProps) => {
     {
       id: 1,
       title: "Plantation d'arbres",
-      location: "Lisbonne, Portugal",
+      location: "Grande Comore, Comores",
       date: "15-16 Février 2025",
-      description: "Rejoignez notre groupe pour planter 200 arbres dans la Serra de Sintra",
+      description: "Rejoignez notre groupe pour planter 200 arbres autour de Moroni et Itsandra",
       participants: 12,
       maxParticipants: 20,
       co2Impact: 50,
@@ -80,9 +82,9 @@ const CompensationOptions = ({ totalCO2 }: CompensationOptionsProps) => {
     {
       id: 2,
       title: "Nettoyage de plage",
-      location: "Costa da Caparica",
+      location: "Itsandra, Grande Comore",
       date: "22 Février 2025",
-      description: "Journée de nettoyage de la plage avec l'association locale Ocean Care",
+      description: "Journée de nettoyage de la plage avec l'association locale Comores Bleues",
       participants: 8,
       maxParticipants: 30,
       co2Impact: 15,
@@ -91,9 +93,9 @@ const CompensationOptions = ({ totalCO2 }: CompensationOptionsProps) => {
     {
       id: 3,
       title: "Restauration mangrove",
-      location: "Bali, Indonésie",
+      location: "Mohéli, Comores",
       date: "1-2 Mars 2025",
-      description: "Plantation de mangroves dans la zone protégée de Sanur",
+      description: "Plantation de mangroves dans la zone protégée de Mohéli",
       participants: 15,
       maxParticipants: 25,
       co2Impact: 80,
@@ -102,7 +104,7 @@ const CompensationOptions = ({ totalCO2 }: CompensationOptionsProps) => {
     {
       id: 4,
       title: "Atelier compostage",
-      location: "Barcelone, Espagne",
+      location: "Mutsamudu, Anjouan",
       date: "8 Mars 2025",
       description: "Apprenez à composter et créez votre composteur avec des matériaux recyclés",
       participants: 5,
@@ -128,9 +130,16 @@ const CompensationOptions = ({ totalCO2 }: CompensationOptionsProps) => {
             <Leaf className="w-6 h-6 text-carbon-saved" />
           </div>
           <div>
-            <h3 className="text-2xl font-bold">Compensez votre impact</h3>
-            <p className="text-muted-foreground">Choisissez votre mode de compensation</p>
+            <h3 className="font-display text-2xl font-medium">Compensez votre impact</h3>
+            <p className="text-muted-foreground">Choisissez votre mode de compensation · Amani Resorts</p>
           </div>
+        </div>
+
+        <div className="mb-4">
+          <EcoScoreLegend />
+          <p className="mt-2 text-xs text-muted-foreground">
+            Empreinte estimée : {totalCO2} kgCO₂e · Score {ecoScoreFromKg(totalCO2).grade}
+          </p>
         </div>
 
         {/* Tabs */}
@@ -261,7 +270,7 @@ const CompensationOptions = ({ totalCO2 }: CompensationOptionsProps) => {
               </Button>
 
               <p className="text-xs text-center text-muted-foreground">
-                Paiement sécurisé par Stripe. Reçu fiscal envoyé par email.
+                Paiement sécurisé · Reçu fiscal Amani Resorts envoyé par email.
               </p>
             </motion.div>
           ) : (

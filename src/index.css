@@ -158,6 +158,20 @@
     scroll-behavior: smooth;
   }
 
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
   body {
     @apply bg-background text-foreground antialiased;
     font-family: 'Raleway', system-ui, sans-serif;
@@ -171,17 +185,32 @@
     letter-spacing: -0.01em;
     @apply tracking-tight;
   }
+
+  a {
+    @apply transition-colors duration-200;
+  }
+
+  ::selection {
+    background: hsl(var(--accent) / 0.25);
+    color: hsl(var(--foreground));
+  }
 }
 
 @layer components {
   .card-hover {
-    @apply transition-all duration-500;
+    @apply transition-all duration-500 ease-out will-change-transform;
     box-shadow: var(--shadow-card);
   }
 
   .card-hover:hover {
     box-shadow: var(--shadow-card-hover);
-    transform: translateY(-2px);
+    transform: translateY(-4px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card-hover:hover {
+      transform: none;
+    }
   }
 
   .glass {
@@ -217,6 +246,18 @@
   .tracking-luxury {
     letter-spacing: 0.2em;
     text-transform: uppercase;
+  }
+
+  .page-main {
+    @apply flex-1 pt-20 md:pt-24 pb-16 md:pb-20;
+  }
+
+  .section-eyebrow {
+    @apply text-primary font-medium text-xs tracking-luxury;
+  }
+
+  .link-underline {
+    @apply relative inline-block after:absolute after:left-0 after:-bottom-0.5 after:h-px after:w-full after:origin-left after:scale-x-0 after:bg-current after:transition-transform after:duration-300 hover:after:scale-x-100;
   }
 }
 

@@ -1,28 +1,19 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
+import { Link, useSearchParams } from "react-router-dom";
 import { 
-  Search, Star, Leaf, MapPin, Clock,
-  Camera, Mountain, Palette, Utensils, Music, Waves
+  Search, Leaf, Clock,
+  Camera, Mountain, Palette, Utensils, Music, Waves, Loader2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
-import { supabase } from "@/integrations/supabase/client";
-
-interface Activity {
-  id: string;
-  name: string;
-  category: string | null;
-  description: string | null;
-  image_url: string | null;
-  carbon_impact: number | null;
-  eco_certified: boolean | null;
-  price: number | null;
-  duration_hours: number | null;
-}
+import { useActivities } from "@/hooks/useCatalogQueries";
+import {
+  parseBookingSearchParams,
+  withBookingDates,
+} from "@/lib/search-booking-params";
 
 const categoryIcons: Record<string, typeof Camera> = {
   "Photo": Camera,
@@ -33,96 +24,13 @@ const categoryIcons: Record<string, typeof Camera> = {
   "Sports nautiques": Waves,
 };
 
-const mockActivities: Activity[] = [
-  {
-    id: "1",
-    name: "Safari photo écologique",
-    category: "Photo",
-    description: "Découvrez la faune locale avec un guide naturaliste certifié",
-    image_url: "https://images.unsplash.com/photo-1516426122078-c23e76319801?w=800",
-    carbon_impact: 2,
-    eco_certified: true,
-    price: 75,
-    duration_hours: 4,
-  },
-  {
-    id: "2",
-    name: "Randonnée volcanique",
-    category: "Aventure",
-    description: "Ascension guidée au lever du soleil avec petit-déjeuner local",
-    image_url: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800",
-    carbon_impact: 0,
-    eco_certified: true,
-    price: 45,
-    duration_hours: 6,
-  },
-  {
-    id: "3",
-    name: "Atelier céramique traditionnelle",
-    category: "Art",
-    description: "Créez votre propre pièce avec un artisan local",
-    image_url: "https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?w=800",
-    carbon_impact: 1,
-    eco_certified: true,
-    price: 55,
-    duration_hours: 3,
-  },
-  {
-    id: "4",
-    name: "Cours de cuisine locale",
-    category: "Gastronomie",
-    description: "Apprenez les recettes traditionnelles avec des produits bio",
-    image_url: "https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=800",
-    carbon_impact: 1,
-    eco_certified: true,
-    price: 65,
-    duration_hours: 4,
-  },
-  {
-    id: "5",
-    name: "Surf éco-responsable",
-    category: "Sports nautiques",
-    description: "Cours de surf avec planches recyclées et nettoyage de plage",
-    image_url: "https://images.unsplash.com/photo-1502680390469-be75c86b636f?w=800",
-    carbon_impact: 0,
-    eco_certified: true,
-    price: 50,
-    duration_hours: 2,
-  },
-  {
-    id: "6",
-    name: "Concert acoustique local",
-    category: "Musique",
-    description: "Soirée musicale dans un lieu historique rénové",
-    image_url: "https://images.unsplash.com/photo-1501386761578-eac5c94b800a?w=800",
-    carbon_impact: 0,
-    eco_certified: false,
-    price: 25,
-    duration_hours: 2,
-  },
-];
-
 const ActivitiesPage = () => {
-  const [activities, setActivities] = useState<Activity[]>(mockActivities);
+  const [searchParams] = useSearchParams();
+  const bookingParams = parseBookingSearchParams(searchParams);
+  const destinationId = bookingParams.destination;
+  const { data: activities = [], isLoading: loading } = useActivities(destinationId);
   const [searchQuery, setSearchQuery] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetchActivities();
-  }, []);
-
-  const fetchActivities = async () => {
-    const { data, error } = await supabase
-      .from("activities")
-      .select("*")
-      .order("name");
-
-    if (!error && data && data.length > 0) {
-      setActivities(data);
-    }
-    setLoading(false);
-  };
 
   const categories = [...new Set(activities.map(a => a.category).filter(Boolean))];
 
@@ -133,10 +41,7 @@ const ActivitiesPage = () => {
   });
 
   return (
-    <div className="min-h-screen bg-background">
-      <Header />
-      
-      <main className="pt-24 pb-16">
+    <main className="page-main">
         {/* Hero Section */}
         <section className="bg-gradient-to-b from-accent-light to-background py-12">
           <div className="container mx-auto px-4">
@@ -258,12 +163,23 @@ const ActivitiesPage = () => {
                         </div>
 
                         <div className="flex items-center justify-between pt-3 border-t border-border">
-                          <Button variant="outline" size="sm">
-                            En savoir plus
-                          </Button>
                           <span className="text-lg font-bold text-foreground">
                             {activity.price}€
                           </span>
+                          <Button size="sm" asChild>
+                            <Link
+                              to={
+                                activity.destination_id || destinationId
+                                  ? withBookingDates(
+                                      `/booking/${activity.destination_id || destinationId}`,
+                                      bookingParams
+                                    )
+                                  : "/destinations"
+                              }
+                            >
+                              Réserver
+                            </Link>
+                          </Button>
                         </div>
                       </CardContent>
                     </Card>
@@ -282,9 +198,6 @@ const ActivitiesPage = () => {
           </div>
         </section>
       </main>
-
-      <Footer />
-    </div>
   );
 };
 

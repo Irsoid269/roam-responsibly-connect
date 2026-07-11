@@ -1,13 +1,8 @@
 import { motion } from "framer-motion";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
 
 const PrivacyPage = () => {
   return (
-    <div className="min-h-screen bg-background">
-      <Header />
-      
-      <main className="pt-24 pb-16">
+    <main className="page-main">
         <section className="py-12">
           <div className="container mx-auto px-4 max-w-3xl">
             <motion.div
@@ -21,11 +16,11 @@ const PrivacyPage = () => {
                 Dernière mise à jour : 20 janvier 2026
               </p>
 
-              <div className="prose prose-gray dark:prose-invert max-w-none space-y-8">
+              <div className="prose dark:prose-invert max-w-none space-y-8 prose-headings:font-display prose-headings:text-foreground prose-p:text-muted-foreground prose-strong:text-foreground prose-li:text-muted-foreground prose-a:text-accent">
                 <section>
                   <h2 className="text-2xl font-semibold text-foreground mb-4">1. Introduction</h2>
                   <p className="text-muted-foreground mb-4">
-                    Coworkation ("nous", "notre", "nos") s'engage à protéger la vie privée des utilisateurs 
+                    Amani Resorts ("nous", "notre", "nos") s'engage à protéger la vie privée des utilisateurs 
                     de notre plateforme. Cette politique de confidentialité explique comment nous collectons, 
                     utilisons, partageons et protégeons vos informations personnelles.
                   </p>
@@ -98,7 +93,7 @@ const PrivacyPage = () => {
                     <li><strong>Limitation :</strong> limiter le traitement de vos données</li>
                   </ul>
                   <p className="text-muted-foreground mt-4">
-                    Pour exercer ces droits, contactez-nous à privacy@coworkation.com.
+                    Pour exercer ces droits, contactez-nous à privacy@amaniresorts.com.
                   </p>
                 </section>
 
@@ -130,9 +125,9 @@ const PrivacyPage = () => {
                     Pour toute question concernant cette politique ou vos données personnelles :
                   </p>
                   <ul className="list-none text-muted-foreground space-y-1">
-                    <li>Email : privacy@coworkation.com</li>
-                    <li>Adresse : 42 rue de la Durabilité, 75011 Paris, France</li>
-                    <li>DPO : dpo@coworkation.com</li>
+                    <li>Email : privacy@amaniresorts.com</li>
+                    <li>Adresse : Avenue de la Corniche, Moroni, Comores</li>
+                    <li>DPO : dpo@amaniresorts.com</li>
                   </ul>
                 </section>
 
@@ -149,9 +144,6 @@ const PrivacyPage = () => {
           </div>
         </section>
       </main>
-
-      <Footer />
-    </div>
   );
 };
 

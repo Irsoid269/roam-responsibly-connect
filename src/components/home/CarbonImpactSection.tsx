@@ -37,7 +37,7 @@ const CarbonImpactSection = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
-              className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 leading-tight"
+              className="font-display text-3xl md:text-4xl lg:text-5xl font-medium mb-6 leading-tight"
             >
               Voyagez en conscience,
               <br />
@@ -77,9 +77,10 @@ const CarbonImpactSection = () => {
               <Button 
                 variant="outline" 
                 size="lg"
-                className="border-carbon-foreground/30 text-carbon-foreground hover:bg-carbon-foreground/10"
+                className="border-carbon-foreground/40 bg-transparent text-carbon-foreground hover:bg-carbon-foreground/15 hover:text-carbon-foreground"
+                asChild
               >
-                Découvrir nos partenaires
+                <a href="/partners">Découvrir nos partenaires</a>
               </Button>
             </motion.div>
           </div>
@@ -119,7 +120,7 @@ const CarbonImpactSection = () => {
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div>
               <h3 className="text-xl font-semibold mb-2">Score carbone de votre dernier séjour</h3>
-              <p className="text-carbon-foreground/70">Lisbonne, 15 jours - Janvier 2025</p>
+              <p className="text-carbon-foreground/70">Moroni, 15 jours - Janvier 2025</p>
             </div>
 
             <div className="flex items-center gap-8">

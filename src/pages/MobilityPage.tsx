@@ -1,27 +1,19 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { Link, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { 
-  Search, Leaf, MapPin,
-  Bike, Car, Train, Ship, Footprints, Zap
+  Search, Leaf,
+  Bike, Car, Train, Ship, Footprints, Zap, Loader2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
-import { supabase } from "@/integrations/supabase/client";
-
-interface MobilityOption {
-  id: string;
-  name: string;
-  type: string | null;
-  description: string | null;
-  image_url: string | null;
-  carbon_per_km: number | null;
-  price_per_day: number | null;
-  price_per_hour: number | null;
-}
+import { useMobility } from "@/hooks/useCatalogQueries";
+import {
+  parseBookingSearchParams,
+  withBookingDates,
+} from "@/lib/search-booking-params";
 
 const typeIcons: Record<string, typeof Bike> = {
   "Vélo": Bike,
@@ -32,90 +24,13 @@ const typeIcons: Record<string, typeof Bike> = {
   "Ferry": Ship,
 };
 
-const mockMobility: MobilityOption[] = [
-  {
-    id: "1",
-    name: "Vélo de ville classique",
-    type: "Vélo",
-    description: "Parfait pour explorer le centre-ville à votre rythme",
-    image_url: "https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=800",
-    carbon_per_km: 0,
-    price_per_day: 8,
-    price_per_hour: 2,
-  },
-  {
-    id: "2",
-    name: "E-bike premium",
-    type: "Vélo électrique",
-    description: "Vélo électrique pour les trajets plus longs ou vallonnés",
-    image_url: "https://images.unsplash.com/photo-1571068316344-75bc76f77890?w=800",
-    carbon_per_km: 0.005,
-    price_per_day: 15,
-    price_per_hour: 4,
-  },
-  {
-    id: "3",
-    name: "Trottinette électrique",
-    type: "Trottinette",
-    description: "Pratique et rapide pour les petits trajets urbains",
-    image_url: "https://images.unsplash.com/photo-1604868189265-219ba7ffc595?w=800",
-    carbon_per_km: 0.003,
-    price_per_day: 12,
-    price_per_hour: 3,
-  },
-  {
-    id: "4",
-    name: "Tesla Model 3 partagée",
-    type: "Voiture électrique",
-    description: "Idéal pour les excursions hors de la ville",
-    image_url: "https://images.unsplash.com/photo-1560958089-b8a1929cea89?w=800",
-    carbon_per_km: 0.02,
-    price_per_day: 65,
-    price_per_hour: 12,
-  },
-  {
-    id: "5",
-    name: "Pass train régional",
-    type: "Train",
-    description: "Voyagez de ville en ville de manière écologique",
-    image_url: "https://images.unsplash.com/photo-1474487548417-781cb71495f3?w=800",
-    carbon_per_km: 0.006,
-    price_per_day: 25,
-    price_per_hour: null,
-  },
-  {
-    id: "6",
-    name: "Ferry écologique",
-    type: "Ferry",
-    description: "Traversées maritimes pour découvrir les îles",
-    image_url: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800",
-    carbon_per_km: 0.12,
-    price_per_day: 35,
-    price_per_hour: null,
-  },
-];
-
 const MobilityPage = () => {
-  const [mobilityOptions, setMobilityOptions] = useState<MobilityOption[]>(mockMobility);
+  const [searchParams] = useSearchParams();
+  const bookingParams = parseBookingSearchParams(searchParams);
+  const destinationId = bookingParams.destination;
+  const { data: mobilityOptions = [], isLoading: loading } = useMobility(destinationId);
   const [searchQuery, setSearchQuery] = useState("");
   const [typeFilter, setTypeFilter] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetchMobilityOptions();
-  }, []);
-
-  const fetchMobilityOptions = async () => {
-    const { data, error } = await supabase
-      .from("mobility_options")
-      .select("*")
-      .order("carbon_per_km");
-
-    if (!error && data && data.length > 0) {
-      setMobilityOptions(data);
-    }
-    setLoading(false);
-  };
 
   const types = [...new Set(mobilityOptions.map(m => m.type).filter(Boolean))];
 
@@ -142,10 +57,7 @@ const MobilityPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <Header />
-      
-      <main className="pt-24 pb-16">
+    <main className="page-main">
         {/* Hero Section */}
         <section className="bg-gradient-to-b from-carbon-light to-background py-12">
           <div className="container mx-auto px-4">
@@ -272,11 +184,6 @@ const MobilityPage = () => {
                         <p className="text-sm text-muted-foreground mb-4">{option.description}</p>
 
                         <div className="flex items-center justify-between pt-3 border-t border-border">
-                          <div className="text-sm text-muted-foreground">
-                            {option.carbon_per_km !== null && (
-                              <span>{(option.carbon_per_km * 1000).toFixed(0)}g CO₂/km</span>
-                            )}
-                          </div>
                           <div className="text-right">
                             {option.price_per_hour && (
                               <span className="text-sm text-muted-foreground mr-2">
@@ -288,6 +195,20 @@ const MobilityPage = () => {
                             </span>
                             <span className="text-sm text-muted-foreground">/jour</span>
                           </div>
+                          <Button size="sm" asChild>
+                            <Link
+                              to={
+                                option.destination_id || destinationId
+                                  ? withBookingDates(
+                                      `/booking/${option.destination_id || destinationId}`,
+                                      bookingParams
+                                    )
+                                  : "/destinations"
+                              }
+                            >
+                              Réserver
+                            </Link>
+                          </Button>
                         </div>
                       </CardContent>
                     </Card>
@@ -306,9 +227,6 @@ const MobilityPage = () => {
           </div>
         </section>
       </main>
-
-      <Footer />
-    </div>
   );
 };
 

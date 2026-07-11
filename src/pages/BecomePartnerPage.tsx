@@ -1,5 +1,6 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
-import { Building, Laptop, Leaf, Users, Check, ArrowRight, Star } from "lucide-react";
+import { Building, Laptop, Leaf, Users, Check, ArrowRight, Star, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -12,8 +13,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
+import { useAuth } from "@/hooks/useAuth";
+import { useSubmitPartnerApplication, useCatalogCounts } from "@/hooks/useCatalogQueries";
+import { toast } from "sonner";
 
 const partnerTypes = [
   {
@@ -45,19 +47,57 @@ const requirements = [
   "Transparence sur les pratiques",
 ];
 
-const stats = [
-  { value: "2,850+", label: "Voyageurs actifs" },
-  { value: "35+", label: "Destinations" },
-  { value: "4.8/5", label: "Note moyenne" },
-  { value: "89%", label: "Taux de retour" },
-];
-
 const BecomePartnerPage = () => {
+  const { user } = useAuth();
+  const { data: counts } = useCatalogCounts();
+  const submit = useSubmitPartnerApplication();
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState(user?.email || "");
+  const [companyName, setCompanyName] = useState("");
+  const [partnerType, setPartnerType] = useState("accommodation");
+  const [website, setWebsite] = useState("");
+  const [message, setMessage] = useState("");
+
+  const liveStats = [
+    { value: `${counts?.travelers ?? "—"}+`, label: "Voyageurs" },
+    { value: `${counts?.destinations ?? "—"}`, label: "Destinations" },
+    { value: `${counts?.coworkings ?? "—"}`, label: "Coworkings" },
+    { value: "Éco", label: "Engagement" },
+  ];
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!firstName.trim() || !lastName.trim() || !email.trim() || !companyName.trim()) {
+      toast.error("Remplissez les champs obligatoires");
+      return;
+    }
+    try {
+      await submit.mutateAsync({
+        firstName: firstName.trim(),
+        lastName: lastName.trim(),
+        email: email.trim(),
+        companyName: companyName.trim(),
+        partnerType,
+        website: website.trim() || undefined,
+        message: message.trim() || undefined,
+        userId: user?.id,
+      });
+      toast.success("Candidature envoyée — réponse sous 48h");
+      setMessage("");
+      setCompanyName("");
+      setWebsite("");
+    } catch (err) {
+      toast.error(
+        err instanceof Error
+          ? err.message
+          : "Envoi impossible — appliquez la migration partner_applications"
+      );
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-background">
-      <Header />
-      
-      <main className="pt-24 pb-16">
+    <main className="page-main">
         {/* Hero */}
         <section className="bg-gradient-to-b from-primary to-primary/80 text-primary-foreground py-16">
           <div className="container mx-auto px-4">
@@ -78,7 +118,7 @@ const BecomePartnerPage = () => {
                 tout en contribuant à un tourisme plus durable.
               </p>
               <div className="flex justify-center gap-4">
-                {stats.map((stat, index) => (
+                {liveStats.map((stat, index) => (
                   <div key={index} className="text-center px-4">
                     <p className="text-2xl font-bold">{stat.value}</p>
                     <p className="text-sm text-primary-foreground/70">{stat.label}</p>
@@ -180,30 +220,35 @@ const BecomePartnerPage = () => {
                       Remplissez ce formulaire et nous vous recontacterons sous 48h.
                     </p>
                   </CardHeader>
-                  <CardContent className="space-y-4">
+                  <CardContent>
+                    <form onSubmit={handleSubmit} className="space-y-4">
                     <div className="grid grid-cols-2 gap-4">
                       <div>
                         <label className="text-sm font-medium mb-1 block">Prénom</label>
-                        <Input placeholder="Jean" />
+                        <Input value={firstName} onChange={(e) => setFirstName(e.target.value)} required />
                       </div>
                       <div>
                         <label className="text-sm font-medium mb-1 block">Nom</label>
-                        <Input placeholder="Dupont" />
+                        <Input value={lastName} onChange={(e) => setLastName(e.target.value)} required />
                       </div>
                     </div>
                     <div>
                       <label className="text-sm font-medium mb-1 block">Email professionnel</label>
-                      <Input type="email" placeholder="jean@monentreprise.com" />
+                      <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
                     </div>
                     <div>
-                      <label className="text-sm font-medium mb-1 block">Nom de l'établissement</label>
-                      <Input placeholder="Eco Lodge Lisbonne" />
+                      <label className="text-sm font-medium mb-1 block">Nom de l&apos;établissement</label>
+                      <Input value={companyName} onChange={(e) => setCompanyName(e.target.value)} required />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium mb-1 block">Site web</label>
+                      <Input value={website} onChange={(e) => setWebsite(e.target.value)} placeholder="https://" />
                     </div>
                     <div>
                       <label className="text-sm font-medium mb-1 block">Type de partenariat</label>
-                      <Select>
+                      <Select value={partnerType} onValueChange={setPartnerType}>
                         <SelectTrigger>
-                          <SelectValue placeholder="Sélectionnez..." />
+                          <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="accommodation">Hébergement</SelectItem>
@@ -216,15 +261,24 @@ const BecomePartnerPage = () => {
                     </div>
                     <div>
                       <label className="text-sm font-medium mb-1 block">Message</label>
-                      <Textarea 
-                        placeholder="Présentez brièvement votre établissement et vos engagements environnementaux..."
+                      <Textarea
+                        value={message}
+                        onChange={(e) => setMessage(e.target.value)}
+                        placeholder="Présentez votre établissement et vos engagements environnementaux…"
                         rows={4}
                       />
                     </div>
-                    <Button className="w-full" size="lg">
-                      Envoyer ma candidature
-                      <ArrowRight className="w-4 h-4 ml-2" />
+                    <Button type="submit" className="w-full" size="lg" disabled={submit.isPending}>
+                      {submit.isPending ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <>
+                          Envoyer ma candidature
+                          <ArrowRight className="w-4 h-4 ml-2" />
+                        </>
+                      )}
                     </Button>
+                    </form>
                   </CardContent>
                 </Card>
               </motion.div>
@@ -247,20 +301,17 @@ const BecomePartnerPage = () => {
                 ))}
               </div>
               <blockquote className="text-xl text-foreground mb-6 italic">
-                "Rejoindre Coworkation a transformé notre activité. Nous avons vu une augmentation 
+                "Rejoindre Amani Resorts a transformé notre activité. Nous avons vu une augmentation 
                 de 40% de nos réservations, avec des clients vraiment alignés avec nos valeurs."
               </blockquote>
               <div>
                 <p className="font-semibold text-foreground">Maria Santos</p>
-                <p className="text-sm text-muted-foreground">Fondatrice, Eco Hub Lisbonne</p>
+                <p className="text-sm text-muted-foreground">Fondatrice, Eco Hub Moroni</p>
               </div>
             </motion.div>
           </div>
         </section>
       </main>
-
-      <Footer />
-    </div>
   );
 };
 

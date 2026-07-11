@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
+import { AdminLoading, AdminEmpty } from "@/components/admin/AdminTableState";
 import { supabase } from "@/integrations/supabase/client";
+import { ecoScoreBadge } from "@/lib/eco-score";
 import {
   Table,
   TableBody,
@@ -56,14 +58,6 @@ interface Destination {
   name: string;
   city: string;
 }
-
-const carbonScoreColors: Record<string, string> = {
-  A: "bg-eco-a",
-  B: "bg-eco-b",
-  C: "bg-eco-c",
-  D: "bg-eco-d",
-  E: "bg-eco-e",
-};
 
 const typeLabels: Record<string, string> = {
   hotel: "Hôtel",
@@ -182,23 +176,21 @@ const AdminAccommodations = () => {
   };
 
   return (
-    <AdminLayout title="Gestion des hébergements">
-      <div className="mb-4">
+    <AdminLayout
+      title="Gestion des hébergements"
+      description="Hôtels, coliving et éco-lodges liés aux destinations."
+      actions={
         <Button onClick={() => openEditDialog()}>
           <Plus className="h-4 w-4 mr-2" />
           Ajouter un hébergement
         </Button>
-      </div>
-
-      <div className="bg-background rounded-lg border">
+      }
+    >
+      <div className="rounded-xl border border-border bg-background shadow-sm overflow-hidden">
         {loading ? (
-          <div className="p-8 text-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary mx-auto"></div>
-          </div>
+          <AdminLoading />
         ) : accommodations.length === 0 ? (
-          <div className="p-8 text-center text-muted-foreground">
-            Aucun hébergement trouvé
-          </div>
+          <AdminEmpty title="Aucun hébergement trouvé" />
         ) : (
           <Table>
             <TableHeader>
@@ -237,16 +229,14 @@ const AdminAccommodations = () => {
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-1">
-                      <Star className="h-4 w-4 text-warning fill-yellow-500" />
+                      <Star className="h-4 w-4 text-warning fill-warning" />
                       {accommodation.rating}
                     </div>
                   </TableCell>
                   <TableCell>{accommodation.price_per_night} €</TableCell>
                   <TableCell>
                     <Badge
-                      className={`${
-                        carbonScoreColors[accommodation.carbon_score || "B"]
-                      } text-primary-foreground`}
+                      className={ecoScoreBadge(accommodation.carbon_score || "B")}
                     >
                       {accommodation.carbon_score}
                     </Badge>

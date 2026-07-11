@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { 
   ArrowLeft, ArrowRight, Building2, Home, Bike, Compass, 
   Leaf, Calendar, Check, ShoppingCart, Trash2, Plus, Minus,
-  CreditCard, Shield
+  CreditCard, Shield, Loader2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,10 +12,31 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
+import {
+  Dialog,
+  DialogContent,
+} from "@/components/ui/dialog";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
+import BookingConfirmation, {
+  type BookingConfirmationData,
+} from "@/components/branding/BookingConfirmation";
+import BookingEmailPreview from "@/components/branding/BookingEmailTemplate";
+import { printAmaniInvoice } from "@/lib/print-invoice";
+import { buildBookingConfirmationEmail } from "@/lib/booking-email";
+import { persistBooking } from "@/lib/persist-booking";
+import EcoScoreLegend from "@/components/carbon/EcoScoreLegend";
+import { ecoScoreFromKg } from "@/lib/eco-score";
+import {
+  useCoworkings,
+  useAccommodations,
+  useActivities,
+  useMobility,
+  useDestination,
+} from "@/hooks/useCatalogQueries";
+import { useQueryClient } from "@tanstack/react-query";
+import { queryKeys } from "@/hooks/useCatalogQueries";
+import { toDateInputValue } from "@/lib/search-booking-params";
 
 interface CartItem {
   id: string;
@@ -32,36 +53,54 @@ const steps = [
   { id: 3, label: "Paiement", icon: CreditCard },
 ];
 
-// Mock services
-const mockCoworkings = [
-  { id: "c1", name: "Heden Lisboa", price: 25, carbonImpact: 0.5 },
-  { id: "c2", name: "Second Home", price: 35, carbonImpact: 0.3 },
-];
-
-const mockAccommodations = [
-  { id: "a1", name: "Selina Secret Garden", price: 45, carbonImpact: 2.5 },
-  { id: "a2", name: "Eco Hostel Alfama", price: 25, carbonImpact: 1.2 },
-];
-
-const mockMobility = [
-  { id: "m1", name: "Vélo électrique", price: 15, carbonImpact: 0 },
-  { id: "m2", name: "Scooter électrique", price: 25, carbonImpact: 0.1 },
-];
-
-const mockActivities = [
-  { id: "act1", name: "Tour vélo électrique", price: 35, carbonImpact: 0.2, eco: true },
-  { id: "act2", name: "Visite Sintra", price: 55, carbonImpact: 3.5, eco: true },
-];
-
 const BookingPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { user } = useAuth();
   const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  const { data: destination } = useDestination(id);
+  const { data: liveCoworkings } = useCoworkings(id);
+  const { data: liveAccommodations } = useAccommodations(id);
+  const { data: liveMobility } = useMobility(id);
+  const { data: liveActivities } = useActivities(id);
+
+  const coworkings = (liveCoworkings ?? []).map((c) => ({
+    id: c.id,
+    name: c.name,
+    price: Number(c.price_per_day || 0),
+    carbonImpact: c.carbon_score === "A" ? 0.3 : c.carbon_score === "C" ? 0.8 : 0.5,
+  }));
+  const accommodations = (liveAccommodations ?? []).map((a) => ({
+    id: a.id,
+    name: a.name,
+    price: Number(a.price_per_night || 0),
+    carbonImpact: a.carbon_score === "A" ? 1.2 : a.carbon_score === "C" ? 3 : 2,
+  }));
+  const mobilityOptions = (liveMobility ?? []).map((m) => ({
+    id: m.id,
+    name: m.name,
+    price: Number(m.price_per_day || m.price_per_hour || 0),
+    carbonImpact: Number(m.carbon_per_km || 0) / 1000,
+  }));
+  const activities = (liveActivities ?? []).map((a) => ({
+    id: a.id,
+    name: a.name,
+    price: Number(a.price || 0),
+    carbonImpact: Number(a.carbon_impact || 0),
+  }));
   
   const [currentStep, setCurrentStep] = useState(1);
   const [cart, setCart] = useState<CartItem[]>([]);
-  const [dates, setDates] = useState({ checkIn: "", checkOut: "" });
+  const [dates, setDates] = useState({
+    checkIn: toDateInputValue(searchParams.get("from") || undefined),
+    checkOut: toDateInputValue(searchParams.get("to") || undefined),
+  });
+  const [confirmation, setConfirmation] = useState<BookingConfirmationData | null>(null);
+  const [showEmailPreview, setShowEmailPreview] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   const addToCart = (item: Omit<CartItem, "quantity">) => {
     const existing = cart.find((c) => c.id === item.id);
@@ -95,7 +134,7 @@ const BookingPage = () => {
   const totalPrice = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const totalCarbon = cart.reduce((sum, item) => sum + item.carbonImpact * item.quantity, 0);
 
-  const handleConfirmBooking = () => {
+  const handleConfirmBooking = async () => {
     if (!user) {
       toast({
         title: "Connexion requise",
@@ -106,11 +145,47 @@ const BookingPage = () => {
       return;
     }
 
-    toast({
-      title: "Réservation confirmée !",
-      description: "Vous recevrez un email de confirmation",
-    });
-    navigate("/profile");
+    if (!dates.checkIn || !dates.checkOut) {
+      toast({
+        title: "Dates requises",
+        description: "Indiquez vos dates d'arrivée et de départ",
+        variant: "destructive",
+      });
+      setCurrentStep(1);
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      const result = await persistBooking({
+        userId: user.id,
+        destinationId: id && id.length > 20 ? id : null,
+        checkIn: dates.checkIn,
+        checkOut: dates.checkOut,
+        items: cart,
+        guestName: user.user_metadata?.full_name || user.email?.split("@")[0] || "Voyageur",
+        guestEmail: user.email || "hello@amaniresorts.com",
+        destinationLabel: destination?.name || "Comores",
+      });
+
+      buildBookingConfirmationEmail(result.confirmation);
+      setConfirmation(result.confirmation);
+      queryClient.invalidateQueries({ queryKey: queryKeys.reservations(user.id) });
+      queryClient.invalidateQueries({ queryKey: queryKeys.profile(user.id) });
+      toast({
+        title: "Réservation confirmée — Amani Resorts",
+        description: `Réf. ${result.confirmation.reference} · Enregistrée dans votre espace`,
+      });
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Erreur lors de la réservation";
+      toast({
+        title: "Échec de la réservation",
+        description: message,
+        variant: "destructive",
+      });
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const typeIcons = {
@@ -121,10 +196,8 @@ const BookingPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <Header />
-      
-      <main className="pt-24 pb-16">
+    <>
+    <main className="page-main">
         <div className="container mx-auto px-4">
           {/* Header */}
           <div className="mb-8">
@@ -219,7 +292,7 @@ const BookingPage = () => {
                       </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-3">
-                      {mockCoworkings.map((space) => (
+                      {coworkings.map((space) => (
                         <div key={space.id} className="flex items-center justify-between p-3 border rounded-lg hover:border-primary transition-colors">
                           <div>
                             <p className="font-medium">{space.name}</p>
@@ -257,7 +330,7 @@ const BookingPage = () => {
                       </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-3">
-                      {mockAccommodations.map((accom) => (
+                      {accommodations.map((accom) => (
                         <div key={accom.id} className="flex items-center justify-between p-3 border rounded-lg hover:border-primary transition-colors">
                           <div>
                             <p className="font-medium">{accom.name}</p>
@@ -295,7 +368,7 @@ const BookingPage = () => {
                       </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-3">
-                      {mockMobility.map((mob) => (
+                      {mobilityOptions.map((mob) => (
                         <div key={mob.id} className="flex items-center justify-between p-3 border rounded-lg hover:border-primary transition-colors">
                           <div>
                             <p className="font-medium">{mob.name}</p>
@@ -333,15 +406,13 @@ const BookingPage = () => {
                       </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-3">
-                      {mockActivities.map((act) => (
+                      {activities.map((act) => (
                         <div key={act.id} className="flex items-center justify-between p-3 border rounded-lg hover:border-primary transition-colors">
                           <div className="flex items-center gap-2">
                             <div>
                               <p className="font-medium flex items-center gap-2">
                                 {act.name}
-                                {act.eco && (
-                                  <Badge className="bg-carbon text-carbon-foreground text-xs">Éco</Badge>
-                                )}
+                                <Badge className="bg-eco-a text-primary-foreground text-xs">Éco</Badge>
                               </p>
                               <p className="text-sm text-muted-foreground">{act.price}€</p>
                             </div>
@@ -484,9 +555,16 @@ const BookingPage = () => {
                         className="w-full"
                         size="lg"
                         onClick={handleConfirmBooking}
-                        disabled={cart.length === 0}
+                        disabled={cart.length === 0 || submitting}
                       >
-                        Confirmer la réservation
+                        {submitting ? (
+                          <>
+                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                            Enregistrement…
+                          </>
+                        ) : (
+                          "Confirmer la réservation"
+                        )}
                       </Button>
                     </CardContent>
                   </Card>
@@ -549,17 +627,18 @@ const BookingPage = () => {
                     )}
 
                     {/* Carbon Impact */}
-                    <div className="p-4 bg-carbon-light rounded-lg">
-                      <div className="flex items-center gap-2 mb-2">
+                    <div className="p-4 bg-carbon-light rounded-lg space-y-3">
+                      <div className="flex items-center gap-2">
                         <Leaf className="w-5 h-5 text-carbon" />
                         <span className="font-medium text-carbon">Impact carbone</span>
                       </div>
-                      <p className="text-2xl font-bold text-carbon">
+                      <p className="text-2xl font-display font-medium text-carbon">
                         {totalCarbon.toFixed(1)} kg CO₂
                       </p>
-                      <p className="text-xs text-muted-foreground mt-1">
-                        Compensation incluse dans le prix
+                      <p className="text-xs text-muted-foreground">
+                        Score {ecoScoreFromKg(totalCarbon).grade} · Compensation incluse
                       </p>
+                      <EcoScoreLegend compact />
                     </div>
                   </CardContent>
                 </Card>
@@ -569,8 +648,54 @@ const BookingPage = () => {
         </div>
       </main>
 
-      <Footer />
-    </div>
+      <Dialog open={!!confirmation} onOpenChange={(open) => !open && setConfirmation(null)}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto p-0 border-border bg-background">
+          {confirmation && (
+            <div className="space-y-4 p-1">
+              <BookingConfirmation
+                data={confirmation}
+                onDownloadInvoice={() => {
+                  const result = printAmaniInvoice(confirmation);
+                  if (!result.ok) {
+                    toast({
+                      title: "Facture indisponible",
+                      description: result.reason,
+                      variant: "destructive",
+                    });
+                    return;
+                  }
+                  toast({
+                    title: "Facture générée",
+                    description:
+                      result.mode === "print"
+                        ? "Fenêtre ouverte — Imprimer ou enregistrer en PDF"
+                        : "Fichier HTML téléchargé sur votre appareil",
+                  });
+                }}
+                onClose={() => {
+                  setConfirmation(null);
+                  navigate("/profile");
+                }}
+              />
+              <div className="px-4 pb-4">
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  onClick={() => setShowEmailPreview((v) => !v)}
+                >
+                  {showEmailPreview ? "Masquer" : "Aperçu"} email de confirmation Amani
+                </Button>
+                {showEmailPreview && (
+                  <div className="mt-3">
+                    <BookingEmailPreview data={confirmation} />
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 
