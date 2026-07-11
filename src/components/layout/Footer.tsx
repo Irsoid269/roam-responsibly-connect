@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
-import { Leaf, Instagram, Linkedin, Twitter, Mail, MapPin, Phone } from "lucide-react";
+import { Instagram, Linkedin, Twitter, Mail, MapPin } from "lucide-react";
+import amaniSymbol from "@/assets/amani-symbol-gold.jpg";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -39,17 +40,14 @@ const Footer = () => {
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 lg:gap-12">
           {/* Brand Column */}
           <div className="col-span-2 md:col-span-3 lg:col-span-2">
-            <Link to="/" className="flex items-center gap-2 mb-4">
-              <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
-                <Leaf className="w-5 h-5 text-primary-foreground" />
-              </div>
-              <span className="text-xl font-bold text-background">
-                Comwork<span className="text-primary-glow">ation</span>
+            <Link to="/" className="flex items-center gap-3 mb-4">
+              <img src={amaniSymbol} alt="Amani Resorts" className="w-11 h-11 rounded-full object-cover" />
+              <span className="font-display text-2xl font-medium text-background leading-none">
+                AMANI<span className="text-accent"> Resorts</span>
               </span>
             </Link>
-            <p className="text-background/70 text-sm mb-6 max-w-xs">
-              La plateforme tout-en-un pour planifier vos séjours de travail à distance aux Comores, 
-              tout en réduisant votre empreinte carbone.
+            <p className="text-background/70 text-sm mb-6 max-w-xs leading-relaxed">
+              Un refuge d'exception aux Comores. Dômes premium face à l'océan Indien, coworking et bien-être dans un éco-luxe boutique.
             </p>
             
             {/* Social Links */}
@@ -78,7 +76,7 @@ const Footer = () => {
             <div className="space-y-2 text-sm text-background/60">
               <div className="flex items-center gap-2">
                 <Mail className="w-4 h-4" />
-                <span>hello@comworkation.com</span>
+                <span>hello@amaniresorts.com</span>
               </div>
               <div className="flex items-center gap-2">
                 <MapPin className="w-4 h-4" />
@@ -161,7 +159,7 @@ const Footer = () => {
       <div className="border-t border-background/10">
         <div className="container mx-auto px-4 py-5">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-background/50">
-            <p>© {currentYear} Comworkation. Tous droits réservés.</p>
+            <p>© {currentYear} Amani Resorts. Tous droits réservés.</p>
             <div className="flex items-center gap-6">
               <Link to="/privacy" className="hover:text-background transition-colors">
                 Confidentialité

@@ -14,7 +14,9 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+        sans: ['Raleway', 'system-ui', 'sans-serif'],
+        display: ['"Cormorant Garamond"', 'Times New Roman', 'serif'],
+        serif: ['"Cormorant Garamond"', 'Times New Roman', 'serif'],
       },
       colors: {
         border: "hsl(var(--border))",
