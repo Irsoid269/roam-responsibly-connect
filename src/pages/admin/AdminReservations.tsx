@@ -62,10 +62,10 @@ interface Reservation {
 }
 
 const statusColors: Record<string, string> = {
-  pending: "bg-yellow-500/10 text-yellow-600 border-yellow-500/20",
-  confirmed: "bg-green-500/10 text-green-600 border-green-500/20",
-  cancelled: "bg-red-500/10 text-red-600 border-red-500/20",
-  completed: "bg-blue-500/10 text-blue-600 border-blue-500/20",
+  pending: "bg-warning/15 text-warning-foreground border-warning/30",
+  confirmed: "bg-success/10 text-success border-success/20",
+  cancelled: "bg-destructive/10 text-destructive border-destructive/20",
+  completed: "bg-info/10 text-info border-info/20",
 };
 
 const statusLabels: Record<string, string> = {

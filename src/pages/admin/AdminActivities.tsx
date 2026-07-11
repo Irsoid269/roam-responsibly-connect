@@ -183,11 +183,11 @@ const AdminActivities = () => {
   };
 
   const getCarbonBadgeColor = (carbonImpact: number | null) => {
-    if (!carbonImpact || carbonImpact === 0) return "bg-green-500";
-    if (carbonImpact < 5) return "bg-lime-500";
-    if (carbonImpact < 10) return "bg-yellow-500";
-    if (carbonImpact < 20) return "bg-orange-500";
-    return "bg-red-500";
+    if (!carbonImpact || carbonImpact === 0) return "bg-eco-a";
+    if (carbonImpact < 5) return "bg-eco-b";
+    if (carbonImpact < 10) return "bg-eco-c";
+    if (carbonImpact < 20) return "bg-eco-d";
+    return "bg-eco-e";
   };
 
   return (
@@ -249,7 +249,7 @@ const AdminActivities = () => {
                   <TableCell>{activity.price} €</TableCell>
                   <TableCell>
                     <Badge
-                      className={`${getCarbonBadgeColor(activity.carbon_impact)} text-white`}
+                      className={`${getCarbonBadgeColor(activity.carbon_impact)} text-primary-foreground`}
                     >
                       <Leaf className="h-3 w-3 mr-1" />
                       {activity.carbon_impact || 0}kg
@@ -257,7 +257,7 @@ const AdminActivities = () => {
                   </TableCell>
                   <TableCell>
                     {activity.eco_certified ? (
-                      <Badge className="bg-green-500 text-white">✓ Certifié</Badge>
+                      <Badge className="bg-success text-success-foreground">✓ Certifié</Badge>
                     ) : (
                       <span className="text-muted-foreground">-</span>
                     )}

@@ -66,7 +66,7 @@ const CarbonResults = ({ results, onReset }: CarbonResultsProps) => {
     if (total < 400) return { grade: "A", label: "Excellent", color: "text-carbon-saved", bgColor: "bg-carbon-saved/20" };
     if (total < 600) return { grade: "B+", label: "Très bien", color: "text-carbon-offset", bgColor: "bg-carbon-offset/20" };
     if (total < 800) return { grade: "B", label: "Bien", color: "text-carbon-offset", bgColor: "bg-carbon-offset/20" };
-    if (total < 1000) return { grade: "C", label: "Moyen", color: "text-yellow-500", bgColor: "bg-yellow-500/20" };
+    if (total < 1000) return { grade: "C", label: "Moyen", color: "text-warning", bgColor: "bg-warning/20" };
     if (total < 1500) return { grade: "D", label: "À améliorer", color: "text-secondary", bgColor: "bg-secondary/20" };
     return { grade: "E", label: "Élevé", color: "text-destructive", bgColor: "bg-destructive/20" };
   };
@@ -157,7 +157,7 @@ const CarbonResults = ({ results, onReset }: CarbonResultsProps) => {
                   className="flex items-center gap-4"
                 >
                   <div className={cn("w-10 h-10 rounded-lg flex items-center justify-center", category.color)}>
-                    <Icon className="w-5 h-5 text-white" />
+                    <Icon className="w-5 h-5 text-primary-foreground" />
                   </div>
                   
                   <div className="flex-1">

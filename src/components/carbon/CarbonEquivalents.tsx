@@ -64,7 +64,7 @@ const CarbonEquivalents = ({ totalCO2 }: CarbonEquivalentsProps) => {
       value: Math.round(totalCO2 / 0.0045), // ~0.0045 kg CO2 per hour LED bulb
       unit: "heures",
       label: "d'éclairage LED",
-      color: "bg-yellow-500/10 text-yellow-600"
+      color: "bg-warning/15 text-warning"
     },
     {
       icon: Shirt,

@@ -97,57 +97,57 @@ const AdminDashboard = () => {
       title: "Réservations totales",
       value: stats.totalReservations,
       icon: CalendarCheck,
-      color: "text-blue-500",
-      bgColor: "bg-blue-500/10",
+      color: "text-info",
+      bgColor: "bg-info/10",
     },
     {
       title: "Utilisateurs",
       value: stats.totalUsers,
       icon: Users,
-      color: "text-green-500",
-      bgColor: "bg-green-500/10",
+      color: "text-success",
+      bgColor: "bg-success/10",
     },
     {
       title: "Destinations",
       value: stats.totalDestinations,
       icon: MapPin,
-      color: "text-purple-500",
-      bgColor: "bg-purple-500/10",
+      color: "text-accent",
+      bgColor: "bg-accent/10",
     },
     {
       title: "Coworkings",
       value: stats.totalCoworkings,
       icon: Building2,
-      color: "text-orange-500",
-      bgColor: "bg-orange-500/10",
+      color: "text-secondary-foreground",
+      bgColor: "bg-secondary/40",
     },
     {
       title: "Revenus totaux",
       value: `${stats.totalRevenue.toLocaleString()} €`,
       icon: DollarSign,
-      color: "text-emerald-500",
-      bgColor: "bg-emerald-500/10",
+      color: "text-accent",
+      bgColor: "bg-accent/10",
     },
     {
       title: "CO₂ économisé",
       value: `${stats.totalCarbonSaved.toLocaleString()} kg`,
       icon: Leaf,
-      color: "text-teal-500",
-      bgColor: "bg-teal-500/10",
+      color: "text-primary",
+      bgColor: "bg-primary/10",
     },
     {
       title: "En attente",
       value: stats.pendingReservations,
       icon: Activity,
-      color: "text-yellow-500",
-      bgColor: "bg-yellow-500/10",
+      color: "text-warning",
+      bgColor: "bg-warning/15",
     },
     {
       title: "Confirmées",
       value: stats.confirmedReservations,
       icon: TrendingUp,
-      color: "text-cyan-500",
-      bgColor: "bg-cyan-500/10",
+      color: "text-primary",
+      bgColor: "bg-primary/10",
     },
   ];
 
@@ -192,8 +192,8 @@ const AdminDashboard = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Card className="p-4 hover:shadow-md transition-shadow cursor-pointer">
             <a href="/admin/reservations" className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-blue-500/10">
-                <CalendarCheck className="h-5 w-5 text-blue-500" />
+              <div className="p-2 rounded-lg bg-info/10">
+                <CalendarCheck className="h-5 w-5 text-info" />
               </div>
               <div>
                 <p className="font-medium">Gérer les réservations</p>
@@ -205,8 +205,8 @@ const AdminDashboard = () => {
           </Card>
           <Card className="p-4 hover:shadow-md transition-shadow cursor-pointer">
             <a href="/admin/users" className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-green-500/10">
-                <Users className="h-5 w-5 text-green-500" />
+              <div className="p-2 rounded-lg bg-success/10">
+                <Users className="h-5 w-5 text-success" />
               </div>
               <div>
                 <p className="font-medium">Gérer les utilisateurs</p>
@@ -218,8 +218,8 @@ const AdminDashboard = () => {
           </Card>
           <Card className="p-4 hover:shadow-md transition-shadow cursor-pointer">
             <a href="/admin/destinations" className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-purple-500/10">
-                <MapPin className="h-5 w-5 text-purple-500" />
+              <div className="p-2 rounded-lg bg-accent/10">
+                <MapPin className="h-5 w-5 text-accent" />
               </div>
               <div>
                 <p className="font-medium">Gérer les destinations</p>
