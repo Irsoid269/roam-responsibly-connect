@@ -49,12 +49,23 @@
     --warning: 35 55% 50%;
     --warning-foreground: 217 33% 17%;
 
-    /* Carbon / éco (aligné or antique / océan) */
+    /* Carbon / éco */
     --carbon: 217 33% 17%;
     --carbon-foreground: 37 41% 95%;
     --carbon-light: 217 20% 90%;
     --carbon-saved: 35 35% 52%;
     --carbon-offset: 217 30% 35%;
+
+    /* Éco-score A→E (dégradé bleu océan → or → sable → clay) */
+    --eco-a: 155 30% 38%;
+    --eco-b: 170 25% 45%;
+    --eco-c: 35 35% 52%;
+    --eco-d: 25 45% 55%;
+    --eco-e: 12 55% 48%;
+
+    /* Info neutre (bleu océan atténué) */
+    --info: 217 33% 35%;
+    --info-foreground: 37 41% 95%;
 
     --border: 37 20% 85%;
     --input: 37 20% 85%;
