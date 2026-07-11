@@ -247,7 +247,7 @@ const AdminCoworkings = () => {
                     <Badge
                       className={`${
                         carbonScoreColors[coworking.carbon_score || "B"]
-                      } text-white`}
+                      } text-primary-foreground`}
                     >
                       {coworking.carbon_score}
                     </Badge>

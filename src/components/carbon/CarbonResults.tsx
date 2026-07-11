@@ -157,7 +157,7 @@ const CarbonResults = ({ results, onReset }: CarbonResultsProps) => {
                   className="flex items-center gap-4"
                 >
                   <div className={cn("w-10 h-10 rounded-lg flex items-center justify-center", category.color)}>
-                    <Icon className="w-5 h-5 text-white" />
+                    <Icon className="w-5 h-5 text-primary-foreground" />
                   </div>
                   
                   <div className="flex-1">

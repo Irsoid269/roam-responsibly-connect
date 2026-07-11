@@ -225,7 +225,7 @@ const AdminDestinations = () => {
                     <Badge
                       className={`${
                         carbonScoreColors[destination.carbon_score || "B"]
-                      } text-white`}
+                      } text-primary-foreground`}
                     >
                       {destination.carbon_score}
                     </Badge>
