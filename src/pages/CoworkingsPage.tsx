@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
+import { useSearchParams } from "react-router-dom";
 import { 
   Search, Filter, Star, Wifi, MapPin, 
   Clock, Laptop, Loader2
@@ -15,109 +16,61 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
 import BookingDialog from "@/components/coworking/BookingDialog";
-import { supabase } from "@/integrations/supabase/client";
-
-interface CoworkingSpace {
-  id: string;
-  name: string;
-  description: string | null;
-  address: string | null;
-  image_url: string | null;
-  carbon_score: string | null;
-  rating: number | null;
-  price_per_day: number | null;
-  price_per_hour: number | null;
-  price_per_month: number | null;
-  wifi_speed: number | null;
-  amenities: string[] | null;
-  opening_hours: string | null;
-  destination_id: string;
-}
-
-const carbonScoreColors: Record<string, string> = {
-  A: "bg-success text-success-foreground",
-  B: "bg-primary text-primary-foreground",
-  C: "bg-warning text-warning-foreground",
-};
+import { ecoScoreBadge } from "@/lib/eco-score";
+import { useCoworkings } from "@/hooks/useCatalogQueries";
+import PageHero from "@/components/layout/PageHero";
+import { toDateFromParam } from "@/lib/search-booking-params";
 
 const defaultImage = "https://images.unsplash.com/photo-1497366216548-37526070297c?w=800";
 
+type CoworkingSpace = NonNullable<ReturnType<typeof useCoworkings>["data"]>[number];
+
 const CoworkingsPage = () => {
-  const [coworkings, setCoworkings] = useState<CoworkingSpace[]>([]);
+  const [searchParams] = useSearchParams();
+  const destinationId = searchParams.get("destination") || undefined;
+  const initialFrom = toDateFromParam(searchParams.get("from") || undefined);
+  const initialTo = toDateFromParam(searchParams.get("to") || undefined);
+  const { data: coworkings = [], isLoading: loading } = useCoworkings(destinationId);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("popular");
-  const [loading, setLoading] = useState(true);
   const [selectedCoworking, setSelectedCoworking] = useState<CoworkingSpace | null>(null);
   const [bookingDialogOpen, setBookingDialogOpen] = useState(false);
 
-  useEffect(() => {
-    fetchCoworkings();
-  }, []);
-
-  const fetchCoworkings = async () => {
-    const { data, error } = await supabase
-      .from("coworking_spaces")
-      .select("*")
-      .order("rating", { ascending: false });
-
-    if (!error && data) {
-      setCoworkings(data);
-    }
-    setLoading(false);
-  };
-
-  const filteredCoworkings = coworkings.filter((cw) =>
-    cw.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    (cw.address && cw.address.toLowerCase().includes(searchQuery.toLowerCase()))
-  );
+  const filteredCoworkings = coworkings
+    .filter((cw) =>
+      cw.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (cw.address && cw.address.toLowerCase().includes(searchQuery.toLowerCase()))
+    )
+    .sort((a, b) => {
+      if (sortBy === "price") return (a.price_per_day || 0) - (b.price_per_day || 0);
+      return (b.rating || 0) - (a.rating || 0);
+    });
 
   return (
-    <div className="min-h-screen bg-background">
-      <Header />
-      
-      <main className="pt-24 pb-16">
-        {/* Hero Section */}
-        <section className="bg-gradient-to-b from-primary-light to-background py-12">
-          <div className="container mx-auto px-4">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="text-center max-w-3xl mx-auto"
-            >
-              <Badge variant="outline" className="mb-4 bg-primary/10 border-primary/20">
-                <Laptop className="w-3 h-3 mr-1" />
-                Espaces vérifiés
-              </Badge>
-              <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
-                Espaces de coworking
-              </h1>
-              <p className="text-lg text-muted-foreground mb-8">
-                Trouvez l'espace de travail idéal pour votre séjour, 
-                avec WiFi rapide et impact carbone minimal.
-              </p>
-
-              {/* Search Bar */}
-              <div className="flex flex-col sm:flex-row gap-3 max-w-2xl mx-auto">
-                <div className="relative flex-1">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-                  <Input
-                    placeholder="Rechercher un espace..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-10 h-12"
-                  />
-                </div>
-                <Button size="lg" variant="outline" className="h-12">
-                  <Filter className="w-4 h-4 mr-2" />
-                  Filtres
-                </Button>
-              </div>
-            </motion.div>
+    <>
+    <main className="page-main">
+        <PageHero
+          eyebrow="Espaces vérifiés"
+          title="Espaces de coworking"
+          description="Trouvez l'espace de travail idéal pour votre séjour, avec WiFi rapide et impact carbone minimal."
+        >
+          <div className="flex flex-col sm:flex-row gap-3 max-w-2xl mx-auto">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+              <Input
+                placeholder="Rechercher un espace..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10 h-12 bg-background/80 backdrop-blur-sm"
+              />
+            </div>
+            <Button size="lg" variant="outline" className="h-12">
+              <Filter className="w-4 h-4 mr-2" />
+              Filtres
+            </Button>
           </div>
-        </section>
+        </PageHero>
 
         {/* Results */}
         <section className="py-8">
@@ -177,7 +130,7 @@ const CoworkingsPage = () => {
                       
                       <div className="absolute top-3 right-3">
                         <span className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold ${
-                          carbonScoreColors[coworking.carbon_score || "B"]
+                          ecoScoreBadge(coworking.carbon_score || "B")
                         }`}>
                           {coworking.carbon_score || "B"}
                         </span>
@@ -258,16 +211,14 @@ const CoworkingsPage = () => {
           </div>
         </section>
       </main>
-
-      <Footer />
-
-      {/* Booking Dialog */}
       <BookingDialog
         coworking={selectedCoworking}
         open={bookingDialogOpen}
         onOpenChange={setBookingDialogOpen}
+        initialFrom={initialFrom}
+        initialTo={initialTo}
       />
-    </div>
+    </>
   );
 };
 

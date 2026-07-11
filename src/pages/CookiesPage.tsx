@@ -3,8 +3,6 @@ import { Cookie, Shield, Settings, BarChart3 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
 
 const cookieTypes = [
   {
@@ -39,10 +37,7 @@ const cookieTypes = [
 
 const CookiesPage = () => {
   return (
-    <div className="min-h-screen bg-background">
-      <Header />
-      
-      <main className="pt-24 pb-16">
+    <main className="page-main">
         <section className="py-12">
           <div className="container mx-auto px-4 max-w-3xl">
             <motion.div
@@ -154,7 +149,7 @@ const CookiesPage = () => {
                   <h2 className="text-2xl font-semibold text-foreground mb-4">Contact</h2>
                   <p className="text-muted-foreground">
                     Pour toute question concernant notre utilisation des cookies :<br />
-                    Email : privacy@coworkation.com
+                    Email : privacy@amaniresorts.com
                   </p>
                 </section>
               </div>
@@ -162,9 +157,6 @@ const CookiesPage = () => {
           </div>
         </section>
       </main>
-
-      <Footer />
-    </div>
   );
 };
 

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
+import { AdminLoading, AdminEmpty } from "@/components/admin/AdminTableState";
 import { supabase } from "@/integrations/supabase/client";
 import {
   Table,
@@ -139,16 +140,15 @@ const AdminUsers = () => {
   };
 
   return (
-    <AdminLayout title="Gestion des utilisateurs">
-      <div className="bg-background rounded-lg border">
+    <AdminLayout
+      title="Gestion des utilisateurs"
+      description="Comptes voyageurs, rôles et impact carbone agrégé."
+    >
+      <div className="rounded-xl border border-border bg-background shadow-sm overflow-hidden">
         {loading ? (
-          <div className="p-8 text-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary mx-auto"></div>
-          </div>
+          <AdminLoading />
         ) : users.length === 0 ? (
-          <div className="p-8 text-center text-muted-foreground">
-            Aucun utilisateur trouvé
-          </div>
+          <AdminEmpty title="Aucun utilisateur trouvé" />
         ) : (
           <Table>
             <TableHeader>

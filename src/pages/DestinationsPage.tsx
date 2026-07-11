@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { 
   Search, Filter, Star, Wifi, Leaf, MapPin, 
   SlidersHorizontal, Grid, List, Loader2
@@ -16,101 +16,67 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
-import { supabase } from "@/integrations/supabase/client";
-
-interface Destination {
-  id: string;
-  name: string;
-  country: string;
-  city: string;
-  description: string | null;
-  image_url: string | null;
-  carbon_score: string | null;
-  rating: number | null;
-  highlight: string | null;
-  avg_price_per_day: number | null;
-  wifi_speed: number | null;
-  coworking_count: number | null;
-}
-
-const carbonScoreColors: Record<string, string> = {
-  A: "bg-success text-success-foreground",
-  B: "bg-primary text-primary-foreground",
-  C: "bg-warning text-warning-foreground",
-};
+import { ecoScoreBadge } from "@/lib/eco-score";
+import { useDestinations } from "@/hooks/useCatalogQueries";
+import PageHero from "@/components/layout/PageHero";
 
 const defaultImage = "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800";
 
 const DestinationsPage = () => {
-  const [destinations, setDestinations] = useState<Destination[]>([]);
+  const [searchParams] = useSearchParams();
+  const destinationId = searchParams.get("destination") || undefined;
+  const from = searchParams.get("from") || undefined;
+  const to = searchParams.get("to") || undefined;
+  const travelers = searchParams.get("travelers") || undefined;
+  const { data: destinations = [], isLoading: loading } = useDestinations();
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("popular");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchDestinations();
-  }, []);
+  const detailQuery = (() => {
+    const qs = new URLSearchParams();
+    if (from) qs.set("from", from);
+    if (to) qs.set("to", to);
+    if (travelers) qs.set("travelers", travelers);
+    const q = qs.toString();
+    return q ? `?${q}` : "";
+  })();
 
-  const fetchDestinations = async () => {
-    const { data, error } = await supabase
-      .from("destinations")
-      .select("*")
-      .order("rating", { ascending: false });
-
-    if (!error && data) {
-      setDestinations(data);
-    }
-    setLoading(false);
-  };
-
-  const filteredDestinations = destinations.filter((dest) =>
-    dest.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    dest.country.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredDestinations = destinations
+    .filter((dest) => !destinationId || dest.id === destinationId)
+    .filter((dest) =>
+      dest.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      dest.country.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+    .sort((a, b) => {
+      if (sortBy === "price") return (a.avg_price_per_day || 0) - (b.avg_price_per_day || 0);
+      if (sortBy === "carbon") return (a.carbon_score || "Z").localeCompare(b.carbon_score || "Z");
+      return (b.rating || 0) - (a.rating || 0);
+    });
 
   return (
-    <div className="min-h-screen bg-background">
-      <Header />
-      
-      <main className="pt-24 pb-16">
-        {/* Hero Section */}
-        <section className="bg-gradient-to-b from-primary-light to-background py-12">
-          <div className="container mx-auto px-4">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="text-center max-w-3xl mx-auto"
-            >
-              <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
-                Explorez nos destinations
-              </h1>
-              <p className="text-lg text-muted-foreground mb-8">
-                Découvrez les meilleurs spots pour travailler et vivre à travers le monde, 
-                sélectionnés pour leur qualité et leur impact environnemental réduit.
-              </p>
-
-              {/* Search Bar */}
-              <div className="flex flex-col sm:flex-row gap-3 max-w-2xl mx-auto">
-                <div className="relative flex-1">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-                  <Input
-                    placeholder="Rechercher une destination..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-10 h-12"
-                  />
-                </div>
-                <Button size="lg" variant="outline" className="h-12">
-                  <Filter className="w-4 h-4 mr-2" />
-                  Filtres
-                </Button>
-              </div>
-            </motion.div>
+    <main className="page-main">
+        <PageHero
+          eyebrow="Catalogue Amani"
+          title="Explorez nos destinations"
+          description="Découvrez les meilleurs spots pour travailler et vivre aux Comores, sélectionnés pour leur qualité et leur impact environnemental réduit."
+        >
+          <div className="flex flex-col sm:flex-row gap-3 max-w-2xl mx-auto">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+              <Input
+                placeholder="Rechercher une destination..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10 h-12 bg-background/80 backdrop-blur-sm"
+              />
+            </div>
+            <Button size="lg" variant="outline" className="h-12">
+              <Filter className="w-4 h-4 mr-2" />
+              Filtres
+            </Button>
           </div>
-        </section>
+        </PageHero>
 
         {/* Filters & Results */}
         <section className="py-8">
@@ -179,7 +145,7 @@ const DestinationsPage = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.05 }}
                 >
-                  <Link to={`/destinations/${destination.id}`}>
+                  <Link to={`/destinations/${destination.id}${detailQuery}`}>
                     <Card className={`group cursor-pointer card-hover overflow-hidden ${
                       viewMode === "list" ? "flex flex-row" : ""
                     }`}>
@@ -197,7 +163,7 @@ const DestinationsPage = () => {
                         {/* Carbon Score Badge */}
                         <div className="absolute top-3 right-3">
                           <span className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold ${
-                            carbonScoreColors[destination.carbon_score || "B"]
+                            ecoScoreBadge(destination.carbon_score || "B")
                           }`}>
                             {destination.carbon_score || "B"}
                           </span>
@@ -283,9 +249,6 @@ const DestinationsPage = () => {
           </div>
         </section>
       </main>
-
-      <Footer />
-    </div>
   );
 };
 

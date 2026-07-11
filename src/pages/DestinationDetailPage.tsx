@@ -1,21 +1,32 @@
-import { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useState } from "react";
+import { useParams, Link, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { 
   Star, Wifi, Leaf, MapPin, ArrowLeft, Calendar, Users, 
-  Building2, Home, Bike, Compass, Clock, ChevronRight,
-  Heart, Share2, Check
+  Building2, Home, Compass, Clock, ChevronRight,
+  Heart, Share2, Check, Loader2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
-import { supabase } from "@/integrations/supabase/client";
+import { ecoScoreBadge } from "@/lib/eco-score";
+import {
+  useDestination,
+  useCoworkings,
+  useAccommodations,
+  useActivities,
+} from "@/hooks/useCatalogQueries";
+import {
+  parseBookingSearchParams,
+  toDateInputValue,
+  withBookingDates,
+} from "@/lib/search-booking-params";
+import { format } from "date-fns";
+import { fr } from "date-fns/locale";
 
-// Mock images
-import destinationLisbon from "@/assets/destination-lisbon.jpg";
+// Fallback image
+import destinationMoroni from "@/assets/destination-moroni.jpg";
 
 interface Destination {
   id: string;
@@ -60,85 +71,41 @@ interface Activity {
   eco_certified: boolean | null;
 }
 
-const carbonScoreColors: Record<string, string> = {
-  A: "bg-success text-success-foreground",
-  B: "bg-primary text-primary-foreground",
-  C: "bg-warning text-warning-foreground",
-};
-
-// Mock data
-const mockDestination: Destination = {
-  id: "1",
-  name: "Lisbonne",
-  country: "Portugal",
-  city: "Lisbonne",
-  description: "Lisbonne, la capitale ensoleillée du Portugal, est devenue l'une des destinations préférées des nomades digitaux. Avec son climat doux, sa scène tech florissante et son coût de vie accessible, c'est l'endroit idéal pour combiner travail et découverte.",
-  image_url: destinationLisbon,
-  carbon_score: "A",
-  rating: 4.9,
-  highlight: "Meilleur rapport qualité-prix",
-  avg_price_per_day: 45,
-  wifi_speed: 100,
-  coworking_count: 85,
-};
-
-const mockCoworkings: CoworkingSpace[] = [
-  { id: "1", name: "Heden Lisboa", address: "Alfama", price_per_day: 25, rating: 4.8, amenities: ["Wifi", "Café", "Terrasse"], carbon_score: "A" },
-  { id: "2", name: "Second Home", address: "Cais do Sodré", price_per_day: 35, rating: 4.7, amenities: ["Wifi", "Salle de réunion", "Jardin"], carbon_score: "A" },
-  { id: "3", name: "Cowork Lisboa", address: "Baixa", price_per_day: 20, rating: 4.5, amenities: ["Wifi", "Imprimante"], carbon_score: "B" },
-];
-
-const mockAccommodations: Accommodation[] = [
-  { id: "1", name: "Selina Secret Garden", type: "coliving", price_per_night: 45, rating: 4.6, carbon_score: "A" },
-  { id: "2", name: "Eco Hostel Alfama", type: "hostel", price_per_night: 25, rating: 4.4, carbon_score: "A" },
-  { id: "3", name: "Apartment Bairro Alto", type: "apartment", price_per_night: 65, rating: 4.7, carbon_score: "B" },
-];
-
-const mockActivities: Activity[] = [
-  { id: "1", name: "Tour vélo électrique", price: 35, duration_hours: 3, category: "eco-tour", eco_certified: true },
-  { id: "2", name: "Cours de surf", price: 45, duration_hours: 2, category: "sport", eco_certified: false },
-  { id: "3", name: "Visite Sintra", price: 55, duration_hours: 6, category: "culture", eco_certified: true },
-];
-
 const DestinationDetailPage = () => {
   const { id } = useParams();
-  const [destination, setDestination] = useState<Destination | null>(mockDestination);
-  const [coworkings, setCoworkings] = useState<CoworkingSpace[]>(mockCoworkings);
-  const [accommodations, setAccommodations] = useState<Accommodation[]>(mockAccommodations);
-  const [activities, setActivities] = useState<Activity[]>(mockActivities);
-  const [loading, setLoading] = useState(true);
+  const [searchParams] = useSearchParams();
+  const bookingParams = parseBookingSearchParams(searchParams);
+  const { data: destination, isLoading: destLoading } = useDestination(id);
+  const { data: coworkings = [], isLoading: cwLoading } = useCoworkings(id);
+  const { data: accommodations = [], isLoading: acLoading } = useAccommodations(id);
+  const { data: activities = [], isLoading: actLoading } = useActivities(id);
   const [selectedTab, setSelectedTab] = useState("coworkings");
 
-  useEffect(() => {
-    if (id) {
-      fetchDestinationData();
+  const loading = destLoading || cwLoading || acLoading || actLoading;
+  const bookingPath = withBookingDates(`/booking/${id}`, bookingParams);
+  const travelersCount = Number(bookingParams.travelers) || 1;
+
+  const datesLabel = (() => {
+    const from = toDateInputValue(bookingParams.from);
+    const to = toDateInputValue(bookingParams.to);
+    if (from && to) {
+      try {
+        return `${format(new Date(from), "d MMM", { locale: fr })} – ${format(new Date(to), "d MMM", { locale: fr })}`;
+      } catch {
+        return `${from} – ${to}`;
+      }
     }
-  }, [id]);
+    if (from) return from;
+    return "Dates flexibles";
+  })();
 
-  const fetchDestinationData = async () => {
-    // Fetch destination
-    const { data: destData } = await supabase
-      .from("destinations")
-      .select("*")
-      .eq("id", id)
-      .maybeSingle();
-
-    if (destData) {
-      setDestination(destData);
-
-      // Fetch related data
-      const [coworkData, accomData, actData] = await Promise.all([
-        supabase.from("coworking_spaces").select("*").eq("destination_id", id),
-        supabase.from("accommodations").select("*").eq("destination_id", id),
-        supabase.from("activities").select("*").eq("destination_id", id),
-      ]);
-
-      if (coworkData.data && coworkData.data.length > 0) setCoworkings(coworkData.data);
-      if (accomData.data && accomData.data.length > 0) setAccommodations(accomData.data);
-      if (actData.data && actData.data.length > 0) setActivities(actData.data);
-    }
-    setLoading(false);
-  };
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="w-10 h-10 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   if (!destination) {
     return (
@@ -166,14 +133,11 @@ const DestinationDetailPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <Header />
-      
-      <main className="pt-20">
-        {/* Hero Image */}
-        <div className="relative h-[50vh] md:h-[60vh]">
+    <main className="pb-16 md:pb-20">
+        {/* Hero Image — full-bleed under fixed header */}
+        <div className="relative h-[55vh] md:h-[65vh]">
           <img
-            src={destination.image_url || destinationLisbon}
+            src={destination.image_url || destinationMoroni}
             alt={destination.name}
             className="w-full h-full object-cover"
           />
@@ -207,7 +171,7 @@ const DestinationDetailPage = () => {
               >
                 <div className="flex items-center gap-3 mb-3">
                   <span className={`px-3 py-1 rounded-full text-sm font-bold ${
-                    carbonScoreColors[destination.carbon_score || "B"]
+                    ecoScoreBadge(destination.carbon_score || "B")
                   }`}>
                     Score Carbone {destination.carbon_score}
                   </span>
@@ -215,7 +179,7 @@ const DestinationDetailPage = () => {
                     <Badge variant="secondary">{destination.highlight}</Badge>
                   )}
                 </div>
-                <h1 className="text-4xl md:text-5xl font-bold text-primary-foreground mb-2">
+                <h1 className="font-display text-4xl md:text-5xl font-medium text-primary-foreground mb-2">
                   {destination.name}
                 </h1>
                 <p className="text-lg text-primary-foreground/80 flex items-center gap-2">
@@ -311,6 +275,11 @@ const DestinationDetailPage = () => {
                   </TabsList>
 
                   <TabsContent value="coworkings" className="mt-6 space-y-4">
+                    {coworkings.length === 0 && (
+                      <p className="text-sm text-muted-foreground text-center py-8">
+                        Aucun coworking pour cette destination.
+                      </p>
+                    )}
                     {coworkings.map((space) => (
                       <Card key={space.id} className="cursor-pointer card-hover">
                         <CardContent className="p-4">
@@ -319,7 +288,7 @@ const DestinationDetailPage = () => {
                               <div className="flex items-center gap-3">
                                 <h4 className="font-semibold text-foreground">{space.name}</h4>
                                 <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
-                                  carbonScoreColors[space.carbon_score || "B"]
+                                  ecoScoreBadge(space.carbon_score || "B")
                                 }`}>
                                   {space.carbon_score}
                                 </span>
@@ -343,8 +312,8 @@ const DestinationDetailPage = () => {
                             <div className="text-right">
                               <p className="text-lg font-bold text-foreground">{space.price_per_day}€</p>
                               <p className="text-sm text-muted-foreground">/jour</p>
-                              <Button size="sm" className="mt-2">
-                                Réserver
+                              <Button size="sm" className="mt-2" asChild>
+                                <Link to={bookingPath}>Réserver</Link>
                               </Button>
                             </div>
                           </div>
@@ -354,6 +323,11 @@ const DestinationDetailPage = () => {
                   </TabsContent>
 
                   <TabsContent value="accommodations" className="mt-6 space-y-4">
+                    {accommodations.length === 0 && (
+                      <p className="text-sm text-muted-foreground text-center py-8">
+                        Aucun hébergement pour cette destination.
+                      </p>
+                    )}
                     {accommodations.map((accom) => (
                       <Card key={accom.id} className="cursor-pointer card-hover">
                         <CardContent className="p-4">
@@ -362,7 +336,7 @@ const DestinationDetailPage = () => {
                               <div className="flex items-center gap-3">
                                 <h4 className="font-semibold text-foreground">{accom.name}</h4>
                                 <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
-                                  carbonScoreColors[accom.carbon_score || "B"]
+                                  ecoScoreBadge(accom.carbon_score || "B")
                                 }`}>
                                   {accom.carbon_score}
                                 </span>
@@ -380,8 +354,8 @@ const DestinationDetailPage = () => {
                             <div className="text-right">
                               <p className="text-lg font-bold text-foreground">{accom.price_per_night}€</p>
                               <p className="text-sm text-muted-foreground">/nuit</p>
-                              <Button size="sm" className="mt-2">
-                                Réserver
+                              <Button size="sm" className="mt-2" asChild>
+                                <Link to={bookingPath}>Réserver</Link>
                               </Button>
                             </div>
                           </div>
@@ -391,6 +365,11 @@ const DestinationDetailPage = () => {
                   </TabsContent>
 
                   <TabsContent value="activities" className="mt-6 space-y-4">
+                    {activities.length === 0 && (
+                      <p className="text-sm text-muted-foreground text-center py-8">
+                        Aucune activité pour cette destination.
+                      </p>
+                    )}
                     {activities.map((activity) => (
                       <Card key={activity.id} className="cursor-pointer card-hover">
                         <CardContent className="p-4">
@@ -417,8 +396,8 @@ const DestinationDetailPage = () => {
                             </div>
                             <div className="text-right">
                               <p className="text-lg font-bold text-foreground">{activity.price}€</p>
-                              <Button size="sm" className="mt-2">
-                                Réserver
+                              <Button size="sm" className="mt-2" asChild>
+                                <Link to={bookingPath}>Réserver</Link>
                               </Button>
                             </div>
                           </div>
@@ -449,37 +428,28 @@ const DestinationDetailPage = () => {
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    <div className="grid grid-cols-2 gap-3">
-                      <div className="p-3 border rounded-lg">
-                        <p className="text-xs text-muted-foreground mb-1">Arrivée</p>
-                        <p className="font-medium flex items-center gap-1">
-                          <Calendar className="w-4 h-4" />
-                          Sélectionner
-                        </p>
-                      </div>
-                      <div className="p-3 border rounded-lg">
-                        <p className="text-xs text-muted-foreground mb-1">Départ</p>
-                        <p className="font-medium flex items-center gap-1">
-                          <Calendar className="w-4 h-4" />
-                          Sélectionner
-                        </p>
-                      </div>
+                    <div className="p-3 border rounded-lg">
+                      <p className="text-xs text-muted-foreground mb-1">Dates</p>
+                      <p className="font-medium flex items-center gap-1">
+                        <Calendar className="w-4 h-4" />
+                        {datesLabel}
+                      </p>
                     </div>
 
                     <div className="p-3 border rounded-lg">
                       <p className="text-xs text-muted-foreground mb-1">Voyageurs</p>
                       <p className="font-medium flex items-center gap-1">
                         <Users className="w-4 h-4" />
-                        1 voyageur
+                        {travelersCount} voyageur{travelersCount > 1 ? "s" : ""}
                       </p>
                     </div>
 
-                    <Link to={`/booking/${destination.id}`}>
-                      <Button className="w-full" size="lg">
+                    <Button className="w-full" size="lg" asChild>
+                      <Link to={bookingPath}>
                         Composer mon séjour
                         <ChevronRight className="w-4 h-4 ml-2" />
-                      </Button>
-                    </Link>
+                      </Link>
+                    </Button>
 
                     <div className="pt-4 border-t space-y-2">
                       <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -502,9 +472,6 @@ const DestinationDetailPage = () => {
           </div>
         </div>
       </main>
-
-      <Footer />
-    </div>
   );
 };
 

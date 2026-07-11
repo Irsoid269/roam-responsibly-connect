@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Leaf, Mail, Lock, Eye, EyeOff, ArrowRight } from "lucide-react";
+import { Mail, Lock, Eye, EyeOff, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
+import amaniSymbol from "@/assets/amani-symbol-gold.jpg";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -22,7 +23,7 @@ const LoginPage = () => {
     setLoading(true);
 
     const { error } = await signIn(email, password);
-    
+
     if (error) {
       toast({
         title: "Erreur de connexion",
@@ -31,39 +32,39 @@ const LoginPage = () => {
       });
     } else {
       toast({
-        title: "Bienvenue !",
+        title: "Bienvenue chez Amani Resorts",
         description: "Connexion réussie",
       });
       navigate("/");
     }
-    
+
     setLoading(false);
   };
 
   return (
     <div className="min-h-screen bg-background flex">
-      {/* Left side - Form */}
       <div className="flex-1 flex items-center justify-center p-6 md:p-12">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="w-full max-w-md"
         >
-          {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 mb-8">
-            <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
-              <Leaf className="w-6 h-6 text-primary-foreground" />
-            </div>
-            <span className="text-2xl font-bold text-foreground">
-              Cowork<span className="text-primary">ation</span>
+          <Link to="/" className="flex items-center gap-3 mb-8 group">
+            <img
+              src={amaniSymbol}
+              alt="Amani Resorts"
+              className="w-11 h-11 rounded-full object-cover transition-transform group-hover:scale-105"
+            />
+            <span className="font-display text-2xl font-medium text-foreground leading-none">
+              AMANI<span className="text-accent"> Resorts</span>
             </span>
           </Link>
 
-          <h1 className="text-3xl font-bold text-foreground mb-2">
-            Bon retour !
+          <h1 className="font-display text-3xl md:text-4xl font-medium text-foreground mb-2">
+            Bon retour
           </h1>
           <p className="text-muted-foreground mb-8">
-            Connectez-vous pour accéder à vos réservations et voyages.
+            Connectez-vous pour accéder à vos réservations et séjours aux Comores.
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-5">
@@ -107,14 +108,14 @@ const LoginPage = () => {
             </div>
 
             <div className="flex items-center justify-between">
-              <Link to="/forgot-password" className="text-sm text-primary hover:underline">
+              <Link to="/forgot-password" className="text-sm text-accent hover:underline">
                 Mot de passe oublié ?
               </Link>
             </div>
 
-            <Button type="submit" className="w-full" size="lg" disabled={loading}>
-              {loading ? "Connexion..." : "Se connecter"}
-              <ArrowRight className="w-4 h-4 ml-2" />
+            <Button type="submit" className="w-full gap-2" size="lg" disabled={loading}>
+              {loading ? "Connexion…" : "Se connecter"}
+              {!loading && <ArrowRight className="w-4 h-4" />}
             </Button>
           </form>
 
@@ -127,9 +128,8 @@ const LoginPage = () => {
         </motion.div>
       </div>
 
-      {/* Right side - Image */}
-      <div className="hidden lg:block lg:w-1/2 relative">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/90 to-accent/90" />
+      <div className="hidden lg:block lg:w-1/2 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary to-primary-glow" />
         <div className="absolute inset-0 flex items-center justify-center p-12">
           <div className="text-center text-primary-foreground">
             <motion.div
@@ -137,12 +137,17 @@ const LoginPage = () => {
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.2 }}
             >
-              <Leaf className="w-20 h-20 mx-auto mb-6 opacity-80" />
-              <h2 className="text-3xl font-bold mb-4">
-                Voyagez. Travaillez. Impactez.
+              <img
+                src={amaniSymbol}
+                alt=""
+                className="w-20 h-20 mx-auto mb-6 rounded-full object-cover ring-2 ring-accent/50"
+              />
+              <h2 className="font-display text-3xl font-medium mb-4">
+                Éco-luxe aux Comores
               </h2>
-              <p className="text-lg opacity-90 max-w-md mx-auto">
-                Rejoignez une communauté de voyageurs responsables qui combinent travail et découverte du monde.
+              <p className="text-lg text-primary-foreground/85 max-w-md mx-auto">
+                Séjours, coworking et mobilité douce face à l&apos;océan Indien —
+                mesurés, responsables, Amani.
               </p>
             </motion.div>
           </div>

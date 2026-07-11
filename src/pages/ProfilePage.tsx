@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { 
-  User, Mail, Leaf, MapPin, Calendar, Settings, LogOut, 
-  TreePine, Plane, Building2, Bike, Camera, Laptop, Home, Car, Sparkles, Clock, CheckCircle2, XCircle
+import {
+  User, Leaf, Calendar, LogOut,
+  TreePine, Plane, Building2, Laptop, Home, Car, Sparkles, Clock, CheckCircle2, XCircle, Download
 } from "lucide-react";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
@@ -12,190 +12,102 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
 import { useAuth } from "@/hooks/useAuth";
-import { supabase } from "@/integrations/supabase/client";
-
-interface Profile {
-  id: string;
-  full_name: string | null;
-  avatar_url: string | null;
-  bio: string | null;
-  carbon_preference: string | null;
-  total_carbon_saved: number;
-  trips_count: number;
-}
-
-interface ReservationItem {
-  id: string;
-  item_type: string;
-  item_name: string;
-  quantity: number | null;
-  total_price: number | null;
-  start_date: string | null;
-  end_date: string | null;
-}
-
-interface Reservation {
-  id: string;
-  status: string | null;
-  check_in_date: string;
-  check_out_date: string;
-  total_price: number | null;
-  created_at: string;
-  items: ReservationItem[];
-}
+import { useProfile, useUserReservations } from "@/hooks/useCatalogQueries";
+import { buildInvoiceFromReservation, printAmaniInvoice } from "@/lib/print-invoice";
+import { toast } from "sonner";
 
 const ProfilePage = () => {
   const { user, signOut, loading: authLoading } = useAuth();
   const navigate = useNavigate();
-  const [profile, setProfile] = useState<Profile | null>(null);
-  const [reservations, setReservations] = useState<Reservation[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: profile, isLoading: profileLoading } = useProfile(user?.id);
+  const { data: reservations = [], isLoading: reservationsLoading } = useUserReservations(user?.id);
 
   useEffect(() => {
     if (!authLoading && !user) {
       navigate("/login");
-      return;
-    }
-
-    if (user) {
-      fetchProfile();
-      fetchReservations();
     }
   }, [user, authLoading, navigate]);
-
-  const fetchProfile = async () => {
-    if (!user) return;
-
-    const { data, error } = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("user_id", user.id)
-      .maybeSingle();
-
-    if (!error && data) {
-      setProfile(data);
-    }
-    setLoading(false);
-  };
-
-  const fetchReservations = async () => {
-    if (!user) return;
-    const { data: resas } = await supabase
-      .from("reservations")
-      .select("id, status, check_in_date, check_out_date, total_price, created_at")
-      .eq("user_id", user.id)
-      .order("created_at", { ascending: false });
-
-    if (!resas) return;
-
-    const withItems = await Promise.all(
-      resas.map(async (r) => {
-        const { data: items } = await supabase
-          .from("reservation_items")
-          .select("id, item_type, item_name, quantity, total_price, start_date, end_date")
-          .eq("reservation_id", r.id);
-        return { ...r, items: items || [] };
-      })
-    );
-    setReservations(withItems);
-  };
 
   const handleSignOut = async () => {
     await signOut();
     navigate("/");
   };
 
-  if (authLoading || loading) {
+  const downloadInvoice = (r: (typeof reservations)[number]) => {
+    if (!user) return;
+    try {
+      const data = buildInvoiceFromReservation({
+        reservation: r,
+        guestName: profile?.full_name || user.email?.split("@")[0] || "Voyageur",
+        guestEmail: user.email || "hello@amaniresorts.com",
+        destinationLabel:
+          r.items.find((i) => i.item_type === "coworking")?.item_name || "Comores",
+      });
+      const result = printAmaniInvoice(data);
+      if (!result.ok) {
+        toast.error(result.reason);
+        return;
+      }
+      toast.success(
+        result.mode === "print"
+          ? "Facture ouverte — Imprimer ou enregistrer en PDF"
+          : "Facture téléchargée sur votre appareil"
+      );
+    } catch (e) {
+      console.error(e);
+      toast.error("Impossible de générer la facture");
+    }
+  };
+
+  if (authLoading || profileLoading || reservationsLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary" />
       </div>
     );
   }
 
+  if (!user) return null;
+
   const carbonStats = [
-    { icon: TreePine, label: "CO₂ économisé", value: `${profile?.total_carbon_saved || 0} kg`, color: "text-success" },
-    { icon: Plane, label: "Voyages", value: profile?.trips_count || 0, color: "text-primary" },
-    { icon: Building2, label: "Coworkings visités", value: 12, color: "text-accent" },
-    { icon: Bike, label: "Mobilité douce", value: "85%", color: "text-carbon" },
+    { icon: TreePine, label: "CO₂ compensé", value: `${profile?.total_carbon_saved || 0} kg`, color: "text-success" },
+    { icon: Plane, label: "Séjours", value: `${profile?.trips_count || reservations.length}`, color: "text-primary" },
+    { icon: Leaf, label: "Préférence", value: profile?.carbon_preference || "balanced", color: "text-accent" },
+    { icon: Building2, label: "Réservations", value: `${reservations.length}`, color: "text-info" },
   ];
 
   return (
-    <div className="min-h-screen bg-background">
-      <Header />
-      
-      <main className="pt-24 pb-16">
-        <div className="container mx-auto px-4">
-          {/* Profile Header */}
+    <main className="page-main">
+        <div className="container mx-auto px-4 max-w-5xl">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-8"
+            className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8"
           >
-            <Card className="overflow-hidden">
-              <div className="h-32 bg-gradient-to-r from-primary to-accent" />
-              <CardContent className="relative pt-0 pb-6">
-                <div className="flex flex-col md:flex-row md:items-end gap-4 -mt-16 md:-mt-12">
-                  <div className="relative">
-                    <Avatar className="w-32 h-32 border-4 border-background shadow-lg">
-                      <AvatarImage src={profile?.avatar_url || ""} />
-                      <AvatarFallback className="text-3xl bg-primary text-primary-foreground">
-                        {profile?.full_name?.charAt(0) || user?.email?.charAt(0)?.toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
-                    <button className="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-md hover:bg-primary/90 transition-colors">
-                      <Camera className="w-4 h-4" />
-                    </button>
-                  </div>
-                  
-                  <div className="flex-1">
-                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                      <div>
-                        <h1 className="text-2xl font-bold text-foreground">
-                          {profile?.full_name || "Voyageur"}
-                        </h1>
-                        <p className="text-muted-foreground flex items-center gap-2 mt-1">
-                          <Mail className="w-4 h-4" />
-                          {user?.email}
-                        </p>
-                      </div>
-                      <div className="flex gap-2">
-                        <Button variant="outline" size="sm">
-                          <Settings className="w-4 h-4 mr-2" />
-                          Paramètres
-                        </Button>
-                        <Button variant="ghost" size="sm" onClick={handleSignOut}>
-                          <LogOut className="w-4 h-4 mr-2" />
-                          Déconnexion
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Carbon Badge */}
-                <div className="mt-6 flex flex-wrap gap-2">
-                  <Badge variant="secondary" className="bg-carbon-light text-carbon">
-                    <Leaf className="w-3 h-3 mr-1" />
-                    Voyageur Éco-responsable
-                  </Badge>
-                  <Badge variant="outline">
-                    <MapPin className="w-3 h-3 mr-1" />
-                    4 pays visités
-                  </Badge>
-                  <Badge variant="outline">
-                    <Calendar className="w-3 h-3 mr-1" />
-                    Membre depuis 2024
-                  </Badge>
-                </div>
-              </CardContent>
-            </Card>
+            <div className="flex items-center gap-4">
+              <Avatar className="w-16 h-16">
+                <AvatarImage src={profile?.avatar_url || undefined} />
+                <AvatarFallback className="bg-primary text-primary-foreground text-xl">
+                  {(profile?.full_name || user.email || "A").charAt(0).toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+              <div>
+                <h1 className="font-display text-3xl font-medium">
+                  {profile?.full_name || "Voyageur Amani"}
+                </h1>
+                <p className="text-muted-foreground flex items-center gap-2">
+                  <User className="w-4 h-4" />
+                  {user.email}
+                </p>
+              </div>
+            </div>
+            <Button variant="outline" onClick={handleSignOut} className="gap-2">
+              <LogOut className="w-4 h-4" />
+              Déconnexion
+            </Button>
           </motion.div>
 
-          {/* Stats Cards */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -213,147 +125,152 @@ const ProfilePage = () => {
             ))}
           </motion.div>
 
-          {/* Tabs */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-          >
-            <Tabs defaultValue="trips" className="w-full">
-              <TabsList className="w-full md:w-auto">
-                <TabsTrigger value="trips">Mes voyages</TabsTrigger>
-                <TabsTrigger value="carbon">Impact carbone</TabsTrigger>
-                <TabsTrigger value="reviews">Mes avis</TabsTrigger>
-              </TabsList>
+          <Tabs defaultValue="trips" className="w-full">
+            <TabsList>
+              <TabsTrigger value="trips">Mes voyages</TabsTrigger>
+              <TabsTrigger value="carbon">Impact carbone</TabsTrigger>
+            </TabsList>
 
-              <TabsContent value="trips" className="mt-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Mes réservations</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    {reservations.length === 0 ? (
-                      <div className="text-center py-12 text-muted-foreground">
-                        <Plane className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                        <p className="text-lg font-medium">Aucune réservation</p>
-                        <p className="text-sm mt-1">Explorez nos destinations pour planifier votre prochain coworkation !</p>
-                        <Button className="mt-4" onClick={() => navigate("/destinations")}>
-                          Explorer les destinations
-                        </Button>
-                      </div>
-                    ) : (
-                      <div className="space-y-4">
-                        {reservations.map((r) => {
-                          const statusConfig: Record<string, { label: string; variant: "default" | "secondary" | "destructive" | "outline"; icon: typeof Clock; className: string }> = {
-                            pending: { label: "En attente", variant: "secondary", icon: Clock, className: "bg-warning/15 text-warning border-warning/30" },
-                            confirmed: { label: "Confirmée", variant: "default", icon: CheckCircle2, className: "bg-success/15 text-success border-success/30" },
-                            cancelled: { label: "Annulée", variant: "destructive", icon: XCircle, className: "" },
-                          };
-                          const cfg = statusConfig[r.status || "pending"] || statusConfig.pending;
-                          const StatusIcon = cfg.icon;
-                          const itemIcon = (type: string) => {
-                            if (type === "coworking") return Laptop;
-                            if (type === "accommodation") return Home;
-                            if (type === "mobility") return Car;
-                            if (type === "activity") return Sparkles;
-                            return Calendar;
-                          };
-                          return (
-                            <div key={r.id} className="border border-border rounded-lg p-4 hover:shadow-md transition-shadow">
-                              <div className="flex items-start justify-between gap-4 mb-3">
-                                <div>
-                                  <p className="text-sm text-muted-foreground">
-                                    Réservation du {format(new Date(r.created_at), "d MMM yyyy", { locale: fr })}
-                                  </p>
-                                  <p className="font-semibold flex items-center gap-2 mt-1">
-                                    <Calendar className="w-4 h-4" />
-                                    {format(new Date(r.check_in_date), "d MMM", { locale: fr })} - {format(new Date(r.check_out_date), "d MMM yyyy", { locale: fr })}
-                                  </p>
-                                </div>
-                                <Badge variant="outline" className={cfg.className}>
-                                  <StatusIcon className="w-3 h-3 mr-1" />
-                                  {cfg.label}
-                                </Badge>
+            <TabsContent value="trips" className="mt-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Mes réservations</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {reservations.length === 0 ? (
+                    <div className="text-center py-12 text-muted-foreground">
+                      <Plane className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                      <p className="text-lg font-medium">Aucune réservation</p>
+                      <p className="text-sm mt-1">
+                        Explorez nos destinations pour planifier votre prochain séjour Amani !
+                      </p>
+                      <Button className="mt-4" onClick={() => navigate("/destinations")}>
+                        Explorer les destinations
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {reservations.map((r) => {
+                        const statusConfig: Record<
+                          string,
+                          {
+                            label: string;
+                            icon: typeof Clock;
+                            className: string;
+                          }
+                        > = {
+                          pending: {
+                            label: "En attente",
+                            icon: Clock,
+                            className: "bg-warning/15 text-warning border-warning/30",
+                          },
+                          confirmed: {
+                            label: "Confirmée",
+                            icon: CheckCircle2,
+                            className: "bg-success/15 text-success border-success/30",
+                          },
+                          cancelled: {
+                            label: "Annulée",
+                            icon: XCircle,
+                            className: "bg-destructive/10 text-destructive border-destructive/20",
+                          },
+                        };
+                        const cfg = statusConfig[r.status || "pending"] || statusConfig.pending;
+                        const StatusIcon = cfg.icon;
+                        const itemIcon = (type: string) => {
+                          if (type === "coworking") return Laptop;
+                          if (type === "accommodation") return Home;
+                          if (type === "mobility") return Car;
+                          if (type === "activity") return Sparkles;
+                          return Calendar;
+                        };
+                        return (
+                          <div
+                            key={r.id}
+                            className="border border-border rounded-lg p-4 hover:shadow-md transition-shadow"
+                          >
+                            <div className="flex items-start justify-between gap-4 mb-3">
+                              <div>
+                                <p className="text-sm text-muted-foreground">
+                                  Réf. AMN-{r.id.slice(0, 8).toUpperCase()} ·{" "}
+                                  {format(new Date(r.created_at), "d MMM yyyy", { locale: fr })}
+                                </p>
+                                <p className="font-semibold flex items-center gap-2 mt-1">
+                                  <Calendar className="w-4 h-4" />
+                                  {format(new Date(r.check_in_date), "d MMM", { locale: fr })} -{" "}
+                                  {format(new Date(r.check_out_date), "d MMM yyyy", { locale: fr })}
+                                </p>
                               </div>
-                              <div className="space-y-2 pt-3 border-t border-border">
-                                {r.items.map((item) => {
-                                  const Icon = itemIcon(item.item_type);
-                                  return (
-                                    <div key={item.id} className="flex items-center justify-between text-sm">
-                                      <div className="flex items-center gap-2">
-                                        <Icon className="w-4 h-4 text-primary" />
-                                        <span>{item.item_name}</span>
-                                        {item.quantity && item.quantity > 1 && (
-                                          <span className="text-muted-foreground">x{item.quantity}</span>
-                                        )}
-                                      </div>
-                                      <span className="font-medium">{item.total_price}€</span>
-                                    </div>
-                                  );
-                                })}
+                              <Badge variant="outline" className={cfg.className}>
+                                <StatusIcon className="w-3 h-3 mr-1" />
+                                {cfg.label}
+                              </Badge>
+                            </div>
+                            <div className="space-y-2 pt-3 border-t border-border">
+                              {r.items.map((item) => {
+                                const Icon = itemIcon(item.item_type);
+                                return (
+                                  <div
+                                    key={item.id}
+                                    className="flex items-center justify-between text-sm"
+                                  >
+                                    <span className="flex items-center gap-2 text-muted-foreground">
+                                      <Icon className="w-4 h-4" />
+                                      {item.item_name} × {item.quantity || 1}
+                                    </span>
+                                    <span>{item.total_price || 0} €</span>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                            <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+                              <div className="text-sm text-muted-foreground flex items-center gap-2">
+                                <Leaf className="w-4 h-4 text-accent" />
+                                {r.total_carbon_impact || 0} kg CO₂e
                               </div>
-                              <div className="flex items-center justify-between pt-3 mt-3 border-t border-border">
-                                <span className="text-sm text-muted-foreground">Total</span>
-                                <span className="text-lg font-bold text-primary">{r.total_price}€</span>
+                              <div className="flex items-center gap-2">
+                                <p className="font-semibold">{r.total_price || 0} €</p>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className="gap-1.5"
+                                  onClick={() => downloadInvoice(r)}
+                                >
+                                  <Download className="w-4 h-4" />
+                                  Facture
+                                </Button>
                               </div>
                             </div>
-                          );
-                        })}
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
-              </TabsContent>
-
-
-              <TabsContent value="carbon" className="mt-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Leaf className="w-5 h-5 text-carbon" />
-                      Mon impact carbone
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-6">
-                      <div className="p-6 rounded-xl bg-carbon-light">
-                        <p className="text-sm text-carbon font-medium">Total économisé</p>
-                        <p className="text-4xl font-bold text-carbon mt-1">
-                          {profile?.total_carbon_saved || 0} kg CO₂
-                        </p>
-                        <p className="text-sm text-muted-foreground mt-2">
-                          Équivalent à {Math.round((profile?.total_carbon_saved || 0) * 5.5)} km en voiture
-                        </p>
-                      </div>
-                      
-                      <p className="text-center text-muted-foreground">
-                        Effectuez des réservations pour voir votre historique d'impact carbone.
-                      </p>
+                          </div>
+                        );
+                      })}
                     </div>
-                  </CardContent>
-                </Card>
-              </TabsContent>
+                  )}
+                </CardContent>
+              </Card>
+            </TabsContent>
 
-              <TabsContent value="reviews" className="mt-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Mes avis</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-center py-12 text-muted-foreground">
-                      <p className="text-lg font-medium">Aucun avis pour le moment</p>
-                      <p className="text-sm mt-1">Partagez votre expérience après votre premier voyage !</p>
-                    </div>
-                  </CardContent>
-                </Card>
-              </TabsContent>
-            </Tabs>
-          </motion.div>
+            <TabsContent value="carbon" className="mt-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Votre impact Amani</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <p className="text-muted-foreground text-sm">
+                    Total compensé :{" "}
+                    <strong className="text-foreground">
+                      {profile?.total_carbon_saved || 0} kg CO₂e
+                    </strong>
+                  </p>
+                  <Button variant="carbon" onClick={() => navigate("/carbon-calculator")}>
+                    Calculer une nouvelle estimation
+                  </Button>
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </Tabs>
         </div>
       </main>
-
-      <Footer />
-    </div>
   );
 };
 

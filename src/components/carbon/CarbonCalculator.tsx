@@ -24,6 +24,10 @@ import { cn } from "@/lib/utils";
 import CarbonResults from "./CarbonResults";
 import CarbonEquivalents from "./CarbonEquivalents";
 import CompensationOptions from "./CompensationOptions";
+import { useAuth } from "@/hooks/useAuth";
+import { useSaveCarbonEstimate } from "@/hooks/useCatalogQueries";
+import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 // Emission factors in kgCO2e
 const EMISSION_FACTORS = {
@@ -84,6 +88,10 @@ interface CalculatorData {
 const CarbonCalculator = () => {
   const [step, setStep] = useState(1);
   const [showResults, setShowResults] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const saveCarbon = useSaveCarbonEstimate();
   
   const [data, setData] = useState<CalculatorData>({
     transport: {
@@ -136,12 +144,36 @@ const CarbonCalculator = () => {
   const handleReset = () => {
     setStep(1);
     setShowResults(false);
+    setSaved(false);
     setData({
       transport: { mode: "plane", distance: 1500, roundTrip: true },
       accommodation: { type: "apartment", nights: 7 },
       mobility: { primary: "scooter", dailyKm: 15 },
       activities: { restaurants: 14, museums: 3, outdoorActivities: 4, watersports: 2 },
     });
+  };
+
+  const handleSaveEstimate = async () => {
+    if (!user) {
+      toast.error("Connectez-vous pour enregistrer votre estimation");
+      navigate("/login");
+      return;
+    }
+    try {
+      await saveCarbon.mutateAsync({
+        userId: user.id,
+        transport: carbonResults.transport,
+        accommodation: carbonResults.accommodation,
+        mobility: carbonResults.mobility,
+        activities: carbonResults.activities,
+        total: carbonResults.total,
+        offsetAmount: 0,
+      });
+      setSaved(true);
+      toast.success("Estimation enregistrée dans votre historique Amani");
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Erreur d'enregistrement");
+    }
   };
 
   const steps = [
@@ -154,7 +186,13 @@ const CarbonCalculator = () => {
   if (showResults) {
     return (
       <div className="space-y-8">
-        <CarbonResults results={carbonResults} onReset={handleReset} />
+        <CarbonResults
+          results={carbonResults}
+          onReset={handleReset}
+          onSave={handleSaveEstimate}
+          saving={saveCarbon.isPending}
+          saved={saved}
+        />
         <CarbonEquivalents totalCO2={carbonResults.total} />
         <CompensationOptions totalCO2={carbonResults.total} />
       </div>

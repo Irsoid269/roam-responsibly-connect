@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Leaf, Mail, Lock, Eye, EyeOff, ArrowRight, User } from "lucide-react";
+import { Mail, Lock, Eye, EyeOff, ArrowRight, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
+import amaniSymbol from "@/assets/amani-symbol-gold.jpg";
 
 const SignupPage = () => {
   const [fullName, setFullName] = useState("");
@@ -65,12 +66,17 @@ const SignupPage = () => {
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.2 }}
             >
-              <Leaf className="w-20 h-20 mx-auto mb-6 opacity-80" />
-              <h2 className="text-3xl font-bold mb-4">
-                Réduisez votre impact carbone
+              <img
+                src={amaniSymbol}
+                alt=""
+                className="w-20 h-20 mx-auto mb-6 rounded-full object-cover ring-2 ring-accent/40"
+              />
+              <h2 className="font-display text-3xl font-medium mb-4">
+                Rejoignez Amani Resorts
               </h2>
               <p className="text-lg opacity-90 max-w-md mx-auto">
-                Chaque réservation contribue à un tourisme plus durable. Mesurez, réduisez et compensez votre empreinte.
+                Séjours éco-luxe aux Comores : mesurez, réduisez et compensez
+                votre empreinte à chaque voyage.
               </p>
             </motion.div>
           </div>
@@ -85,20 +91,22 @@ const SignupPage = () => {
           className="w-full max-w-md"
         >
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 mb-8">
-            <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
-              <Leaf className="w-6 h-6 text-primary-foreground" />
-            </div>
-            <span className="text-2xl font-bold text-foreground">
-              Cowork<span className="text-primary">ation</span>
+          <Link to="/" className="flex items-center gap-3 mb-8 group">
+            <img
+              src={amaniSymbol}
+              alt="Amani Resorts"
+              className="w-11 h-11 rounded-full object-cover transition-transform group-hover:scale-105"
+            />
+            <span className="font-display text-2xl font-medium text-foreground leading-none">
+              AMANI<span className="text-accent"> Resorts</span>
             </span>
           </Link>
 
-          <h1 className="text-3xl font-bold text-foreground mb-2">
-            Rejoignez l'aventure
+          <h1 className="font-display text-3xl md:text-4xl font-medium text-foreground mb-2">
+            Créer un compte
           </h1>
           <p className="text-muted-foreground mb-8">
-            Créez votre compte et commencez à explorer le monde autrement.
+            Rejoignez Amani Resorts et planifiez votre prochain séjour aux Comores.
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-5">

@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
+import { AdminLoading, AdminEmpty } from "@/components/admin/AdminTableState";
 import { supabase } from "@/integrations/supabase/client";
+import { ecoBadgeFromIntensity } from "@/lib/eco-score";
 import {
   Table,
   TableBody,
@@ -177,32 +179,25 @@ const AdminMobility = () => {
     }
   };
 
-  const getCarbonBadgeColor = (carbonPerKm: number | null) => {
-    if (!carbonPerKm || carbonPerKm === 0) return "bg-eco-a";
-    if (carbonPerKm < 50) return "bg-eco-b";
-    if (carbonPerKm < 100) return "bg-eco-c";
-    if (carbonPerKm < 150) return "bg-eco-d";
-    return "bg-eco-e";
-  };
+  const getCarbonBadgeColor = (carbonPerKm: number | null) =>
+    `${ecoBadgeFromIntensity(carbonPerKm)} text-primary-foreground`;
 
   return (
-    <AdminLayout title="Gestion de la mobilité">
-      <div className="mb-4">
+    <AdminLayout
+      title="Gestion de la mobilité"
+      description="Options de mobilité douce (vélo, scooter, navette…)."
+      actions={
         <Button onClick={() => openEditDialog()}>
           <Plus className="h-4 w-4 mr-2" />
           Ajouter une option
         </Button>
-      </div>
-
-      <div className="bg-background rounded-lg border">
+      }
+    >
+      <div className="rounded-xl border border-border bg-background shadow-sm overflow-hidden">
         {loading ? (
-          <div className="p-8 text-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary mx-auto"></div>
-          </div>
+          <AdminLoading />
         ) : mobilityOptions.length === 0 ? (
-          <div className="p-8 text-center text-muted-foreground">
-            Aucune option de mobilité trouvée
-          </div>
+          <AdminEmpty title="Aucune option de mobilité trouvée" />
         ) : (
           <Table>
             <TableHeader>
@@ -237,7 +232,7 @@ const AdminMobility = () => {
                   <TableCell>{option.price_per_day} €</TableCell>
                   <TableCell>
                     <Badge
-                      className={`${getCarbonBadgeColor(option.carbon_per_km)} text-primary-foreground`}
+                      className={getCarbonBadgeColor(option.carbon_per_km)}
                     >
                       <Leaf className="h-3 w-3 mr-1" />
                       {option.carbon_per_km || 0}g

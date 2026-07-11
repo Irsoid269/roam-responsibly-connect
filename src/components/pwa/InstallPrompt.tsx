@@ -95,17 +95,17 @@ const InstallPrompt = () => {
           <div className="bg-gradient-to-r from-primary to-accent p-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3 text-primary-foreground">
-                <div className="p-2 bg-white/20 rounded-xl">
+                <div className="p-2 bg-primary-foreground/20 rounded-xl">
                   <Smartphone className="w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-lg">Installer Comworkation</h3>
+                  <h3 className="font-semibold text-lg">Installer Amani Resorts</h3>
                   <p className="text-sm opacity-90">Accédez rapidement depuis votre écran d'accueil</p>
                 </div>
               </div>
               <button
                 onClick={handleDismiss}
-                className="p-2 hover:bg-white/20 rounded-full transition-colors"
+                className="p-2 hover:bg-primary-foreground/20 rounded-full transition-colors"
               >
                 <X className="w-5 h-5 text-primary-foreground" />
               </button>

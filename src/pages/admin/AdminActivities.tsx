@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
+import { AdminLoading, AdminEmpty } from "@/components/admin/AdminTableState";
 import { supabase } from "@/integrations/supabase/client";
+import { ecoBadgeFromIntensity } from "@/lib/eco-score";
 import {
   Table,
   TableBody,
@@ -182,32 +184,25 @@ const AdminActivities = () => {
     }
   };
 
-  const getCarbonBadgeColor = (carbonImpact: number | null) => {
-    if (!carbonImpact || carbonImpact === 0) return "bg-eco-a";
-    if (carbonImpact < 5) return "bg-eco-b";
-    if (carbonImpact < 10) return "bg-eco-c";
-    if (carbonImpact < 20) return "bg-eco-d";
-    return "bg-eco-e";
-  };
+  const getCarbonBadgeColor = (carbonImpact: number | null) =>
+    `${ecoBadgeFromIntensity(carbonImpact, [0, 5, 10, 20])} text-primary-foreground`;
 
   return (
-    <AdminLayout title="Gestion des activités">
-      <div className="mb-4">
+    <AdminLayout
+      title="Gestion des activités"
+      description="Expériences et activités locales proposées aux voyageurs."
+      actions={
         <Button onClick={() => openEditDialog()}>
           <Plus className="h-4 w-4 mr-2" />
           Ajouter une activité
         </Button>
-      </div>
-
-      <div className="bg-background rounded-lg border">
+      }
+    >
+      <div className="rounded-xl border border-border bg-background shadow-sm overflow-hidden">
         {loading ? (
-          <div className="p-8 text-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary mx-auto"></div>
-          </div>
+          <AdminLoading />
         ) : activities.length === 0 ? (
-          <div className="p-8 text-center text-muted-foreground">
-            Aucune activité trouvée
-          </div>
+          <AdminEmpty title="Aucune activité trouvée" />
         ) : (
           <Table>
             <TableHeader>
@@ -249,7 +244,7 @@ const AdminActivities = () => {
                   <TableCell>{activity.price} €</TableCell>
                   <TableCell>
                     <Badge
-                      className={`${getCarbonBadgeColor(activity.carbon_impact)} text-primary-foreground`}
+                      className={getCarbonBadgeColor(activity.carbon_impact)}
                     >
                       <Leaf className="h-3 w-3 mr-1" />
                       {activity.carbon_impact || 0}kg

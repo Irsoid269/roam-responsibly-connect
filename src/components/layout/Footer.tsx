@@ -54,19 +54,19 @@ const Footer = () => {
             <div className="flex items-center gap-3 mb-6">
               <a
                 href="#"
-                className="w-9 h-9 rounded-lg bg-background/10 flex items-center justify-center hover:bg-primary transition-colors"
+                className="w-9 h-9 rounded-lg bg-background/10 flex items-center justify-center hover:bg-accent hover:text-accent-foreground transition-all duration-300 hover:-translate-y-0.5"
               >
                 <Instagram className="w-4 h-4" />
               </a>
               <a
                 href="#"
-                className="w-9 h-9 rounded-lg bg-background/10 flex items-center justify-center hover:bg-primary transition-colors"
+                className="w-9 h-9 rounded-lg bg-background/10 flex items-center justify-center hover:bg-accent hover:text-accent-foreground transition-all duration-300 hover:-translate-y-0.5"
               >
                 <Linkedin className="w-4 h-4" />
               </a>
               <a
                 href="#"
-                className="w-9 h-9 rounded-lg bg-background/10 flex items-center justify-center hover:bg-primary transition-colors"
+                className="w-9 h-9 rounded-lg bg-background/10 flex items-center justify-center hover:bg-accent hover:text-accent-foreground transition-all duration-300 hover:-translate-y-0.5"
               >
                 <Twitter className="w-4 h-4" />
               </a>
@@ -93,7 +93,7 @@ const Footer = () => {
                 <li key={link.href}>
                   <Link
                     to={link.href}
-                    className="text-sm text-background/60 hover:text-primary-glow transition-colors"
+                    className="text-sm text-background/60 hover:text-accent transition-colors link-underline"
                   >
                     {link.label}
                   </Link>
@@ -110,7 +110,7 @@ const Footer = () => {
                 <li key={link.href}>
                   <Link
                     to={link.href}
-                    className="text-sm text-background/60 hover:text-primary-glow transition-colors"
+                    className="text-sm text-background/60 hover:text-accent transition-colors link-underline"
                   >
                     {link.label}
                   </Link>
@@ -127,7 +127,7 @@ const Footer = () => {
                 <li key={link.href}>
                   <Link
                     to={link.href}
-                    className="text-sm text-background/60 hover:text-primary-glow transition-colors"
+                    className="text-sm text-background/60 hover:text-accent transition-colors link-underline"
                   >
                     {link.label}
                   </Link>
@@ -144,7 +144,7 @@ const Footer = () => {
                 <li key={link.href}>
                   <Link
                     to={link.href}
-                    className="text-sm text-background/60 hover:text-primary-glow transition-colors"
+                    className="text-sm text-background/60 hover:text-accent transition-colors link-underline"
                   >
                     {link.label}
                   </Link>

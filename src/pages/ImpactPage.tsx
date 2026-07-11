@@ -6,9 +6,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
 import { Link } from "react-router-dom";
+import EcoScoreLegend from "@/components/carbon/EcoScoreLegend";
 
 const impactStats = [
   { icon: TreePine, label: "CO₂ compensé", value: "45,000 kg", growth: "+23%" },
@@ -42,18 +41,15 @@ const compensationProjects = [
 ];
 
 const emissionBreakdown = [
-  { category: "Transport aérien", icon: Plane, percentage: 65, color: "bg-destructive" },
-  { category: "Hébergement", icon: Building, percentage: 20, color: "bg-warning" },
-  { category: "Mobilité locale", icon: Bike, percentage: 10, color: "bg-primary" },
-  { category: "Activités", icon: Heart, percentage: 5, color: "bg-success" },
+  { category: "Transport aérien", icon: Plane, percentage: 65, color: "bg-eco-e" },
+  { category: "Hébergement", icon: Building, percentage: 20, color: "bg-eco-c" },
+  { category: "Mobilité locale", icon: Bike, percentage: 10, color: "bg-eco-b" },
+  { category: "Activités", icon: Heart, percentage: 5, color: "bg-eco-a" },
 ];
 
 const ImpactPage = () => {
   return (
-    <div className="min-h-screen bg-background">
-      <Header />
-      
-      <main className="pt-24 pb-16">
+    <main className="page-main">
         {/* Hero Section */}
         <section className="bg-gradient-to-b from-carbon to-carbon/80 text-carbon-foreground py-16 md:py-24">
           <div className="container mx-auto px-4">
@@ -124,7 +120,7 @@ const ImpactPage = () => {
                 Comprendre les émissions du voyage
               </h2>
               <p className="text-muted-foreground text-center mb-12 max-w-2xl mx-auto">
-                Voici comment se répartissent en moyenne les émissions carbone d'un séjour de coworkation.
+                Voici comment se répartissent en moyenne les émissions carbone d'un séjour Amani Resorts.
               </p>
 
               <div className="grid md:grid-cols-2 gap-8">
@@ -133,6 +129,7 @@ const ImpactPage = () => {
                     <CardTitle>Répartition des émissions</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
+                    <EcoScoreLegend className="mb-4" />
                     {emissionBreakdown.map((item, index) => {
                       const Icon = item.icon;
                       return (
@@ -289,9 +286,6 @@ const ImpactPage = () => {
           </div>
         </section>
       </main>
-
-      <Footer />
-    </div>
   );
 };
 

@@ -1,360 +1,295 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { 
-  Users, Leaf, MapPin, Star, TreePine, Globe, 
-  MessageCircle, Heart, Award, TrendingUp
+import { formatDistanceToNow } from "date-fns";
+import { fr } from "date-fns/locale";
+import {
+  Users,
+  Leaf,
+  MapPin,
+  Star,
+  TreePine,
+  MessageCircle,
+  PenLine,
+  Loader2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
-
-// Mock data for community members
-const mockMembers = [
-  {
-    id: "1",
-    name: "Sophie Martin",
-    avatar: "",
-    location: "Paris → Lisbonne",
-    carbonSaved: 245,
-    tripsCount: 8,
-    badge: "Eco Pioneer",
-  },
-  {
-    id: "2",
-    name: "Thomas Dubois",
-    avatar: "",
-    location: "Lyon → Bali",
-    carbonSaved: 180,
-    tripsCount: 5,
-    badge: "Carbon Saver",
-  },
-  {
-    id: "3",
-    name: "Marie Chen",
-    avatar: "",
-    location: "Marseille → Barcelone",
-    carbonSaved: 320,
-    tripsCount: 12,
-    badge: "Planet Hero",
-  },
-  {
-    id: "4",
-    name: "Lucas Bernard",
-    avatar: "",
-    location: "Bordeaux → Le Cap",
-    carbonSaved: 150,
-    tripsCount: 4,
-    badge: "Explorer",
-  },
-];
-
-const mockReviews = [
-  {
-    id: "1",
-    author: "Sophie Martin",
-    destination: "Lisbonne",
-    rating: 5,
-    comment: "Incroyable expérience de coworkation ! Les espaces de travail sont top et la communauté super accueillante.",
-    date: "Il y a 2 jours",
-  },
-  {
-    id: "2",
-    author: "Thomas Dubois",
-    destination: "Bali",
-    rating: 4,
-    comment: "Ubud est parfait pour travailler en remote. WiFi stable et cadre inspirant.",
-    date: "Il y a 1 semaine",
-  },
-  {
-    id: "3",
-    author: "Marie Chen",
-    destination: "Barcelone",
-    rating: 5,
-    comment: "Le meilleur équilibre entre vie professionnelle et découverte culturelle !",
-    date: "Il y a 2 semaines",
-  },
-];
-
-const communityStats = [
-  { icon: Users, label: "Membres actifs", value: "2,450+", color: "text-primary" },
-  { icon: TreePine, label: "CO₂ économisé", value: "45 tonnes", color: "text-carbon" },
-  { icon: Globe, label: "Pays visités", value: "35+", color: "text-accent" },
-  { icon: Star, label: "Note moyenne", value: "4.8/5", color: "text-warning" },
-];
+import PageHero from "@/components/layout/PageHero";
+import SubmitStoryDialog from "@/components/community/SubmitStoryDialog";
+import StoryEngagement from "@/components/community/StoryEngagement";
+import {
+  useApprovedCommunityStories,
+  useApprovedReviews,
+  useCatalogCounts,
+  useCommunityLeaders,
+  useMyStoryLikes,
+} from "@/hooks/useCatalogQueries";
+import { useAuth } from "@/hooks/useAuth";
+import { toast } from "sonner";
 
 const CommunityPage = () => {
-  const [activeTab, setActiveTab] = useState("members");
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const [storyOpen, setStoryOpen] = useState(false);
+  const { data: leaders = [], isLoading: leadersLoading } = useCommunityLeaders();
+  const { data: stories = [], isLoading: storiesLoading } = useApprovedCommunityStories(9);
+  const { data: likedIds } = useMyStoryLikes(user?.id);
+  const { data: reviews = [] } = useApprovedReviews();
+  const { data: counts } = useCatalogCounts();
+
+  const stats = useMemo(() => {
+    const carbon = leaders.reduce((s, p) => s + Number(p.total_carbon_saved || 0), 0);
+    const avg =
+      reviews.length > 0
+        ? reviews.reduce((s, r) => s + r.rating, 0) / reviews.length
+        : 0;
+    return [
+      {
+        icon: Users,
+        label: "Voyageurs Amani",
+        value: String(counts?.travelers ?? leaders.length),
+        color: "text-primary",
+      },
+      {
+        icon: TreePine,
+        label: "CO₂ compensé",
+        value: `${Math.round(carbon)} kg`,
+        color: "text-carbon",
+      },
+      {
+        icon: MapPin,
+        label: "Destinations",
+        value: String(counts?.destinations ?? "—"),
+        color: "text-accent",
+      },
+      {
+        icon: Star,
+        label: "Note moyenne",
+        value: avg ? `${avg.toFixed(1)}/5` : "—",
+        color: "text-warning",
+      },
+    ];
+  }, [leaders, reviews, counts]);
+
+  const openStory = () => {
+    if (!user) {
+      toast.info("Connectez-vous pour partager un récit");
+      navigate("/login");
+      return;
+    }
+    setStoryOpen(true);
+  };
+
+  const badgeFor = (carbon: number, trips: number) => {
+    if (carbon >= 200 || trips >= 8) return "Eco Pioneer";
+    if (carbon >= 100 || trips >= 4) return "Carbon Saver";
+    if (trips >= 1) return "Explorer";
+    return "Nouveau";
+  };
 
   return (
-    <div className="min-h-screen bg-background">
-      <Header />
-      
-      <main className="pt-24 pb-16">
-        {/* Hero Section */}
-        <section className="bg-gradient-to-b from-primary-light to-background py-12 md:py-20">
-          <div className="container mx-auto px-4">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="text-center max-w-3xl mx-auto"
-            >
-              <Badge variant="outline" className="mb-4 bg-carbon-light text-carbon border-carbon/20">
-                <Leaf className="w-3 h-3 mr-1" />
-                Communauté engagée
-              </Badge>
-              <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
-                Notre communauté de voyageurs responsables
-              </h1>
-              <p className="text-lg text-muted-foreground mb-8">
-                Rejoignez des milliers de nomades digitaux qui choisissent de voyager 
-                en réduisant leur impact environnemental.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button size="lg">
-                  <Users className="w-4 h-4 mr-2" />
-                  Rejoindre la communauté
-                </Button>
-                <Button size="lg" variant="outline">
-                  <MessageCircle className="w-4 h-4 mr-2" />
-                  Accéder au forum
-                </Button>
-              </div>
-            </motion.div>
-          </div>
-        </section>
+    <main className="page-main">
+      <PageHero
+        eyebrow="Communauté"
+        title="Voyageurs responsables aux Comores"
+        description="Récits validés, avis publiés et voyageurs qui réduisent leur empreinte avec Amani."
+      >
+        <div className="flex flex-col sm:flex-row gap-3 justify-center">
+          <Button size="lg" onClick={openStory} className="gap-2">
+            <PenLine className="w-4 h-4" />
+            Partager mon récit
+          </Button>
+          <Button size="lg" variant="outline" asChild>
+            <Link to="/reviews">
+              <MessageCircle className="w-4 h-4 mr-2" />
+              Voir les avis
+            </Link>
+          </Button>
+        </div>
+      </PageHero>
 
-        {/* Stats Section */}
-        <section className="py-12">
-          <div className="container mx-auto px-4">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-              className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6"
-            >
-              {communityStats.map((stat, index) => (
-                <Card key={index} className="text-center">
-                  <CardContent className="pt-6">
-                    <stat.icon className={`w-10 h-10 mx-auto mb-3 ${stat.color}`} />
-                    <p className="text-3xl font-bold text-foreground">{stat.value}</p>
-                    <p className="text-sm text-muted-foreground mt-1">{stat.label}</p>
+      <section className="py-10">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto mb-12">
+            {stats.map((stat) => (
+              <Card key={stat.label} className="text-center">
+                <CardContent className="pt-6 pb-5">
+                  <stat.icon className={`w-6 h-6 mx-auto mb-2 ${stat.color}`} />
+                  <p className="font-display text-2xl font-medium">{stat.value}</p>
+                  <p className="text-xs text-muted-foreground mt-1">{stat.label}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          <Tabs defaultValue="stories" className="max-w-5xl mx-auto">
+            <TabsList className="mb-6">
+              <TabsTrigger value="stories">Récits</TabsTrigger>
+              <TabsTrigger value="members">Voyageurs</TabsTrigger>
+              <TabsTrigger value="reviews">Avis récents</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="stories">
+              {storiesLoading ? (
+                <div className="flex justify-center py-12">
+                  <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                </div>
+              ) : stories.length === 0 ? (
+                <Card>
+                  <CardContent className="py-12 text-center">
+                    <p className="font-medium">Aucun récit publié</p>
+                    <Button onClick={openStory} className="mt-4 gap-2">
+                      <PenLine className="w-4 h-4" />
+                      Être le premier
+                    </Button>
                   </CardContent>
                 </Card>
-              ))}
-            </motion.div>
-          </div>
-        </section>
-
-        {/* Main Content */}
-        <section className="py-12">
-          <div className="container mx-auto px-4">
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-              <TabsList className="w-full md:w-auto justify-start mb-8">
-                <TabsTrigger value="members" className="flex items-center gap-2">
-                  <Users className="w-4 h-4" />
-                  Membres
-                </TabsTrigger>
-                <TabsTrigger value="reviews" className="flex items-center gap-2">
-                  <Star className="w-4 h-4" />
-                  Avis
-                </TabsTrigger>
-                <TabsTrigger value="leaderboard" className="flex items-center gap-2">
-                  <TrendingUp className="w-4 h-4" />
-                  Classement
-                </TabsTrigger>
-              </TabsList>
-
-              <TabsContent value="members">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                  {mockMembers.map((member, index) => (
+              ) : (
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+                  {stories.map((story, i) => (
                     <motion.div
-                      key={member.id}
-                      initial={{ opacity: 0, y: 20 }}
+                      key={story.id}
+                      initial={{ opacity: 0, y: 12 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: index * 0.1 }}
+                      transition={{ delay: i * 0.05 }}
                     >
-                      <Card className="text-center card-hover">
-                        <CardContent className="pt-6">
-                          <Avatar className="w-20 h-20 mx-auto mb-4">
-                            <AvatarImage src={member.avatar} />
-                            <AvatarFallback className="text-xl bg-primary text-primary-foreground">
-                              {member.name.split(" ").map((n) => n[0]).join("")}
-                            </AvatarFallback>
-                          </Avatar>
-                          <h3 className="font-semibold text-foreground">{member.name}</h3>
-                          <p className="text-sm text-muted-foreground flex items-center justify-center gap-1 mt-1">
+                      <Card className="h-full card-hover overflow-hidden">
+                        {story.image_url && (
+                          <img
+                            src={story.image_url}
+                            alt=""
+                            className="w-full h-36 object-cover"
+                          />
+                        )}
+                        <CardContent className="p-4">
+                          <p className="text-xs text-muted-foreground flex items-center gap-1 mb-2">
                             <MapPin className="w-3 h-3" />
-                            {member.location}
+                            {story.destination}
                           </p>
-                          
-                          <Badge variant="secondary" className="mt-3 bg-carbon-light text-carbon">
-                            <Award className="w-3 h-3 mr-1" />
-                            {member.badge}
+                          <p className="text-sm leading-relaxed line-clamp-4">
+                            {story.content}
+                          </p>
+                          <div className="mt-4 pt-3 border-t space-y-2">
+                            <p className="text-sm font-medium">{story.author_name}</p>
+                            <StoryEngagement
+                              storyId={story.id}
+                              likesCount={story.likes_count}
+                              commentsCount={story.comments_count}
+                              likedByMe={likedIds?.has(story.id) ?? false}
+                              compact
+                            />
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </motion.div>
+                  ))}
+                </div>
+              )}
+            </TabsContent>
+
+            <TabsContent value="members">
+              {leadersLoading ? (
+                <div className="flex justify-center py-12">
+                  <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                </div>
+              ) : leaders.length === 0 ? (
+                <p className="text-center text-muted-foreground py-12">
+                  Les profils apparaîtront ici après les premiers séjours.
+                </p>
+              ) : (
+                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {leaders.map((member) => (
+                    <Card key={member.id} className="card-hover">
+                      <CardContent className="p-5 flex items-center gap-4">
+                        <Avatar className="h-12 w-12">
+                          <AvatarImage src={member.avatar_url || undefined} />
+                          <AvatarFallback className="bg-primary text-primary-foreground">
+                            {(member.full_name || "A").charAt(0).toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="min-w-0">
+                          <p className="font-medium truncate">
+                            {member.full_name || "Voyageur Amani"}
+                          </p>
+                          <Badge variant="outline" className="mt-1 text-xs">
+                            {badgeFor(
+                              Number(member.total_carbon_saved || 0),
+                              Number(member.trips_count || 0)
+                            )}
                           </Badge>
-
-                          <div className="grid grid-cols-2 gap-4 mt-4 pt-4 border-t">
-                            <div>
-                              <p className="text-lg font-bold text-carbon">{member.carbonSaved} kg</p>
-                              <p className="text-xs text-muted-foreground">CO₂ économisé</p>
-                            </div>
-                            <div>
-                              <p className="text-lg font-bold text-primary">{member.tripsCount}</p>
-                              <p className="text-xs text-muted-foreground">Voyages</p>
-                            </div>
-                          </div>
-
-                          <Button variant="outline" size="sm" className="w-full mt-4">
-                            Voir le profil
-                          </Button>
-                        </CardContent>
-                      </Card>
-                    </motion.div>
+                          <p className="text-xs text-muted-foreground mt-1.5 flex items-center gap-1">
+                            <Leaf className="w-3 h-3 text-accent" />
+                            {member.total_carbon_saved || 0} kg · {member.trips_count || 0}{" "}
+                            séjour{(member.trips_count || 0) > 1 ? "s" : ""}
+                          </p>
+                        </div>
+                      </CardContent>
+                    </Card>
                   ))}
                 </div>
-              </TabsContent>
+              )}
+            </TabsContent>
 
-              <TabsContent value="reviews">
-                <div className="space-y-4 max-w-3xl mx-auto">
-                  {mockReviews.map((review, index) => (
-                    <motion.div
-                      key={review.id}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                    >
-                      <Card>
-                        <CardContent className="pt-6">
-                          <div className="flex items-start gap-4">
-                            <Avatar>
-                              <AvatarFallback className="bg-primary text-primary-foreground">
-                                {review.author.split(" ").map((n) => n[0]).join("")}
-                              </AvatarFallback>
-                            </Avatar>
-                            <div className="flex-1">
-                              <div className="flex items-center justify-between">
-                                <div>
-                                  <h4 className="font-medium text-foreground">{review.author}</h4>
-                                  <p className="text-sm text-muted-foreground flex items-center gap-1">
-                                    <MapPin className="w-3 h-3" />
-                                    {review.destination} • {review.date}
-                                  </p>
-                                </div>
-                                <div className="flex items-center gap-1">
-                                  {[...Array(5)].map((_, i) => (
-                                    <Star
-                                      key={i}
-                                      className={`w-4 h-4 ${
-                                        i < review.rating
-                                          ? "text-warning fill-warning"
-                                          : "text-muted"
-                                      }`}
-                                    />
-                                  ))}
-                                </div>
-                              </div>
-                              <p className="mt-3 text-muted-foreground">{review.comment}</p>
-                              <div className="flex items-center gap-4 mt-4">
-                                <button className="text-sm text-muted-foreground hover:text-foreground flex items-center gap-1">
-                                  <Heart className="w-4 h-4" />
-                                  12
-                                </button>
-                                <button className="text-sm text-muted-foreground hover:text-foreground flex items-center gap-1">
-                                  <MessageCircle className="w-4 h-4" />
-                                  Répondre
-                                </button>
-                              </div>
-                            </div>
+            <TabsContent value="reviews">
+              {reviews.length === 0 ? (
+                <p className="text-center text-muted-foreground py-12">
+                  Aucun avis publié —{" "}
+                  <Link to="/reviews" className="text-primary underline">
+                    laissez le premier
+                  </Link>
+                  .
+                </p>
+              ) : (
+                <div className="space-y-3">
+                  {reviews.slice(0, 8).map((review) => (
+                    <Card key={review.id}>
+                      <CardHeader className="pb-2">
+                        <CardTitle className="text-base flex items-center gap-2">
+                          <div className="flex">
+                            {[...Array(5)].map((_, i) => (
+                              <Star
+                                key={i}
+                                className={`w-3.5 h-3.5 ${
+                                  i < review.rating
+                                    ? "text-warning fill-warning"
+                                    : "text-muted-foreground/30"
+                                }`}
+                              />
+                            ))}
                           </div>
-                        </CardContent>
-                      </Card>
-                    </motion.div>
+                          <span className="text-xs font-normal text-muted-foreground">
+                            {formatDistanceToNow(new Date(review.created_at), {
+                              addSuffix: true,
+                              locale: fr,
+                            })}
+                          </span>
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <p className="text-sm text-muted-foreground line-clamp-3">
+                          {review.comment}
+                        </p>
+                      </CardContent>
+                    </Card>
                   ))}
+                  <div className="text-center pt-2">
+                    <Button variant="outline" asChild>
+                      <Link to="/reviews">Tous les avis</Link>
+                    </Button>
+                  </div>
                 </div>
-              </TabsContent>
+              )}
+            </TabsContent>
+          </Tabs>
+        </div>
+      </section>
 
-              <TabsContent value="leaderboard">
-                <Card className="max-w-2xl mx-auto">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <TrendingUp className="w-5 h-5 text-primary" />
-                      Top éco-voyageurs du mois
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      {mockMembers
-                        .sort((a, b) => b.carbonSaved - a.carbonSaved)
-                        .map((member, index) => (
-                          <motion.div
-                            key={member.id}
-                            initial={{ opacity: 0, x: -20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: index * 0.1 }}
-                            className="flex items-center gap-4 p-4 rounded-lg hover:bg-muted transition-colors"
-                          >
-                            <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold ${
-                              index === 0 ? "bg-warning text-warning-foreground" :
-                              index === 1 ? "bg-muted-foreground/30 text-foreground" :
-                              index === 2 ? "bg-secondary text-secondary-foreground" :
-                              "bg-muted text-muted-foreground"
-                            }`}>
-                              {index + 1}
-                            </div>
-                            <Avatar>
-                              <AvatarFallback className="bg-primary text-primary-foreground">
-                                {member.name.split(" ").map((n) => n[0]).join("")}
-                              </AvatarFallback>
-                            </Avatar>
-                            <div className="flex-1">
-                              <p className="font-medium text-foreground">{member.name}</p>
-                              <p className="text-sm text-muted-foreground">{member.badge}</p>
-                            </div>
-                            <div className="text-right">
-                              <p className="font-bold text-carbon flex items-center gap-1">
-                                <Leaf className="w-4 h-4" />
-                                {member.carbonSaved} kg
-                              </p>
-                              <p className="text-xs text-muted-foreground">CO₂ économisé</p>
-                            </div>
-                          </motion.div>
-                        ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              </TabsContent>
-            </Tabs>
-          </div>
-        </section>
-
-        {/* CTA Section */}
-        <section className="py-16 bg-gradient-to-r from-primary to-accent">
-          <div className="container mx-auto px-4 text-center">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-            >
-              <Leaf className="w-12 h-12 mx-auto mb-4 text-primary-foreground opacity-80" />
-              <h2 className="text-3xl md:text-4xl font-bold text-primary-foreground mb-4">
-                Ensemble, réduisons notre empreinte
-              </h2>
-              <p className="text-lg text-primary-foreground/80 mb-8 max-w-2xl mx-auto">
-                Chaque voyage compte. Rejoignez notre communauté et contribuez à un tourisme plus durable.
-              </p>
-              <Button size="lg" variant="secondary">
-                Créer mon compte
-              </Button>
-            </motion.div>
-          </div>
-        </section>
-      </main>
-
-      <Footer />
-    </div>
+      <SubmitStoryDialog open={storyOpen} onOpenChange={setStoryOpen} />
+    </main>
   );
 };
 

@@ -10,6 +10,10 @@ export default defineConfig(({ mode }) => ({
     host: "::",
     port: 8080,
   },
+  test: {
+    environment: "node",
+    include: ["src/**/*.{test,spec}.{ts,tsx}"],
+  },
   plugins: [
     react(),
     mode === "development" && componentTagger(),
@@ -17,11 +21,11 @@ export default defineConfig(({ mode }) => ({
       registerType: "autoUpdate",
       includeAssets: ["favicon.ico", "robots.txt"],
       manifest: {
-        name: "Comworkation - Coworking & Voyages aux Comores",
-        short_name: "Comworkation",
-        description: "Planifiez votre séjour de travail à distance aux Comores. Coworking, hébergement, mobilité douce et activités éco-responsables.",
-        theme_color: "#3d6b5a",
-        background_color: "#faf9f6",
+        name: "Amani Resorts — Éco-luxe aux Comores",
+        short_name: "Amani Resorts",
+        description: "Séjours éco-luxe, coworking et mobilité douce aux Comores. Amani Resorts.",
+        theme_color: "#1E293B",
+        background_color: "#F5F1E8",
         display: "standalone",
         orientation: "portrait",
         start_url: "/",
