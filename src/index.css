@@ -2,143 +2,139 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Raleway:wght@300;400;500;600;700&display=swap');
 
-/* Comworkation Design System - Nature-inspired travel & sustainability - Comores */
+/* Amani Resorts — Éco-luxe contemporain aux Comores
+   Palette : Bleu Océan Nuit, Or Antique, Ivoire, Charbon, Sable Chaud
+   Typo : Cormorant Garamond (titres) / Raleway (corps) */
 
 @layer base {
   :root {
-    /* Core brand colors - Warm, natural, sophisticated */
-    --background: 45 30% 98%;
-    --foreground: 200 15% 15%;
+    /* Ivoire */
+    --background: 37 41% 95%;
+    --foreground: 217 33% 17%;
 
-    --card: 45 25% 99%;
-    --card-foreground: 200 15% 15%;
+    --card: 0 0% 100%;
+    --card-foreground: 217 33% 17%;
 
-    --popover: 45 25% 99%;
-    --popover-foreground: 200 15% 15%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 217 33% 17%;
 
-    /* Primary - Sage green (nature, sustainability) */
-    --primary: 155 35% 35%;
-    --primary-foreground: 45 30% 98%;
-    --primary-light: 155 30% 92%;
-    --primary-glow: 155 40% 45%;
+    /* Primary — Bleu Océan Nuit */
+    --primary: 217 33% 17%;
+    --primary-foreground: 37 41% 95%;
+    --primary-light: 217 30% 92%;
+    --primary-glow: 217 30% 28%;
 
-    /* Secondary - Terracotta (warmth, travel, adventure) */
-    --secondary: 18 55% 58%;
-    --secondary-foreground: 45 30% 98%;
-    --secondary-light: 18 50% 94%;
+    /* Secondary — Sable Chaud */
+    --secondary: 37 37% 74%;
+    --secondary-foreground: 217 33% 17%;
+    --secondary-light: 37 40% 92%;
 
-    /* Accent - Deep teal (action, water) */
-    --accent: 185 55% 35%;
-    --accent-foreground: 45 30% 98%;
-    --accent-light: 185 45% 92%;
+    /* Accent — Or Antique */
+    --accent: 35 35% 52%;
+    --accent-foreground: 37 41% 95%;
+    --accent-light: 35 40% 92%;
 
-    /* Muted tones */
-    --muted: 45 15% 94%;
-    --muted-foreground: 200 10% 45%;
+    --muted: 37 25% 90%;
+    --muted-foreground: 217 15% 40%;
 
-    /* Semantic */
-    --destructive: 0 70% 55%;
-    --destructive-foreground: 45 30% 98%;
+    --destructive: 0 65% 45%;
+    --destructive-foreground: 37 41% 95%;
 
-    --success: 145 55% 42%;
-    --success-foreground: 45 30% 98%;
-    --success-light: 145 45% 92%;
+    --success: 145 40% 38%;
+    --success-foreground: 37 41% 95%;
+    --success-light: 145 30% 92%;
 
-    --warning: 38 92% 55%;
-    --warning-foreground: 200 15% 15%;
+    --warning: 35 55% 50%;
+    --warning-foreground: 217 33% 17%;
 
-    /* Carbon/Eco specific */
-    --carbon: 155 40% 40%;
-    --carbon-foreground: 45 30% 98%;
-    --carbon-light: 155 35% 94%;
-    --carbon-saved: 145 60% 45%;
-    --carbon-offset: 185 50% 45%;
+    /* Carbon / éco (aligné or antique / océan) */
+    --carbon: 217 33% 17%;
+    --carbon-foreground: 37 41% 95%;
+    --carbon-light: 217 20% 90%;
+    --carbon-saved: 35 35% 52%;
+    --carbon-offset: 217 30% 35%;
 
-    /* UI elements */
-    --border: 45 15% 88%;
-    --input: 45 15% 88%;
-    --ring: 155 35% 35%;
+    --border: 37 20% 85%;
+    --input: 37 20% 85%;
+    --ring: 35 35% 52%;
 
-    --radius: 0.75rem;
+    --radius: 0.25rem;
 
-    /* Sidebar */
-    --sidebar-background: 45 25% 97%;
-    --sidebar-foreground: 200 15% 25%;
-    --sidebar-primary: 155 35% 35%;
-    --sidebar-primary-foreground: 45 30% 98%;
-    --sidebar-accent: 155 30% 92%;
-    --sidebar-accent-foreground: 155 35% 25%;
-    --sidebar-border: 45 15% 88%;
-    --sidebar-ring: 155 35% 35%;
+    --sidebar-background: 37 41% 95%;
+    --sidebar-foreground: 217 33% 17%;
+    --sidebar-primary: 217 33% 17%;
+    --sidebar-primary-foreground: 37 41% 95%;
+    --sidebar-accent: 37 30% 90%;
+    --sidebar-accent-foreground: 217 33% 17%;
+    --sidebar-border: 37 20% 85%;
+    --sidebar-ring: 35 35% 52%;
 
-    /* Gradients */
-    --gradient-hero: linear-gradient(135deg, hsl(155 35% 35%), hsl(185 55% 35%));
-    --gradient-warm: linear-gradient(135deg, hsl(18 55% 58%), hsl(38 70% 55%));
-    --gradient-nature: linear-gradient(180deg, hsl(155 30% 92%), hsl(45 25% 99%));
-    --gradient-sunset: linear-gradient(135deg, hsl(18 55% 58%), hsl(340 50% 55%));
-    --gradient-overlay: linear-gradient(180deg, transparent 0%, hsla(200, 15%, 15%, 0.7) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(217 33% 17%), hsl(217 30% 28%));
+    --gradient-warm: linear-gradient(135deg, hsl(35 35% 52%), hsl(37 37% 74%));
+    --gradient-nature: linear-gradient(180deg, hsl(37 30% 92%), hsl(37 41% 95%));
+    --gradient-sunset: linear-gradient(135deg, hsl(35 35% 52%), hsl(217 33% 17%));
+    --gradient-overlay: linear-gradient(180deg, transparent 0%, hsla(217, 33%, 10%, 0.75) 100%);
 
-    /* Shadows */
-    --shadow-sm: 0 1px 2px hsla(200, 15%, 15%, 0.05);
-    --shadow-md: 0 4px 12px hsla(200, 15%, 15%, 0.08);
-    --shadow-lg: 0 8px 30px hsla(200, 15%, 15%, 0.12);
-    --shadow-xl: 0 20px 50px hsla(200, 15%, 15%, 0.15);
-    --shadow-card: 0 2px 8px hsla(200, 15%, 15%, 0.06);
-    --shadow-card-hover: 0 8px 25px hsla(200, 15%, 15%, 0.1);
-    --shadow-primary: 0 4px 20px hsla(155, 35%, 35%, 0.25);
+    --shadow-sm: 0 1px 2px hsla(217, 33%, 17%, 0.05);
+    --shadow-md: 0 4px 12px hsla(217, 33%, 17%, 0.08);
+    --shadow-lg: 0 8px 30px hsla(217, 33%, 17%, 0.12);
+    --shadow-xl: 0 20px 50px hsla(217, 33%, 17%, 0.18);
+    --shadow-card: 0 2px 8px hsla(217, 33%, 17%, 0.06);
+    --shadow-card-hover: 0 10px 30px hsla(217, 33%, 17%, 0.12);
+    --shadow-primary: 0 4px 20px hsla(35, 35%, 52%, 0.30);
   }
 
   .dark {
-    --background: 200 20% 8%;
-    --foreground: 45 20% 95%;
+    --background: 0 0% 9%;
+    --foreground: 37 41% 95%;
 
-    --card: 200 18% 12%;
-    --card-foreground: 45 20% 95%;
+    --card: 217 33% 12%;
+    --card-foreground: 37 41% 95%;
 
-    --popover: 200 18% 12%;
-    --popover-foreground: 45 20% 95%;
+    --popover: 217 33% 12%;
+    --popover-foreground: 37 41% 95%;
 
-    --primary: 155 40% 50%;
-    --primary-foreground: 200 20% 8%;
-    --primary-light: 155 30% 20%;
-    --primary-glow: 155 45% 55%;
+    --primary: 35 35% 52%;
+    --primary-foreground: 217 33% 10%;
+    --primary-light: 35 30% 20%;
+    --primary-glow: 35 45% 60%;
 
-    --secondary: 18 50% 55%;
-    --secondary-foreground: 200 20% 8%;
-    --secondary-light: 18 40% 18%;
+    --secondary: 37 37% 74%;
+    --secondary-foreground: 217 33% 10%;
+    --secondary-light: 37 25% 18%;
 
-    --accent: 185 50% 50%;
-    --accent-foreground: 200 20% 8%;
-    --accent-light: 185 40% 18%;
+    --accent: 35 35% 52%;
+    --accent-foreground: 217 33% 10%;
+    --accent-light: 35 30% 18%;
 
-    --muted: 200 15% 18%;
-    --muted-foreground: 45 15% 60%;
+    --muted: 217 20% 18%;
+    --muted-foreground: 37 20% 70%;
 
     --destructive: 0 65% 50%;
-    --destructive-foreground: 45 20% 95%;
+    --destructive-foreground: 37 41% 95%;
 
-    --success: 145 50% 45%;
-    --success-foreground: 200 20% 8%;
-    --success-light: 145 40% 18%;
+    --success: 145 45% 45%;
+    --success-foreground: 217 33% 10%;
+    --success-light: 145 35% 18%;
 
-    --carbon: 155 45% 45%;
-    --carbon-foreground: 200 20% 8%;
-    --carbon-light: 155 30% 18%;
+    --carbon: 35 35% 52%;
+    --carbon-foreground: 217 33% 10%;
+    --carbon-light: 35 25% 18%;
 
-    --border: 200 15% 20%;
-    --input: 200 15% 20%;
-    --ring: 155 40% 50%;
+    --border: 217 20% 22%;
+    --input: 217 20% 22%;
+    --ring: 35 35% 52%;
 
-    --sidebar-background: 200 18% 10%;
-    --sidebar-foreground: 45 20% 90%;
-    --sidebar-primary: 155 40% 50%;
-    --sidebar-primary-foreground: 200 20% 8%;
-    --sidebar-accent: 200 15% 18%;
-    --sidebar-accent-foreground: 45 20% 90%;
-    --sidebar-border: 200 15% 20%;
-    --sidebar-ring: 155 40% 50%;
+    --sidebar-background: 217 33% 12%;
+    --sidebar-foreground: 37 41% 95%;
+    --sidebar-primary: 35 35% 52%;
+    --sidebar-primary-foreground: 217 33% 10%;
+    --sidebar-accent: 217 20% 18%;
+    --sidebar-accent-foreground: 37 41% 95%;
+    --sidebar-border: 217 20% 22%;
+    --sidebar-ring: 35 35% 52%;
   }
 }
 
@@ -152,21 +148,26 @@
   }
 
   body {
-    @apply bg-background text-foreground font-sans antialiased;
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Raleway', system-ui, sans-serif;
+    font-weight: 400;
+    letter-spacing: 0.01em;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-semibold tracking-tight;
+    font-family: 'Cormorant Garamond', 'Times New Roman', serif;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    @apply tracking-tight;
   }
 }
 
 @layer components {
   .card-hover {
-    @apply transition-all duration-300;
+    @apply transition-all duration-500;
     box-shadow: var(--shadow-card);
   }
-  
+
   .card-hover:hover {
     box-shadow: var(--shadow-card-hover);
     transform: translateY(-2px);
@@ -195,30 +196,25 @@
   }
 
   .btn-primary-glow:hover {
-    box-shadow: 0 6px 25px hsla(155, 35%, 35%, 0.35);
+    box-shadow: 0 6px 25px hsla(35, 35%, 52%, 0.4);
+  }
+
+  .font-display {
+    font-family: 'Cormorant Garamond', 'Times New Roman', serif;
+  }
+
+  .tracking-luxury {
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
   }
 }
 
 @layer utilities {
-  .animate-float {
-    animation: float 6s ease-in-out infinite;
-  }
-
-  .animate-pulse-slow {
-    animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-  }
-
-  .animate-fade-in {
-    animation: fadeIn 0.5s ease-out forwards;
-  }
-
-  .animate-slide-up {
-    animation: slideUp 0.5s ease-out forwards;
-  }
-
-  .animate-scale-in {
-    animation: scaleIn 0.3s ease-out forwards;
-  }
+  .animate-float { animation: float 6s ease-in-out infinite; }
+  .animate-pulse-slow { animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+  .animate-fade-in { animation: fadeIn 0.6s ease-out forwards; }
+  .animate-slide-up { animation: slideUp 0.6s ease-out forwards; }
+  .animate-scale-in { animation: scaleIn 0.4s ease-out forwards; }
 }
 
 @keyframes float {
@@ -232,23 +228,11 @@
 }
 
 @keyframes slideUp {
-  from { 
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to { 
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes scaleIn {
-  from { 
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  to { 
-    opacity: 1;
-    transform: scale(1);
-  }
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
 }
