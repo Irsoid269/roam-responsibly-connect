@@ -60,6 +60,17 @@ export default {
           saved: "hsl(var(--carbon-saved))",
           offset: "hsl(var(--carbon-offset))",
         },
+        info: {
+          DEFAULT: "hsl(var(--info))",
+          foreground: "hsl(var(--info-foreground))",
+        },
+        eco: {
+          a: "hsl(var(--eco-a))",
+          b: "hsl(var(--eco-b))",
+          c: "hsl(var(--eco-c))",
+          d: "hsl(var(--eco-d))",
+          e: "hsl(var(--eco-e))",
+        },
         muted: {
           DEFAULT: "hsl(var(--muted))",
           foreground: "hsl(var(--muted-foreground))",
