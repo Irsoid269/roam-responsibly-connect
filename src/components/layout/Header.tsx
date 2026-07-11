@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, Leaf, Search, Globe, Shield } from "lucide-react";
+import { Menu, X, Search, Globe, Shield } from "lucide-react";
+import amaniSymbol from "@/assets/amani-symbol-gold.jpg";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useAuth } from "@/hooks/useAuth";
@@ -25,12 +26,14 @@ const Header = () => {
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16 md:h-20">
             {/* Logo */}
-            <Link to="/" className="flex items-center gap-2 group">
-              <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center shadow-primary transition-transform group-hover:scale-105">
-                <Leaf className="w-5 h-5 text-primary-foreground" />
-              </div>
-              <span className="text-xl font-bold text-foreground">
-                Comwork<span className="text-primary">ation</span>
+            <Link to="/" className="flex items-center gap-3 group">
+              <img
+                src={amaniSymbol}
+                alt="Amani Resorts"
+                className="w-10 h-10 rounded-full object-cover transition-transform group-hover:scale-105"
+              />
+              <span className="font-display text-2xl font-medium text-foreground leading-none">
+                AMANI<span className="text-accent"> Resorts</span>
               </span>
             </Link>
 
