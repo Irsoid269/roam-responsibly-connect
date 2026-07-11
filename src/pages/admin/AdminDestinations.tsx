@@ -47,11 +47,11 @@ interface Destination {
 }
 
 const carbonScoreColors: Record<string, string> = {
-  A: "bg-green-500",
-  B: "bg-lime-500",
-  C: "bg-yellow-500",
-  D: "bg-orange-500",
-  E: "bg-red-500",
+  A: "bg-eco-a",
+  B: "bg-eco-b",
+  C: "bg-eco-c",
+  D: "bg-eco-d",
+  E: "bg-eco-e",
 };
 
 const AdminDestinations = () => {
@@ -209,7 +209,7 @@ const AdminDestinations = () => {
                   <TableCell>{destination.country}</TableCell>
                   <TableCell>
                     <div className="flex items-center gap-1">
-                      <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" />
+                      <Star className="h-4 w-4 text-warning fill-yellow-500" />
                       {destination.rating}
                     </div>
                   </TableCell>

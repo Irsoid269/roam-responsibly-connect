@@ -178,11 +178,11 @@ const AdminMobility = () => {
   };
 
   const getCarbonBadgeColor = (carbonPerKm: number | null) => {
-    if (!carbonPerKm || carbonPerKm === 0) return "bg-green-500";
-    if (carbonPerKm < 50) return "bg-lime-500";
-    if (carbonPerKm < 100) return "bg-yellow-500";
-    if (carbonPerKm < 150) return "bg-orange-500";
-    return "bg-red-500";
+    if (!carbonPerKm || carbonPerKm === 0) return "bg-eco-a";
+    if (carbonPerKm < 50) return "bg-eco-b";
+    if (carbonPerKm < 100) return "bg-eco-c";
+    if (carbonPerKm < 150) return "bg-eco-d";
+    return "bg-eco-e";
   };
 
   return (
