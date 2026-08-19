@@ -117,6 +117,138 @@ export type Database = {
           },
         ]
       }
+      ambassador_benefits: {
+        Row: {
+          created_at: string
+          id: string
+          label: string
+          published: boolean
+          sort_order: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          label: string
+          published?: boolean
+          sort_order?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          label?: string
+          published?: boolean
+          sort_order?: number
+        }
+        Relationships: []
+      }
+      ambassadors: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          carbon_saved: number
+          countries_visited: number
+          created_at: string
+          followers_label: string
+          id: string
+          instagram_url: string | null
+          linkedin_url: string | null
+          location: string | null
+          name: string
+          published: boolean
+          sort_order: number
+          specialties: string[]
+          title: string | null
+          updated_at: string
+          website_url: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          carbon_saved?: number
+          countries_visited?: number
+          created_at?: string
+          followers_label?: string
+          id?: string
+          instagram_url?: string | null
+          linkedin_url?: string | null
+          location?: string | null
+          name: string
+          published?: boolean
+          sort_order?: number
+          specialties?: string[]
+          title?: string | null
+          updated_at?: string
+          website_url?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          carbon_saved?: number
+          countries_visited?: number
+          created_at?: string
+          followers_label?: string
+          id?: string
+          instagram_url?: string | null
+          linkedin_url?: string | null
+          location?: string | null
+          name?: string
+          published?: boolean
+          sort_order?: number
+          specialties?: string[]
+          title?: string | null
+          updated_at?: string
+          website_url?: string | null
+        }
+        Relationships: []
+      }
+      blog_posts: {
+        Row: {
+          author: string
+          category: string
+          content: string | null
+          created_at: string
+          excerpt: string | null
+          featured: boolean
+          id: string
+          image_url: string | null
+          published: boolean
+          published_at: string
+          read_time_minutes: number
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          author?: string
+          category?: string
+          content?: string | null
+          created_at?: string
+          excerpt?: string | null
+          featured?: boolean
+          id?: string
+          image_url?: string | null
+          published?: boolean
+          published_at?: string
+          read_time_minutes?: number
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          author?: string
+          category?: string
+          content?: string | null
+          created_at?: string
+          excerpt?: string | null
+          featured?: boolean
+          id?: string
+          image_url?: string | null
+          published?: boolean
+          published_at?: string
+          read_time_minutes?: number
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       carbon_footprint_history: {
         Row: {
           accommodation_carbon: number | null
@@ -163,6 +295,262 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      cms_info_cards: {
+        Row: {
+          created_at: string
+          description: string | null
+          icon_key: string
+          id: string
+          page_key: string
+          published: boolean
+          sort_order: number
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          icon_key?: string
+          id?: string
+          page_key?: string
+          published?: boolean
+          sort_order?: number
+          title: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          icon_key?: string
+          id?: string
+          page_key?: string
+          published?: boolean
+          sort_order?: number
+          title?: string
+        }
+        Relationships: []
+      }
+      cms_page_heroes: {
+        Row: {
+          badge_text: string | null
+          cta_label: string | null
+          cta_url: string | null
+          description: string | null
+          page_key: string
+          pdf_url: string | null
+          title: string
+          title_highlight: string | null
+          updated_at: string
+        }
+        Insert: {
+          badge_text?: string | null
+          cta_label?: string | null
+          cta_url?: string | null
+          description?: string | null
+          page_key: string
+          pdf_url?: string | null
+          title: string
+          title_highlight?: string | null
+          updated_at?: string
+        }
+        Update: {
+          badge_text?: string | null
+          cta_label?: string | null
+          cta_url?: string | null
+          description?: string | null
+          page_key?: string
+          pdf_url?: string | null
+          title?: string
+          title_highlight?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      cms_stat_cards: {
+        Row: {
+          change_label: string | null
+          created_at: string
+          icon_key: string
+          id: string
+          label: string
+          page_key: string
+          published: boolean
+          sort_order: number
+          value: string
+        }
+        Insert: {
+          change_label?: string | null
+          created_at?: string
+          icon_key?: string
+          id?: string
+          label: string
+          page_key: string
+          published?: boolean
+          sort_order?: number
+          value: string
+        }
+        Update: {
+          change_label?: string | null
+          created_at?: string
+          icon_key?: string
+          id?: string
+          label?: string
+          page_key?: string
+          published?: boolean
+          sort_order?: number
+          value?: string
+        }
+        Relationships: []
+      }
+      community_stories: {
+        Row: {
+          author_location: string | null
+          author_name: string
+          comments_count: number
+          content: string
+          created_at: string
+          destination: string
+          id: string
+          image_url: string | null
+          likes_count: number
+          moderated_at: string | null
+          moderated_by: string | null
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          author_location?: string | null
+          author_name: string
+          comments_count?: number
+          content: string
+          created_at?: string
+          destination: string
+          id?: string
+          image_url?: string | null
+          likes_count?: number
+          moderated_at?: string | null
+          moderated_by?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          author_location?: string | null
+          author_name?: string
+          comments_count?: number
+          content?: string
+          created_at?: string
+          destination?: string
+          id?: string
+          image_url?: string | null
+          likes_count?: number
+          moderated_at?: string | null
+          moderated_by?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      community_story_comments: {
+        Row: {
+          author_name: string
+          content: string
+          created_at: string
+          id: string
+          story_id: string
+          user_id: string
+        }
+        Insert: {
+          author_name: string
+          content: string
+          created_at?: string
+          id?: string
+          story_id: string
+          user_id: string
+        }
+        Update: {
+          author_name?: string
+          content?: string
+          created_at?: string
+          id?: string
+          story_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "community_story_comments_story_id_fkey"
+            columns: ["story_id"]
+            isOneToOne: false
+            referencedRelation: "community_stories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      community_story_likes: {
+        Row: {
+          created_at: string
+          id: string
+          story_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          story_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          story_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "community_story_likes_story_id_fkey"
+            columns: ["story_id"]
+            isOneToOne: false
+            referencedRelation: "community_stories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      contact_messages: {
+        Row: {
+          created_at: string
+          email: string
+          first_name: string
+          id: string
+          last_name: string
+          message: string
+          status: string
+          subject: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          first_name: string
+          id?: string
+          last_name: string
+          message: string
+          status?: string
+          subject?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          first_name?: string
+          id?: string
+          last_name?: string
+          message?: string
+          status?: string
+          subject?: string
+          user_id?: string | null
+        }
+        Relationships: []
       }
       coworking_spaces: {
         Row: {
@@ -226,57 +614,6 @@ export type Database = {
           },
         ]
       }
-      community_stories: {
-        Row: {
-          author_location: string | null
-          author_name: string
-          comments_count: number
-          content: string
-          created_at: string
-          destination: string
-          id: string
-          image_url: string | null
-          likes_count: number
-          moderated_at: string | null
-          moderated_by: string | null
-          status: string
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          author_location?: string | null
-          author_name: string
-          comments_count?: number
-          content: string
-          created_at?: string
-          destination: string
-          id?: string
-          image_url?: string | null
-          likes_count?: number
-          moderated_at?: string | null
-          moderated_by?: string | null
-          status?: string
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          author_location?: string | null
-          author_name?: string
-          comments_count?: number
-          content?: string
-          created_at?: string
-          destination?: string
-          id?: string
-          image_url?: string | null
-          likes_count?: number
-          moderated_at?: string | null
-          moderated_by?: string | null
-          status?: string
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
       destinations: {
         Row: {
           avg_price_per_day: number | null
@@ -331,6 +668,54 @@ export type Database = {
         }
         Relationships: []
       }
+      events: {
+        Row: {
+          attendees_count: number
+          created_at: string
+          description: string | null
+          ends_at: string | null
+          event_type: string
+          id: string
+          image_url: string | null
+          is_online: boolean
+          location: string | null
+          published: boolean
+          starts_at: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          attendees_count?: number
+          created_at?: string
+          description?: string | null
+          ends_at?: string | null
+          event_type?: string
+          id?: string
+          image_url?: string | null
+          is_online?: boolean
+          location?: string | null
+          published?: boolean
+          starts_at: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          attendees_count?: number
+          created_at?: string
+          description?: string | null
+          ends_at?: string | null
+          event_type?: string
+          id?: string
+          image_url?: string | null
+          is_online?: boolean
+          location?: string | null
+          published?: boolean
+          starts_at?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       homepage_cta: {
         Row: {
           badge_text: string
@@ -376,177 +761,156 @@ export type Database = {
         }
         Relationships: []
       }
-      blog_posts: {
+      impact_breakdown: {
         Row: {
-          id: string
-          title: string
-          excerpt: string | null
-          content: string | null
-          image_url: string | null
+          amount: string | null
           category: string
-          author: string
-          read_time_minutes: number
-          featured: boolean
-          published: boolean
-          published_at: string
           created_at: string
-          updated_at: string
+          id: string
+          percentage: number
+          published: boolean
+          sort_order: number
         }
         Insert: {
-          id?: string
-          title: string
-          excerpt?: string | null
-          content?: string | null
-          image_url?: string | null
-          category?: string
-          author?: string
-          read_time_minutes?: number
-          featured?: boolean
-          published?: boolean
-          published_at?: string
+          amount?: string | null
+          category: string
           created_at?: string
-          updated_at?: string
+          id?: string
+          percentage?: number
+          published?: boolean
+          sort_order?: number
         }
         Update: {
-          id?: string
-          title?: string
-          excerpt?: string | null
-          content?: string | null
-          image_url?: string | null
+          amount?: string | null
           category?: string
-          author?: string
-          read_time_minutes?: number
-          featured?: boolean
-          published?: boolean
-          published_at?: string
           created_at?: string
-          updated_at?: string
+          id?: string
+          percentage?: number
+          published?: boolean
+          sort_order?: number
         }
         Relationships: []
       }
-      events: {
+      impact_quarters: {
         Row: {
+          carbon: number
+          created_at: string
           id: string
-          title: string
+          published: boolean
+          quarter: string
+          revenue: number
+          sort_order: number
+          travelers: number
+        }
+        Insert: {
+          carbon?: number
+          created_at?: string
+          id?: string
+          published?: boolean
+          quarter: string
+          revenue?: number
+          sort_order?: number
+          travelers?: number
+        }
+        Update: {
+          carbon?: number
+          created_at?: string
+          id?: string
+          published?: boolean
+          quarter?: string
+          revenue?: number
+          sort_order?: number
+          travelers?: number
+        }
+        Relationships: []
+      }
+      mission_milestones: {
+        Row: {
+          created_at: string
           description: string | null
-          image_url: string | null
-          event_type: string
-          location: string | null
-          starts_at: string
-          ends_at: string | null
-          is_online: boolean
-          attendees_count: number
+          event: string
+          id: string
           published: boolean
-          created_at: string
-          updated_at: string
+          sort_order: number
+          year: string
         }
         Insert: {
+          created_at?: string
+          description?: string | null
+          event: string
           id?: string
+          published?: boolean
+          sort_order?: number
+          year: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          event?: string
+          id?: string
+          published?: boolean
+          sort_order?: number
+          year?: string
+        }
+        Relationships: []
+      }
+      mission_team: {
+        Row: {
+          bio: string | null
+          created_at: string
+          id: string
+          name: string
+          published: boolean
+          role: string | null
+          sort_order: number
+        }
+        Insert: {
+          bio?: string | null
+          created_at?: string
+          id?: string
+          name: string
+          published?: boolean
+          role?: string | null
+          sort_order?: number
+        }
+        Update: {
+          bio?: string | null
+          created_at?: string
+          id?: string
+          name?: string
+          published?: boolean
+          role?: string | null
+          sort_order?: number
+        }
+        Relationships: []
+      }
+      mission_values: {
+        Row: {
+          created_at: string
+          description: string | null
+          icon_key: string
+          id: string
+          published: boolean
+          sort_order: number
           title: string
-          description?: string | null
-          image_url?: string | null
-          event_type?: string
-          location?: string | null
-          starts_at: string
-          ends_at?: string | null
-          is_online?: boolean
-          attendees_count?: number
-          published?: boolean
+        }
+        Insert: {
           created_at?: string
-          updated_at?: string
+          description?: string | null
+          icon_key?: string
+          id?: string
+          published?: boolean
+          sort_order?: number
+          title: string
         }
         Update: {
+          created_at?: string
+          description?: string | null
+          icon_key?: string
           id?: string
+          published?: boolean
+          sort_order?: number
           title?: string
-          description?: string | null
-          image_url?: string | null
-          event_type?: string
-          location?: string | null
-          starts_at?: string
-          ends_at?: string | null
-          is_online?: boolean
-          attendees_count?: number
-          published?: boolean
-          created_at?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
-      contact_messages: {
-        Row: {
-          id: string
-          first_name: string
-          last_name: string
-          email: string
-          subject: string
-          message: string
-          status: string
-          user_id: string | null
-          created_at: string
-        }
-        Insert: {
-          id?: string
-          first_name: string
-          last_name: string
-          email: string
-          subject?: string
-          message: string
-          status?: string
-          user_id?: string | null
-          created_at?: string
-        }
-        Update: {
-          id?: string
-          first_name?: string
-          last_name?: string
-          email?: string
-          subject?: string
-          message?: string
-          status?: string
-          user_id?: string | null
-          created_at?: string
-        }
-        Relationships: []
-      }
-      partner_applications: {
-        Row: {
-          id: string
-          first_name: string
-          last_name: string
-          email: string
-          company_name: string
-          partner_type: string
-          website: string | null
-          message: string | null
-          status: string
-          user_id: string | null
-          created_at: string
-        }
-        Insert: {
-          id?: string
-          first_name: string
-          last_name: string
-          email: string
-          company_name: string
-          partner_type: string
-          website?: string | null
-          message?: string | null
-          status?: string
-          user_id?: string | null
-          created_at?: string
-        }
-        Update: {
-          id?: string
-          first_name?: string
-          last_name?: string
-          email?: string
-          company_name?: string
-          partner_type?: string
-          website?: string | null
-          message?: string | null
-          status?: string
-          user_id?: string | null
-          created_at?: string
         }
         Relationships: []
       }
@@ -596,6 +960,111 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      partner_applications: {
+        Row: {
+          company_name: string
+          created_at: string
+          email: string
+          first_name: string
+          id: string
+          last_name: string
+          message: string | null
+          partner_type: string
+          status: string
+          user_id: string | null
+          website: string | null
+        }
+        Insert: {
+          company_name: string
+          created_at?: string
+          email: string
+          first_name: string
+          id?: string
+          last_name: string
+          message?: string | null
+          partner_type?: string
+          status?: string
+          user_id?: string | null
+          website?: string | null
+        }
+        Update: {
+          company_name?: string
+          created_at?: string
+          email?: string
+          first_name?: string
+          id?: string
+          last_name?: string
+          message?: string | null
+          partner_type?: string
+          status?: string
+          user_id?: string | null
+          website?: string | null
+        }
+        Relationships: []
+      }
+      partner_orgs: {
+        Row: {
+          category: string
+          certifications: string[]
+          certified: boolean
+          created_at: string
+          description: string | null
+          id: string
+          image_url: string | null
+          impact_label: string | null
+          location: string | null
+          locations_count: number | null
+          name: string
+          progress: number | null
+          published: boolean
+          sort_order: number
+          specialty: string | null
+          type: string | null
+          updated_at: string
+          website_url: string | null
+        }
+        Insert: {
+          category: string
+          certifications?: string[]
+          certified?: boolean
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          impact_label?: string | null
+          location?: string | null
+          locations_count?: number | null
+          name: string
+          progress?: number | null
+          published?: boolean
+          sort_order?: number
+          specialty?: string | null
+          type?: string | null
+          updated_at?: string
+          website_url?: string | null
+        }
+        Update: {
+          category?: string
+          certifications?: string[]
+          certified?: boolean
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          impact_label?: string | null
+          location?: string | null
+          locations_count?: number | null
+          name?: string
+          progress?: number | null
+          published?: boolean
+          sort_order?: number
+          specialty?: string | null
+          type?: string | null
+          updated_at?: string
+          website_url?: string | null
+        }
+        Relationships: []
       }
       profiles: {
         Row: {
@@ -778,459 +1247,6 @@ export type Database = {
           target_id?: string
           target_type?: string
           user_id?: string
-        }
-        Relationships: []
-      }
-      ambassadors: {
-        Row: {
-          id: string
-          name: string
-          title: string | null
-          location: string | null
-          bio: string | null
-          avatar_url: string | null
-          carbon_saved: number
-          countries_visited: number
-          followers_label: string
-          specialties: string[]
-          instagram_url: string | null
-          linkedin_url: string | null
-          website_url: string | null
-          sort_order: number
-          published: boolean
-          created_at: string
-          updated_at: string
-        }
-        Insert: {
-          id?: string
-          name: string
-          title?: string | null
-          location?: string | null
-          bio?: string | null
-          avatar_url?: string | null
-          carbon_saved?: number
-          countries_visited?: number
-          followers_label?: string
-          specialties?: string[]
-          instagram_url?: string | null
-          linkedin_url?: string | null
-          website_url?: string | null
-          sort_order?: number
-          published?: boolean
-          created_at?: string
-          updated_at?: string
-        }
-        Update: {
-          id?: string
-          name?: string
-          title?: string | null
-          location?: string | null
-          bio?: string | null
-          avatar_url?: string | null
-          carbon_saved?: number
-          countries_visited?: number
-          followers_label?: string
-          specialties?: string[]
-          instagram_url?: string | null
-          linkedin_url?: string | null
-          website_url?: string | null
-          sort_order?: number
-          published?: boolean
-          created_at?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
-      ambassador_benefits: {
-        Row: {
-          id: string
-          label: string
-          sort_order: number
-          published: boolean
-          created_at: string
-        }
-        Insert: {
-          id?: string
-          label: string
-          sort_order?: number
-          published?: boolean
-          created_at?: string
-        }
-        Update: {
-          id?: string
-          label?: string
-          sort_order?: number
-          published?: boolean
-          created_at?: string
-        }
-        Relationships: []
-      }
-      community_story_likes: {
-        Row: {
-          id: string
-          story_id: string
-          user_id: string
-          created_at: string
-        }
-        Insert: {
-          id?: string
-          story_id: string
-          user_id: string
-          created_at?: string
-        }
-        Update: {
-          id?: string
-          story_id?: string
-          user_id?: string
-          created_at?: string
-        }
-        Relationships: []
-      }
-      community_story_comments: {
-        Row: {
-          id: string
-          story_id: string
-          user_id: string
-          author_name: string
-          content: string
-          created_at: string
-        }
-        Insert: {
-          id?: string
-          story_id: string
-          user_id: string
-          author_name: string
-          content: string
-          created_at?: string
-        }
-        Update: {
-          id?: string
-          story_id?: string
-          user_id?: string
-          author_name?: string
-          content?: string
-          created_at?: string
-        }
-        Relationships: []
-      }
-      cms_page_heroes: {
-        Row: {
-          page_key: string
-          badge_text: string | null
-          title: string
-          title_highlight: string | null
-          description: string | null
-          cta_label: string | null
-          cta_url: string | null
-          pdf_url: string | null
-          updated_at: string
-        }
-        Insert: {
-          page_key: string
-          badge_text?: string | null
-          title: string
-          title_highlight?: string | null
-          description?: string | null
-          cta_label?: string | null
-          cta_url?: string | null
-          pdf_url?: string | null
-          updated_at?: string
-        }
-        Update: {
-          page_key?: string
-          badge_text?: string | null
-          title?: string
-          title_highlight?: string | null
-          description?: string | null
-          cta_label?: string | null
-          cta_url?: string | null
-          pdf_url?: string | null
-          updated_at?: string
-        }
-        Relationships: []
-      }
-      cms_stat_cards: {
-        Row: {
-          id: string
-          page_key: string
-          label: string
-          value: string
-          change_label: string | null
-          icon_key: string
-          sort_order: number
-          published: boolean
-          created_at: string
-        }
-        Insert: {
-          id?: string
-          page_key: string
-          label: string
-          value: string
-          change_label?: string | null
-          icon_key?: string
-          sort_order?: number
-          published?: boolean
-          created_at?: string
-        }
-        Update: {
-          id?: string
-          page_key?: string
-          label?: string
-          value?: string
-          change_label?: string | null
-          icon_key?: string
-          sort_order?: number
-          published?: boolean
-          created_at?: string
-        }
-        Relationships: []
-      }
-      mission_values: {
-        Row: {
-          id: string
-          icon_key: string
-          title: string
-          description: string | null
-          sort_order: number
-          published: boolean
-          created_at: string
-        }
-        Insert: {
-          id?: string
-          icon_key?: string
-          title: string
-          description?: string | null
-          sort_order?: number
-          published?: boolean
-          created_at?: string
-        }
-        Update: {
-          id?: string
-          icon_key?: string
-          title?: string
-          description?: string | null
-          sort_order?: number
-          published?: boolean
-          created_at?: string
-        }
-        Relationships: []
-      }
-      mission_milestones: {
-        Row: {
-          id: string
-          year: string
-          event: string
-          description: string | null
-          sort_order: number
-          published: boolean
-          created_at: string
-        }
-        Insert: {
-          id?: string
-          year: string
-          event: string
-          description?: string | null
-          sort_order?: number
-          published?: boolean
-          created_at?: string
-        }
-        Update: {
-          id?: string
-          year?: string
-          event?: string
-          description?: string | null
-          sort_order?: number
-          published?: boolean
-          created_at?: string
-        }
-        Relationships: []
-      }
-      mission_team: {
-        Row: {
-          id: string
-          name: string
-          role: string | null
-          bio: string | null
-          sort_order: number
-          published: boolean
-          created_at: string
-        }
-        Insert: {
-          id?: string
-          name: string
-          role?: string | null
-          bio?: string | null
-          sort_order?: number
-          published?: boolean
-          created_at?: string
-        }
-        Update: {
-          id?: string
-          name?: string
-          role?: string | null
-          bio?: string | null
-          sort_order?: number
-          published?: boolean
-          created_at?: string
-        }
-        Relationships: []
-      }
-      partner_orgs: {
-        Row: {
-          id: string
-          category: string
-          name: string
-          type: string | null
-          location: string | null
-          description: string | null
-          impact_label: string | null
-          progress: number | null
-          image_url: string | null
-          certified: boolean
-          certifications: string[]
-          specialty: string | null
-          locations_count: number | null
-          website_url: string | null
-          sort_order: number
-          published: boolean
-          created_at: string
-          updated_at: string
-        }
-        Insert: {
-          id?: string
-          category: string
-          name: string
-          type?: string | null
-          location?: string | null
-          description?: string | null
-          impact_label?: string | null
-          progress?: number | null
-          image_url?: string | null
-          certified?: boolean
-          certifications?: string[]
-          specialty?: string | null
-          locations_count?: number | null
-          website_url?: string | null
-          sort_order?: number
-          published?: boolean
-          created_at?: string
-          updated_at?: string
-        }
-        Update: {
-          id?: string
-          category?: string
-          name?: string
-          type?: string | null
-          location?: string | null
-          description?: string | null
-          impact_label?: string | null
-          progress?: number | null
-          image_url?: string | null
-          certified?: boolean
-          certifications?: string[]
-          specialty?: string | null
-          locations_count?: number | null
-          website_url?: string | null
-          sort_order?: number
-          published?: boolean
-          created_at?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
-      impact_breakdown: {
-        Row: {
-          id: string
-          category: string
-          percentage: number
-          amount: string | null
-          sort_order: number
-          published: boolean
-          created_at: string
-        }
-        Insert: {
-          id?: string
-          category: string
-          percentage?: number
-          amount?: string | null
-          sort_order?: number
-          published?: boolean
-          created_at?: string
-        }
-        Update: {
-          id?: string
-          category?: string
-          percentage?: number
-          amount?: string | null
-          sort_order?: number
-          published?: boolean
-          created_at?: string
-        }
-        Relationships: []
-      }
-      impact_quarters: {
-        Row: {
-          id: string
-          quarter: string
-          travelers: number
-          carbon: number
-          revenue: number
-          sort_order: number
-          published: boolean
-          created_at: string
-        }
-        Insert: {
-          id?: string
-          quarter: string
-          travelers?: number
-          carbon?: number
-          revenue?: number
-          sort_order?: number
-          published?: boolean
-          created_at?: string
-        }
-        Update: {
-          id?: string
-          quarter?: string
-          travelers?: number
-          carbon?: number
-          revenue?: number
-          sort_order?: number
-          published?: boolean
-          created_at?: string
-        }
-        Relationships: []
-      }
-      cms_info_cards: {
-        Row: {
-          id: string
-          page_key: string
-          title: string
-          description: string | null
-          icon_key: string
-          sort_order: number
-          published: boolean
-          created_at: string
-        }
-        Insert: {
-          id?: string
-          page_key?: string
-          title: string
-          description?: string | null
-          icon_key?: string
-          sort_order?: number
-          published?: boolean
-          created_at?: string
-        }
-        Update: {
-          id?: string
-          page_key?: string
-          title?: string
-          description?: string | null
-          icon_key?: string
-          sort_order?: number
-          published?: boolean
-          created_at?: string
         }
         Relationships: []
       }
