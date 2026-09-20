@@ -1,35 +1,37 @@
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Instagram, Linkedin, Twitter, Mail, MapPin } from "lucide-react";
 import amaniSymbol from "@/assets/amani-symbol-gold.jpg";
 
 const Footer = () => {
+  const { t } = useTranslation();
   const currentYear = new Date().getFullYear();
 
   const footerLinks = {
     discover: [
-      { label: "Destinations", href: "/destinations" },
-      { label: "Espaces Coworking", href: "/coworkings" },
-      { label: "Hébergements", href: "/accommodations" },
-      { label: "Activités", href: "/activities" },
-      { label: "Mobilité Douce", href: "/mobility" },
+      { label: t("footer.discover.destinations"), href: "/destinations" },
+      { label: t("footer.discover.coworkings"), href: "/coworkings" },
+      { label: t("footer.discover.accommodations"), href: "/accommodations" },
+      { label: t("footer.discover.activities"), href: "/activities" },
+      { label: t("footer.discover.mobility"), href: "/mobility" },
     ],
     community: [
-      { label: "Blog & Récits", href: "/blog" },
-      { label: "Avis voyageurs", href: "/reviews" },
-      { label: "Événements", href: "/events" },
-      { label: "Ambassadeurs", href: "/ambassadors" },
+      { label: t("footer.community.blog"), href: "/blog" },
+      { label: t("footer.community.reviews"), href: "/reviews" },
+      { label: t("footer.community.events"), href: "/events" },
+      { label: t("footer.community.ambassadors"), href: "/ambassadors" },
     ],
     impact: [
-      { label: "Notre Mission", href: "/mission" },
-      { label: "Calculateur Carbone", href: "/carbon-calculator" },
-      { label: "Associations Partenaires", href: "/partners" },
-      { label: "Rapport d'Impact", href: "/impact-report" },
+      { label: t("footer.impact.mission"), href: "/mission" },
+      { label: t("footer.impact.carbonCalculator"), href: "/carbon-calculator" },
+      { label: t("footer.impact.partners"), href: "/partners" },
+      { label: t("footer.impact.report"), href: "/impact-report" },
     ],
     support: [
-      { label: "Centre d'aide", href: "/help" },
-      { label: "Devenir Partenaire", href: "/become-partner" },
-      { label: "Contact", href: "/contact" },
-      { label: "FAQ", href: "/faq" },
+      { label: t("footer.support.help"), href: "/help" },
+      { label: t("footer.support.becomePartner"), href: "/become-partner" },
+      { label: t("footer.support.contact"), href: "/contact" },
+      { label: t("footer.support.faq"), href: "/faq" },
     ],
   };
 
@@ -47,7 +49,7 @@ const Footer = () => {
               </span>
             </Link>
             <p className="text-background/70 text-sm mb-6 max-w-xs leading-relaxed">
-              Un refuge d'exception aux Comores. Dômes premium face à l'océan Indien, coworking et bien-être dans un éco-luxe boutique.
+              {t("footer.tagline")}
             </p>
             
             {/* Social Links */}
@@ -87,7 +89,7 @@ const Footer = () => {
 
           {/* Discover */}
           <div>
-            <h4 className="font-semibold text-background mb-4">Découvrir</h4>
+            <h4 className="font-semibold text-background mb-4">{t("footer.columns.discover")}</h4>
             <ul className="space-y-2.5">
               {footerLinks.discover.map((link) => (
                 <li key={link.href}>
@@ -104,7 +106,7 @@ const Footer = () => {
 
           {/* Community */}
           <div>
-            <h4 className="font-semibold text-background mb-4">Communauté</h4>
+            <h4 className="font-semibold text-background mb-4">{t("footer.columns.community")}</h4>
             <ul className="space-y-2.5">
               {footerLinks.community.map((link) => (
                 <li key={link.href}>
@@ -121,7 +123,7 @@ const Footer = () => {
 
           {/* Impact */}
           <div>
-            <h4 className="font-semibold text-background mb-4">Impact</h4>
+            <h4 className="font-semibold text-background mb-4">{t("footer.columns.impact")}</h4>
             <ul className="space-y-2.5">
               {footerLinks.impact.map((link) => (
                 <li key={link.href}>
@@ -138,7 +140,7 @@ const Footer = () => {
 
           {/* Support */}
           <div>
-            <h4 className="font-semibold text-background mb-4">Support</h4>
+            <h4 className="font-semibold text-background mb-4">{t("footer.columns.support")}</h4>
             <ul className="space-y-2.5">
               {footerLinks.support.map((link) => (
                 <li key={link.href}>
@@ -159,16 +161,16 @@ const Footer = () => {
       <div className="border-t border-background/10">
         <div className="container mx-auto px-4 py-5">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-background/50">
-            <p>© {currentYear} Amani Resorts. Tous droits réservés.</p>
+            <p>{t("footer.rights", { year: currentYear })}</p>
             <div className="flex items-center gap-6">
               <Link to="/privacy" className="hover:text-background transition-colors">
-                Confidentialité
+                {t("footer.legal.privacy")}
               </Link>
               <Link to="/terms" className="hover:text-background transition-colors">
-                CGU
+                {t("footer.legal.terms")}
               </Link>
               <Link to="/cookies" className="hover:text-background transition-colors">
-                Cookies
+                {t("footer.legal.cookies")}
               </Link>
             </div>
           </div>

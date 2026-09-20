@@ -1,0 +1,81 @@
+{
+  "nav": {
+    "destinations": "Destinations",
+    "coworkings": "Coworkings",
+    "community": "Communauté",
+    "impact": "Notre Impact"
+  },
+  "auth": {
+    "login": "Se connecter",
+    "signup": "Créer un compte",
+    "myProfile": "Mon profil",
+    "admin": "Admin",
+    "administration": "Administration",
+    "openMenu": "Ouvrir le menu",
+    "closeMenu": "Fermer le menu"
+  },
+  "footer": {
+    "tagline": "Un refuge d'exception aux Comores. Dômes premium face à l'océan Indien, coworking et bien-être dans un éco-luxe boutique.",
+    "columns": {
+      "discover": "Découvrir",
+      "community": "Communauté",
+      "impact": "Impact",
+      "support": "Support"
+    },
+    "discover": {
+      "destinations": "Destinations",
+      "coworkings": "Espaces Coworking",
+      "accommodations": "Hébergements",
+      "activities": "Activités",
+      "mobility": "Mobilité Douce"
+    },
+    "community": {
+      "blog": "Blog & Récits",
+      "reviews": "Avis voyageurs",
+      "events": "Événements",
+      "ambassadors": "Ambassadeurs"
+    },
+    "impact": {
+      "mission": "Notre Mission",
+      "carbonCalculator": "Calculateur Carbone",
+      "partners": "Associations Partenaires",
+      "report": "Rapport d'Impact"
+    },
+    "support": {
+      "help": "Centre d'aide",
+      "becomePartner": "Devenir Partenaire",
+      "contact": "Contact",
+      "faq": "FAQ"
+    },
+    "rights": "© {{year}} Amani Resorts. Tous droits réservés.",
+    "legal": {
+      "privacy": "Confidentialité",
+      "terms": "CGU",
+      "cookies": "Cookies"
+    }
+  },
+  "language": {
+    "fr": "Français",
+    "en": "English",
+    "zdj": "Shikomori",
+    "switchTo": "Changer de langue"
+  },
+  "report": {
+    "loginRequired": "Connectez-vous pour signaler un contenu",
+    "success": "Signalement envoyé — merci, notre équipe va l'examiner",
+    "duplicate": "Vous avez déjà signalé ce contenu",
+    "error": "Impossible d'envoyer le signalement",
+    "button": "Signaler",
+    "title": "Signaler ce contenu",
+    "reasonPlaceholder": "Motif du signalement",
+    "reasons": {
+      "spam": "Spam / publicité",
+      "abus": "Abus, harcèlement",
+      "contenu_inapproprie": "Contenu inapproprié",
+      "fausse_information": "Fausse information",
+      "autre": "Autre"
+    },
+    "detailsPlaceholder": "Précisions (facultatif)",
+    "cancel": "Annuler"
+  }
+}

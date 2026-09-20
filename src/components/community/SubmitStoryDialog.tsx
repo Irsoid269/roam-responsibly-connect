@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import {
   Dialog,
   DialogContent,
@@ -33,6 +34,7 @@ interface SubmitStoryDialogProps {
 }
 
 const SubmitStoryDialog = ({ open, onOpenChange }: SubmitStoryDialogProps) => {
+  const { t } = useTranslation("community");
   const { user } = useAuth();
   const navigate = useNavigate();
   const submit = useSubmitCommunityStory();
@@ -47,13 +49,13 @@ const SubmitStoryDialog = ({ open, onOpenChange }: SubmitStoryDialogProps) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) {
-      toast.error("Connectez-vous pour partager un récit");
+      toast.error(t("submitStory.loginRequired"));
       onOpenChange(false);
       navigate("/login");
       return;
     }
     if (content.trim().length < 20) {
-      toast.error("Le récit doit contenir au moins 20 caractères");
+      toast.error(t("submitStory.tooShort"));
       return;
     }
     try {
@@ -65,14 +67,12 @@ const SubmitStoryDialog = ({ open, onOpenChange }: SubmitStoryDialogProps) => {
         content: content.trim(),
         imageUrl,
       });
-      toast.success(
-        "Récit envoyé ! Il sera visible après validation par l'équipe Amani.",
-      );
+      toast.success(t("submitStory.success"));
       setContent("");
       setImageUrl(null);
       onOpenChange(false);
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Envoi impossible");
+      toast.error(err instanceof Error ? err.message : t("submitStory.sendError"));
     }
   };
 
@@ -81,17 +81,16 @@ const SubmitStoryDialog = ({ open, onOpenChange }: SubmitStoryDialogProps) => {
       <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="font-display text-2xl">
-            Partager mon récit Amani
+            {t("submitStory.title")}
           </DialogTitle>
           <DialogDescription>
-            Votre témoignage sera publié dans la section Communauté après
-            approbation par un administrateur.
+            {t("submitStory.description")}
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="authorName">Votre nom</Label>
+            <Label htmlFor="authorName">{t("submitStory.yourName")}</Label>
             <Input
               id="authorName"
               value={authorName}
@@ -101,7 +100,7 @@ const SubmitStoryDialog = ({ open, onOpenChange }: SubmitStoryDialogProps) => {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="authorLocation">Ville d'origine (optionnel)</Label>
+            <Label htmlFor="authorLocation">{t("submitStory.homeCity")}</Label>
             <Input
               id="authorLocation"
               value={authorLocation}
@@ -110,7 +109,7 @@ const SubmitStoryDialog = ({ open, onOpenChange }: SubmitStoryDialogProps) => {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="destination">Destination</Label>
+            <Label htmlFor="destination">{t("submitStory.destination")}</Label>
             <select
               id="destination"
               value={destination}
@@ -125,23 +124,23 @@ const SubmitStoryDialog = ({ open, onOpenChange }: SubmitStoryDialogProps) => {
             </select>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="content">Votre récit</Label>
+            <Label htmlFor="content">{t("submitStory.yourStory")}</Label>
             <Textarea
               id="content"
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              placeholder="Racontez votre séjour Amani aux Comores…"
+              placeholder={t("submitStory.storyPlaceholder")}
               rows={5}
               required
               minLength={20}
               maxLength={1000}
             />
             <p className="text-xs text-muted-foreground">
-              {content.length}/1000 · min. 20 caractères
+              {t("submitStory.charCount", { count: content.length })}
             </p>
           </div>
           <div className="space-y-2">
-            <Label>Photo (optionnel)</Label>
+            <Label>{t("submitStory.photo")}</Label>
             <ImageUpload
               value={imageUrl}
               onChange={setImageUrl}
@@ -155,16 +154,16 @@ const SubmitStoryDialog = ({ open, onOpenChange }: SubmitStoryDialogProps) => {
               variant="ghost"
               onClick={() => onOpenChange(false)}
             >
-              Annuler
+              {t("submitStory.cancel")}
             </Button>
             <Button type="submit" disabled={submit.isPending}>
               {submit.isPending ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Envoi…
+                  {t("submitStory.sending")}
                 </>
               ) : (
-                "Envoyer pour validation"
+                t("submitStory.submit")
               )}
             </Button>
           </DialogFooter>

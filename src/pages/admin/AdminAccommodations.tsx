@@ -179,6 +179,7 @@ const AdminAccommodations = () => {
     <AdminLayout
       title="Gestion des hébergements"
       description="Hôtels, coliving et éco-lodges liés aux destinations."
+      allowedRoles={["partner_manager"]}
       actions={
         <Button onClick={() => openEditDialog()}>
           <Plus className="h-4 w-4 mr-2" />

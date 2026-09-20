@@ -179,6 +179,7 @@ const AdminAmbassadors = () => {
     <AdminLayout
       title="Ambassadeurs"
       description="Profils et avantages affichés sur /ambassadors."
+      allowedRoles={["organizer"]}
       actions={
         <div className="flex items-center gap-2">
           <Button variant="outline" asChild>

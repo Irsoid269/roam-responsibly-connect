@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { Search, MapPin, Calendar, Users, ChevronDown, Leaf, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -18,6 +19,7 @@ type HeroDestination = {
 };
 
 const HeroSection = () => {
+  const { t } = useTranslation("home");
   const navigate = useNavigate();
   const { data: destinations = [], isLoading: destLoading } = useHeroDestinations();
   const { data: counts } = useCatalogCounts();
@@ -69,7 +71,7 @@ const HeroSection = () => {
     if (dateRange.from) {
       return format(dateRange.from, "d MMM", { locale: fr });
     }
-    return "Choisir les dates";
+    return t("hero.datesPlaceholder");
   };
 
   return (
@@ -92,7 +94,7 @@ const HeroSection = () => {
           >
             <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/20 backdrop-blur-sm text-primary-foreground text-sm font-medium mb-6">
               <Leaf className="w-4 h-4" />
-              Voyagez. Travaillez. Préservez.
+              {t("hero.badge")}
             </span>
           </motion.div>
 
@@ -102,9 +104,9 @@ const HeroSection = () => {
             transition={{ duration: 0.6, delay: 0.1 }}
             className="text-4xl md:text-5xl lg:text-6xl font-bold text-primary-foreground mb-6 leading-tight"
           >
-            Votre prochain séjour
+            {t("hero.titleLine1")}
             <br />
-            <span className="text-primary-glow">Amani</span> aux Comores vous attend
+            <span className="text-primary-glow">Amani</span> {t("hero.titleSuffix")}
           </motion.h1>
 
           <motion.p
@@ -113,8 +115,7 @@ const HeroSection = () => {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="text-lg md:text-xl text-primary-foreground/80 mb-8 max-w-2xl mx-auto"
           >
-            Combinez travail à distance, hébergement, mobilité douce et activités locales
-            — tout en mesurant et réduisant votre empreinte carbone.
+            {t("hero.subtitle")}
           </motion.p>
         </div>
 
@@ -127,9 +128,9 @@ const HeroSection = () => {
           <div className="glass-strong rounded-2xl p-2 shadow-elevated">
             <div className="flex gap-1 mb-2 p-1">
               {[
-                { id: "sejour", label: "Séjour complet" },
-                { id: "coworking", label: "Coworking seul" },
-                { id: "experience", label: "Expériences" },
+                { id: "sejour", label: t("hero.tabs.stay") },
+                { id: "coworking", label: t("hero.tabs.coworking") },
+                { id: "experience", label: t("hero.tabs.experience") },
               ].map((tab) => (
                 <button
                   key={tab.id}
@@ -151,11 +152,11 @@ const HeroSection = () => {
                   <div className="flex items-center gap-3 p-4 rounded-xl bg-muted/50 hover:bg-muted transition-colors cursor-pointer group">
                     <MapPin className="w-5 h-5 text-primary shrink-0" />
                     <div className="flex-1 min-w-0">
-                      <p className="text-xs text-muted-foreground">Destination</p>
+                      <p className="text-xs text-muted-foreground">{t("hero.destinationLabel")}</p>
                       <p className="text-sm font-medium text-foreground truncate">
                         {selectedDestination
                           ? `${selectedDestination.name}, ${selectedDestination.country}`
-                          : "Où allez-vous ?"}
+                          : t("hero.destinationPlaceholder")}
                       </p>
                     </div>
                     <ChevronDown className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors" />
@@ -168,7 +169,7 @@ const HeroSection = () => {
                     </div>
                   ) : destinations.length === 0 ? (
                     <p className="p-3 text-sm text-muted-foreground text-center">
-                      Aucune destination disponible. Ajoutez-en depuis l&apos;admin.
+                      {t("hero.noDestinations")}
                     </p>
                   ) : (
                     <div className="space-y-1 max-h-64 overflow-y-auto">
@@ -211,7 +212,7 @@ const HeroSection = () => {
                   <div className="flex items-center gap-3 p-4 rounded-xl bg-muted/50 hover:bg-muted transition-colors cursor-pointer group">
                     <Calendar className="w-5 h-5 text-primary shrink-0" />
                     <div className="flex-1 min-w-0">
-                      <p className="text-xs text-muted-foreground">Dates</p>
+                      <p className="text-xs text-muted-foreground">{t("hero.datesLabel")}</p>
                       <p className="text-sm font-medium text-foreground truncate">
                         {formatDateRange()}
                       </p>
@@ -236,9 +237,9 @@ const HeroSection = () => {
                   <div className="flex items-center gap-3 p-4 rounded-xl bg-muted/50 hover:bg-muted transition-colors cursor-pointer group">
                     <Users className="w-5 h-5 text-primary shrink-0" />
                     <div className="flex-1 min-w-0">
-                      <p className="text-xs text-muted-foreground">Voyageurs</p>
+                      <p className="text-xs text-muted-foreground">{t("hero.travelersLabel")}</p>
                       <p className="text-sm font-medium text-foreground truncate">
-                        {travelers} personne{travelers > 1 ? "s" : ""}
+                        {t("hero.traveler", { count: travelers })}
                       </p>
                     </div>
                     <ChevronDown className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors" />
@@ -246,7 +247,7 @@ const HeroSection = () => {
                 </PopoverTrigger>
                 <PopoverContent className="w-48 p-3" align="start">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium">Voyageurs</span>
+                    <span className="text-sm font-medium">{t("hero.travelersLabel")}</span>
                     <div className="flex items-center gap-3">
                       <button
                         onClick={() => setTravelers(Math.max(1, travelers - 1))}
@@ -275,7 +276,7 @@ const HeroSection = () => {
                 onClick={handleSearch}
               >
                 <Search className="w-5 h-5" />
-                <span>Rechercher</span>
+                <span>{t("hero.search")}</span>
               </Button>
             </div>
           </div>
@@ -285,21 +286,21 @@ const HeroSection = () => {
               <span className="text-2xl font-bold text-primary-foreground">
                 {counts?.destinations ?? "—"}
               </span>
-              <span className="text-sm">Destinations</span>
+              <span className="text-sm">{t("hero.stats.destinations")}</span>
             </div>
             <div className="hidden md:block w-px h-6 bg-primary-foreground/20" />
             <div className="flex items-center gap-2">
               <span className="text-2xl font-bold text-primary-foreground">
                 {counts?.coworkings ?? "—"}
               </span>
-              <span className="text-sm">Espaces coworking</span>
+              <span className="text-sm">{t("hero.stats.coworkings")}</span>
             </div>
             <div className="hidden md:block w-px h-6 bg-primary-foreground/20" />
             <div className="flex items-center gap-2">
               <span className="text-2xl font-bold text-primary-foreground">
                 {counts?.travelers ?? "—"}
               </span>
-              <span className="text-sm">Voyageurs Amani</span>
+              <span className="text-sm">{t("hero.stats.travelers")}</span>
             </div>
           </div>
         </motion.div>

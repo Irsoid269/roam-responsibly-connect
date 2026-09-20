@@ -65,6 +65,7 @@ const AdminInbox = () => {
     <AdminLayout
       title="Boîte de réception"
       description="Messages contact et candidatures partenaires."
+      allowedRoles={["support", "partner_manager"]}
     >
       <Tabs value={tab} onValueChange={setTab}>
         <TabsList>

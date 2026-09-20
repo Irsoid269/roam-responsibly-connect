@@ -26,11 +26,23 @@ import CarbonEquivalents from "./CarbonEquivalents";
 import CompensationOptions from "./CompensationOptions";
 import { useAuth } from "@/hooks/useAuth";
 import { useSaveCarbonEstimate } from "@/hooks/useCatalogQueries";
+import { useActiveEmissionFactors } from "@/hooks/useEmissionFactors";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 
-// Emission factors in kgCO2e
-const EMISSION_FACTORS = {
+/** Formats a kg/unit factor the way the UI has always shown it (grams below
+ * 1 kg, kg above), e.g. 0.255 -> "255g CO₂/km", 21.3 -> "21.3 kgCO₂/nuit". */
+function formatFactor(value: number, perUnit?: string): string {
+  const suffix = perUnit ? `/${perUnit}` : "";
+  if (value < 1) return `${Math.round(value * 1000)}g CO₂${suffix}`;
+  return `${value} kgCO₂${suffix}`;
+}
+
+// Valeurs de repli si aucun jeu de facteurs n'est encore configuré en admin
+// (Facteurs carbone) — au chargement, les valeurs actives en base prennent
+// le dessus via useActiveEmissionFactors (cahier §7.7 : facteurs
+// paramétrables et versionnés, plus de valeurs figées dans le code).
+const DEFAULT_EMISSION_FACTORS = {
   transport: {
     plane: 0.255, // per km per person
     train: 0.014,
@@ -59,9 +71,10 @@ const EMISSION_FACTORS = {
   },
 };
 
-type TransportMode = keyof typeof EMISSION_FACTORS.transport;
-type AccommodationType = keyof typeof EMISSION_FACTORS.accommodation;
-type MobilityType = keyof typeof EMISSION_FACTORS.mobility;
+type TransportMode = keyof typeof DEFAULT_EMISSION_FACTORS.transport;
+type AccommodationType = keyof typeof DEFAULT_EMISSION_FACTORS.accommodation;
+type MobilityType = keyof typeof DEFAULT_EMISSION_FACTORS.mobility;
+type EmissionFactors = typeof DEFAULT_EMISSION_FACTORS;
 
 interface CalculatorData {
   transport: {
@@ -92,7 +105,25 @@ const CarbonCalculator = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const saveCarbon = useSaveCarbonEstimate();
-  
+  const { data: liveFactors } = useActiveEmissionFactors();
+
+  const EMISSION_FACTORS: EmissionFactors = useMemo(() => {
+    const merged = JSON.parse(JSON.stringify(DEFAULT_EMISSION_FACTORS)) as EmissionFactors;
+    if (liveFactors?.factors) {
+      (Object.keys(merged) as (keyof EmissionFactors)[]).forEach((category) => {
+        const liveCategory = liveFactors.factors[category];
+        if (!liveCategory) return;
+        Object.keys(merged[category]).forEach((key) => {
+          const liveValue = liveCategory[key];
+          if (typeof liveValue === "number") {
+            (merged[category] as Record<string, number>)[key] = liveValue;
+          }
+        });
+      });
+    }
+    return merged;
+  }, [liveFactors]);
+
   const [data, setData] = useState<CalculatorData>({
     transport: {
       mode: "plane",
@@ -139,7 +170,7 @@ const CarbonCalculator = () => {
       activities: Math.round(activitiesCO2),
       total: Math.round(total),
     };
-  }, [data]);
+  }, [data, EMISSION_FACTORS]);
 
   const handleReset = () => {
     setStep(1);
@@ -168,6 +199,7 @@ const CarbonCalculator = () => {
         activities: carbonResults.activities,
         total: carbonResults.total,
         offsetAmount: 0,
+        emissionFactorSetId: liveFactors?.setId ?? null,
       });
       setSaved(true);
       toast.success("Estimation enregistrée dans votre historique Amani");
@@ -256,26 +288,30 @@ const CarbonCalculator = () => {
       <div className="p-6 md:p-8">
         <AnimatePresence mode="wait">
           {step === 1 && (
-            <TransportStep 
-              data={data.transport} 
+            <TransportStep
+              data={data.transport}
+              factors={EMISSION_FACTORS.transport}
               onChange={(transport) => setData({ ...data, transport })}
             />
           )}
           {step === 2 && (
-            <AccommodationStep 
-              data={data.accommodation} 
+            <AccommodationStep
+              data={data.accommodation}
+              factors={EMISSION_FACTORS.accommodation}
               onChange={(accommodation) => setData({ ...data, accommodation })}
             />
           )}
           {step === 3 && (
-            <MobilityStep 
-              data={data.mobility} 
+            <MobilityStep
+              data={data.mobility}
+              factors={EMISSION_FACTORS.mobility}
               onChange={(mobility) => setData({ ...data, mobility })}
             />
           )}
           {step === 4 && (
-            <ActivitiesStep 
-              data={data.activities} 
+            <ActivitiesStep
+              data={data.activities}
+              factors={EMISSION_FACTORS.activities}
               onChange={(activities) => setData({ ...data, activities })}
             />
           )}
@@ -316,18 +352,20 @@ const CarbonCalculator = () => {
 };
 
 // Transport Step Component
-const TransportStep = ({ 
-  data, 
-  onChange 
-}: { 
-  data: CalculatorData["transport"]; 
+const TransportStep = ({
+  data,
+  factors,
+  onChange
+}: {
+  data: CalculatorData["transport"];
+  factors: EmissionFactors["transport"];
   onChange: (data: CalculatorData["transport"]) => void;
 }) => {
   const transportModes = [
-    { id: "plane" as const, label: "Avion", icon: Plane, description: "255g CO₂/km" },
-    { id: "train" as const, label: "Train", icon: Train, description: "14g CO₂/km" },
-    { id: "car" as const, label: "Voiture", icon: Car, description: "193g CO₂/km" },
-    { id: "bus" as const, label: "Bus", icon: Building2, description: "89g CO₂/km" },
+    { id: "plane" as const, label: "Avion", icon: Plane, description: `${formatFactor(factors.plane, "km")}` },
+    { id: "train" as const, label: "Train", icon: Train, description: `${formatFactor(factors.train, "km")}` },
+    { id: "car" as const, label: "Voiture", icon: Car, description: `${formatFactor(factors.car, "km")}` },
+    { id: "bus" as const, label: "Bus", icon: Building2, description: `${formatFactor(factors.bus, "km")}` },
   ];
 
   return (
@@ -404,18 +442,20 @@ const TransportStep = ({
 };
 
 // Accommodation Step Component
-const AccommodationStep = ({ 
-  data, 
-  onChange 
-}: { 
-  data: CalculatorData["accommodation"]; 
+const AccommodationStep = ({
+  data,
+  factors,
+  onChange
+}: {
+  data: CalculatorData["accommodation"];
+  factors: EmissionFactors["accommodation"];
   onChange: (data: CalculatorData["accommodation"]) => void;
 }) => {
   const accommodationTypes = [
-    { id: "hotel" as const, label: "Hôtel", icon: Building2, description: "21.3 kgCO₂/nuit" },
-    { id: "apartment" as const, label: "Appartement", icon: Home, description: "12.5 kgCO₂/nuit" },
-    { id: "hostel" as const, label: "Auberge", icon: Home, description: "8.2 kgCO₂/nuit" },
-    { id: "eco_lodge" as const, label: "Éco-lodge", icon: TreePine, description: "5.4 kgCO₂/nuit" },
+    { id: "hotel" as const, label: "Hôtel", icon: Building2, description: formatFactor(factors.hotel, "nuit") },
+    { id: "apartment" as const, label: "Appartement", icon: Home, description: formatFactor(factors.apartment, "nuit") },
+    { id: "hostel" as const, label: "Auberge", icon: Home, description: formatFactor(factors.hostel, "nuit") },
+    { id: "eco_lodge" as const, label: "Éco-lodge", icon: TreePine, description: formatFactor(factors.eco_lodge, "nuit") },
   ];
 
   return (
@@ -480,18 +520,20 @@ const AccommodationStep = ({
 };
 
 // Mobility Step Component
-const MobilityStep = ({ 
-  data, 
-  onChange 
-}: { 
-  data: CalculatorData["mobility"]; 
+const MobilityStep = ({
+  data,
+  factors,
+  onChange
+}: {
+  data: CalculatorData["mobility"];
+  factors: EmissionFactors["mobility"];
   onChange: (data: CalculatorData["mobility"]) => void;
 }) => {
   const mobilityTypes = [
-    { id: "scooter" as const, label: "Scooter élec.", icon: Zap, description: "25g CO₂/km" },
-    { id: "bike" as const, label: "Vélo élec.", icon: Bike, description: "6g CO₂/km" },
-    { id: "public" as const, label: "Transports", icon: Train, description: "89g CO₂/km" },
-    { id: "walking" as const, label: "À pied", icon: Mountain, description: "0g CO₂/km" },
+    { id: "scooter" as const, label: "Scooter élec.", icon: Zap, description: formatFactor(factors.scooter, "km") },
+    { id: "bike" as const, label: "Vélo élec.", icon: Bike, description: formatFactor(factors.bike, "km") },
+    { id: "public" as const, label: "Transports", icon: Train, description: formatFactor(factors.public, "km") },
+    { id: "walking" as const, label: "À pied", icon: Mountain, description: formatFactor(factors.walking, "km") },
   ];
 
   return (
@@ -556,18 +598,20 @@ const MobilityStep = ({
 };
 
 // Activities Step Component
-const ActivitiesStep = ({ 
-  data, 
-  onChange 
-}: { 
-  data: CalculatorData["activities"]; 
+const ActivitiesStep = ({
+  data,
+  factors,
+  onChange
+}: {
+  data: CalculatorData["activities"];
+  factors: EmissionFactors["activities"];
   onChange: (data: CalculatorData["activities"]) => void;
 }) => {
   const activities = [
-    { key: "restaurants" as const, label: "Repas au restaurant", icon: Utensils, unit: "repas", factor: "3.5 kgCO₂" },
-    { key: "museums" as const, label: "Musées & culture", icon: Building2, unit: "visites", factor: "0.8 kgCO₂" },
-    { key: "outdoorActivities" as const, label: "Activités plein air", icon: Mountain, unit: "sorties", factor: "0.3 kgCO₂" },
-    { key: "watersports" as const, label: "Sports nautiques", icon: Waves, unit: "sessions", factor: "4.2 kgCO₂" },
+    { key: "restaurants" as const, label: "Repas au restaurant", icon: Utensils, unit: "repas", factor: formatFactor(factors.restaurant) },
+    { key: "museums" as const, label: "Musées & culture", icon: Building2, unit: "visites", factor: formatFactor(factors.museum) },
+    { key: "outdoorActivities" as const, label: "Activités plein air", icon: Mountain, unit: "sorties", factor: formatFactor(factors.hiking) },
+    { key: "watersports" as const, label: "Sports nautiques", icon: Waves, unit: "sessions", factor: formatFactor(factors.watersports) },
   ];
 
   return (

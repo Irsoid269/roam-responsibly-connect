@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
+import { CartProvider } from "@/hooks/useCart";
 import InstallPrompt from "@/components/pwa/InstallPrompt";
 import Seo from "@/components/Seo";
 import ScrollToTop from "@/components/layout/ScrollToTop";
@@ -58,6 +59,12 @@ const AdminEvents = lazy(() => import("./pages/admin/AdminEvents"));
 const AdminInbox = lazy(() => import("./pages/admin/AdminInbox"));
 const AdminAmbassadors = lazy(() => import("./pages/admin/AdminAmbassadors"));
 const AdminImpactContent = lazy(() => import("./pages/admin/AdminImpactContent"));
+const AdminCarbonFactors = lazy(() => import("./pages/admin/AdminCarbonFactors"));
+const AdminNgos = lazy(() => import("./pages/admin/AdminNgos"));
+const AdminSustainableActions = lazy(() => import("./pages/admin/AdminSustainableActions"));
+const AdminAuditLog = lazy(() => import("./pages/admin/AdminAuditLog"));
+const AdminModeration = lazy(() => import("./pages/admin/AdminModeration"));
+const AdminNotifications = lazy(() => import("./pages/admin/AdminNotifications"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -82,6 +89,7 @@ const RouteFallback = () => (
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
+      <CartProvider>
       <TooltipProvider>
         <Toaster />
         <Sonner />
@@ -143,10 +151,17 @@ const App = () => (
               <Route path="/admin/inbox" element={<AdminInbox />} />
               <Route path="/admin/ambassadors" element={<AdminAmbassadors />} />
               <Route path="/admin/impact-content" element={<AdminImpactContent />} />
+              <Route path="/admin/carbon-factors" element={<AdminCarbonFactors />} />
+              <Route path="/admin/ngos" element={<AdminNgos />} />
+              <Route path="/admin/sustainable-actions" element={<AdminSustainableActions />} />
+              <Route path="/admin/audit-log" element={<AdminAuditLog />} />
+              <Route path="/admin/moderation" element={<AdminModeration />} />
+              <Route path="/admin/notifications" element={<AdminNotifications />} />
             </Routes>
           </Suspense>
         </BrowserRouter>
       </TooltipProvider>
+      </CartProvider>
     </AuthProvider>
   </QueryClientProvider>
 );

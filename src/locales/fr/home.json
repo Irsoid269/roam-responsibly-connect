@@ -1,0 +1,92 @@
+{
+  "hero": {
+    "badge": "Voyagez. Travaillez. Préservez.",
+    "titleLine1": "Votre prochain séjour",
+    "titleSuffix": "aux Comores vous attend",
+    "subtitle": "Combinez travail à distance, hébergement, mobilité douce et activités locales — tout en mesurant et réduisant votre empreinte carbone.",
+    "tabs": {
+      "stay": "Séjour complet",
+      "coworking": "Coworking seul",
+      "experience": "Expériences"
+    },
+    "destinationLabel": "Destination",
+    "destinationPlaceholder": "Où allez-vous ?",
+    "noDestinations": "Aucune destination disponible. Ajoutez-en depuis l'admin.",
+    "datesLabel": "Dates",
+    "datesPlaceholder": "Choisir les dates",
+    "travelersLabel": "Voyageurs",
+    "traveler_one": "{{count}} personne",
+    "traveler_other": "{{count}} personnes",
+    "search": "Rechercher",
+    "stats": {
+      "destinations": "Destinations",
+      "coworkings": "Espaces coworking",
+      "travelers": "Voyageurs Amani"
+    }
+  },
+  "howItWorks": {
+    "eyebrow": "Comment ça marche",
+    "title": "Votre séjour en 4 étapes",
+    "subtitle": "De la recherche à la réservation, tout est pensé pour simplifier l'organisation de votre séjour Amani aux Comores.",
+    "steps": {
+      "chooseIsland": {
+        "title": "Choisissez votre île",
+        "description": "Explorez les îles des Comores et trouvez l'endroit parfait pour votre prochain séjour de travail."
+      },
+      "composeStay": {
+        "title": "Composez votre séjour",
+        "description": "Hébergement, espace coworking, mobilité douce, activités locales — tout dans un seul panier."
+      },
+      "measureImpact": {
+        "title": "Mesurez votre impact",
+        "description": "Consultez votre empreinte carbone estimée et comparez les options pour voyager plus responsable."
+      },
+      "enjoyShare": {
+        "title": "Profitez & partagez",
+        "description": "Vivez votre expérience, rencontrez la communauté, et partagez vos découvertes."
+      }
+    }
+  },
+  "carbon": {
+    "eyebrow": "Notre engagement climat",
+    "titleLine1": "Voyagez en conscience,",
+    "titleHighlight": "compensez avec impact",
+    "subtitle": "Chaque séjour génère une empreinte carbone. Nous la calculons automatiquement et vous proposons des moyens concrets de la réduire ou de la compenser — par des dons à des associations ou des actions terrain.",
+    "calculateCta": "Calculer mon impact",
+    "partnersCta": "Découvrir nos partenaires",
+    "stats": {
+      "measured": "Tonnes CO₂ mesurées",
+      "offset": "Tonnes compensées",
+      "donations": "Dons aux associations",
+      "treesPlanted": "Arbres plantés"
+    },
+    "score": {
+      "title": "Score carbone de votre dernier séjour",
+      "subtitle": "Moroni, 15 jours - Janvier 2025",
+      "transport": "Transport",
+      "accommodation": "Hébergement",
+      "mobility": "Mobilité",
+      "activities": "Activités",
+      "globalScore": "Score global"
+    }
+  },
+  "community": {
+    "eyebrow": "Communauté",
+    "title": "Récits de séjours Amani",
+    "subtitle": "Témoignages publiés après validation par l'équipe Amani.",
+    "shareCta": "Partager mon récit",
+    "viewCommunity": "Voir la communauté",
+    "emptyTitle": "Aucun récit publié pour le moment",
+    "emptySubtitle": "Soyez le premier à partager votre séjour Amani — il apparaîtra ici après approbation.",
+    "loginToShare": "Connectez-vous pour partager votre récit"
+  },
+  "destinations": {
+    "eyebrow": "Les îles des Comores",
+    "title": "Où allez-vous travailler ?",
+    "viewAll": "Voir toutes les destinations",
+    "empty": "Aucune destination mise en avant. Configurez-les depuis l'admin.",
+    "spaces": "espaces",
+    "perDay": "/jour",
+    "ecoFriendly": "Éco-friendly"
+  }
+}

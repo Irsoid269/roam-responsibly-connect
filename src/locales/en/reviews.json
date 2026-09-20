@@ -1,0 +1,55 @@
+{
+  "types": {
+    "destination": "Destination",
+    "coworking": "Coworking",
+    "accommodation": "Accommodation",
+    "activity": "Activity"
+  },
+  "loginToReview": "Log in to leave a review",
+  "hero": {
+    "eyebrow": "Community",
+    "title": "Traveler reviews",
+    "description": "Experience feedback reviewed by the Amani team to help you plan your stay in the Comoros."
+  },
+  "avgRating": "Average rating",
+  "reviewsPublished": "Reviews published",
+  "leaveReview": "Leave a review",
+  "resultsCount_one": "{{count}} review",
+  "resultsCount_other": "{{count}} reviews",
+  "filterPlaceholder": "Filter",
+  "filters": {
+    "all": "All",
+    "destination": "Destinations",
+    "coworking": "Coworking",
+    "accommodation": "Accommodations",
+    "activity": "Activities"
+  },
+  "empty": {
+    "title": "No review published yet",
+    "subtitle": "Be the first — your review will appear after approval.",
+    "cta": "Write a review"
+  },
+  "footerPrompt": {
+    "question": "Traveled with Amani?",
+    "share": "Share your experience",
+    "or": "or explore our",
+    "destinations": "destinations"
+  },
+  "submit": {
+    "chooseDestination": "Choose a destination",
+    "tooShort": "Write at least 10 characters",
+    "success": "Review submitted — visible after Amani review",
+    "error": "Error while submitting",
+    "title": "Share my review",
+    "description": "Your review will be published after moderation by the Amani team.",
+    "destination": "Destination",
+    "choosePlaceholder": "Choose…",
+    "rating": "Rating",
+    "starsLabel": "{{count}} stars",
+    "yourExperience": "Your experience",
+    "experiencePlaceholder": "What you enjoyed during your Amani stay…",
+    "cancel": "Cancel",
+    "sending": "Sending…",
+    "send": "Send"
+  }
+}

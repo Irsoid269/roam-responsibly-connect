@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Star, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -29,6 +30,7 @@ type Props = {
 };
 
 const SubmitReviewDialog = ({ open, onOpenChange }: Props) => {
+  const { t } = useTranslation("reviews");
   const { user } = useAuth();
   const navigate = useNavigate();
   const { data: destinations = [] } = useDestinations();
@@ -39,17 +41,17 @@ const SubmitReviewDialog = ({ open, onOpenChange }: Props) => {
 
   const handleSubmit = async () => {
     if (!user) {
-      toast.info("Connectez-vous pour laisser un avis");
+      toast.info(t("loginToReview"));
       onOpenChange(false);
       navigate("/login");
       return;
     }
     if (!destinationId) {
-      toast.error("Choisissez une destination");
+      toast.error(t("submit.chooseDestination"));
       return;
     }
     if (comment.trim().length < 10) {
-      toast.error("Écrivez au moins 10 caractères");
+      toast.error(t("submit.tooShort"));
       return;
     }
 
@@ -61,13 +63,13 @@ const SubmitReviewDialog = ({ open, onOpenChange }: Props) => {
         rating,
         comment: comment.trim(),
       });
-      toast.success("Avis envoyé — visible après validation Amani");
+      toast.success(t("submit.success"));
       setComment("");
       setRating(5);
       setDestinationId("");
       onOpenChange(false);
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Erreur lors de l'envoi");
+      toast.error(e instanceof Error ? e.message : t("submit.error"));
     }
   };
 
@@ -76,19 +78,19 @@ const SubmitReviewDialog = ({ open, onOpenChange }: Props) => {
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="font-display text-2xl font-medium">
-            Partager mon avis
+            {t("submit.title")}
           </DialogTitle>
           <DialogDescription>
-            Votre avis sera publié après modération par l&apos;équipe Amani.
+            {t("submit.description")}
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4">
           <div className="space-y-2">
-            <label className="text-sm font-medium">Destination</label>
+            <label className="text-sm font-medium">{t("submit.destination")}</label>
             <Select value={destinationId} onValueChange={setDestinationId}>
               <SelectTrigger>
-                <SelectValue placeholder="Choisir…" />
+                <SelectValue placeholder={t("submit.choosePlaceholder")} />
               </SelectTrigger>
               <SelectContent>
                 {destinations.map((d) => (
@@ -101,7 +103,7 @@ const SubmitReviewDialog = ({ open, onOpenChange }: Props) => {
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium">Note</label>
+            <label className="text-sm font-medium">{t("submit.rating")}</label>
             <div className="flex gap-1">
               {[1, 2, 3, 4, 5].map((n) => (
                 <button
@@ -109,7 +111,7 @@ const SubmitReviewDialog = ({ open, onOpenChange }: Props) => {
                   type="button"
                   onClick={() => setRating(n)}
                   className="p-1"
-                  aria-label={`${n} étoiles`}
+                  aria-label={t("submit.starsLabel", { count: n })}
                 >
                   <Star
                     className={cn(
@@ -125,28 +127,28 @@ const SubmitReviewDialog = ({ open, onOpenChange }: Props) => {
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium">Votre expérience</label>
+            <label className="text-sm font-medium">{t("submit.yourExperience")}</label>
             <Textarea
               value={comment}
               onChange={(e) => setComment(e.target.value)}
               rows={4}
-              placeholder="Ce que vous avez aimé pendant votre séjour Amani…"
+              placeholder={t("submit.experiencePlaceholder")}
             />
           </div>
         </div>
 
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
-            Annuler
+            {t("submit.cancel")}
           </Button>
           <Button onClick={handleSubmit} disabled={submit.isPending}>
             {submit.isPending ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin" />
-                Envoi…
+                {t("submit.sending")}
               </>
             ) : (
-              "Envoyer"
+              t("submit.send")
             )}
           </Button>
         </DialogFooter>

@@ -270,6 +270,7 @@ const AdminDashboard = () => {
     <AdminLayout
       title="Tableau de bord"
       description="Vue d’ensemble de l’activité Amani Resorts — réservations, catalogue et modération."
+      allowedRoles={["organizer", "partner_manager", "support", "finance"]}
     >
       {loading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">

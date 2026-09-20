@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { formatDistanceToNow } from "date-fns";
 import { fr } from "date-fns/locale";
 import { Star, Loader2, PenLine, MapPin } from "lucide-react";
@@ -16,18 +17,19 @@ import {
 } from "@/components/ui/select";
 import PageHero from "@/components/layout/PageHero";
 import SubmitReviewDialog from "@/components/reviews/SubmitReviewDialog";
+import ReportDialog from "@/components/moderation/ReportDialog";
 import { useApprovedReviews, useDestinations } from "@/hooks/useCatalogQueries";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 
-const typeLabels: Record<string, string> = {
-  destination: "Destination",
-  coworking: "Coworking",
-  accommodation: "Hébergement",
-  activity: "Activité",
-};
-
 const ReviewsPage = () => {
+  const { t } = useTranslation("reviews");
+  const typeLabels: Record<string, string> = {
+    destination: t("types.destination"),
+    coworking: t("types.coworking"),
+    accommodation: t("types.accommodation"),
+    activity: t("types.activity"),
+  };
   const { user } = useAuth();
   const navigate = useNavigate();
   const { data: reviews = [], isLoading } = useApprovedReviews();
@@ -51,7 +53,7 @@ const ReviewsPage = () => {
 
   const openSubmit = () => {
     if (!user) {
-      toast.info("Connectez-vous pour laisser un avis");
+      toast.info(t("loginToReview"));
       navigate("/login");
       return;
     }
@@ -61,9 +63,9 @@ const ReviewsPage = () => {
   return (
     <main className="page-main">
       <PageHero
-        eyebrow="Communauté"
-        title="Avis voyageurs"
-        description="Retours d'expérience validés par l'équipe Amani pour préparer votre séjour aux Comores."
+        eyebrow={t("hero.eyebrow")}
+        title={t("hero.title")}
+        description={t("hero.description")}
       >
         <div className="flex flex-wrap justify-center gap-8 text-center mb-6">
           <div>
@@ -82,16 +84,16 @@ const ReviewsPage = () => {
                 />
               ))}
             </div>
-            <p className="text-sm text-muted-foreground mt-1">Note moyenne</p>
+            <p className="text-sm text-muted-foreground mt-1">{t("avgRating")}</p>
           </div>
           <div>
             <p className="font-display text-3xl font-medium">{reviews.length}</p>
-            <p className="text-sm text-muted-foreground mt-2">Avis publiés</p>
+            <p className="text-sm text-muted-foreground mt-2">{t("reviewsPublished")}</p>
           </div>
         </div>
         <Button onClick={openSubmit} className="gap-2">
           <PenLine className="w-4 h-4" />
-          Laisser un avis
+          {t("leaveReview")}
         </Button>
       </PageHero>
 
@@ -99,18 +101,18 @@ const ReviewsPage = () => {
         <div className="container mx-auto px-4 max-w-4xl">
           <div className="flex justify-between items-center mb-6 gap-4">
             <p className="text-sm text-muted-foreground">
-              {filtered.length} avis
+              {t("resultsCount", { count: filtered.length })}
             </p>
             <Select value={filter} onValueChange={setFilter}>
               <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Filtrer" />
+                <SelectValue placeholder={t("filterPlaceholder")} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Tous</SelectItem>
-                <SelectItem value="destination">Destinations</SelectItem>
-                <SelectItem value="coworking">Coworkings</SelectItem>
-                <SelectItem value="accommodation">Hébergements</SelectItem>
-                <SelectItem value="activity">Activités</SelectItem>
+                <SelectItem value="all">{t("filters.all")}</SelectItem>
+                <SelectItem value="destination">{t("filters.destination")}</SelectItem>
+                <SelectItem value="coworking">{t("filters.coworking")}</SelectItem>
+                <SelectItem value="accommodation">{t("filters.accommodation")}</SelectItem>
+                <SelectItem value="activity">{t("filters.activity")}</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -122,13 +124,13 @@ const ReviewsPage = () => {
           ) : filtered.length === 0 ? (
             <Card>
               <CardContent className="py-12 text-center">
-                <p className="font-medium">Aucun avis publié pour le moment</p>
+                <p className="font-medium">{t("empty.title")}</p>
                 <p className="text-sm text-muted-foreground mt-2">
-                  Soyez le premier — votre avis apparaîtra après validation.
+                  {t("empty.subtitle")}
                 </p>
                 <Button onClick={openSubmit} className="mt-4 gap-2">
                   <PenLine className="w-4 h-4" />
-                  Écrire un avis
+                  {t("empty.cta")}
                 </Button>
               </CardContent>
             </Card>
@@ -171,15 +173,18 @@ const ReviewsPage = () => {
                       <p className="text-foreground leading-relaxed">
                         {review.comment || "—"}
                       </p>
-                      <p className="text-xs text-muted-foreground mt-3">
-                        {review.author_display_name
-                          ? `${review.author_display_name} · `
-                          : ""}
-                        {formatDistanceToNow(new Date(review.created_at), {
-                          addSuffix: true,
-                          locale: fr,
-                        })}
-                      </p>
+                      <div className="flex items-center justify-between mt-3">
+                        <p className="text-xs text-muted-foreground">
+                          {review.author_display_name
+                            ? `${review.author_display_name} · `
+                            : ""}
+                          {formatDistanceToNow(new Date(review.created_at), {
+                            addSuffix: true,
+                            locale: fr,
+                          })}
+                        </p>
+                        <ReportDialog targetType="review" targetId={review.id} compact />
+                      </div>
                     </CardContent>
                   </Card>
                 </motion.div>
@@ -188,17 +193,17 @@ const ReviewsPage = () => {
           )}
 
           <p className="text-center text-sm text-muted-foreground mt-10">
-            Vous avez voyagé avec Amani ?{" "}
+            {t("footerPrompt.question")}{" "}
             <button
               type="button"
               onClick={openSubmit}
               className="text-primary underline underline-offset-2"
             >
-              Partagez votre expérience
+              {t("footerPrompt.share")}
             </button>{" "}
-            ou explorez nos{" "}
+            {t("footerPrompt.or")}{" "}
             <Link to="/destinations" className="text-primary underline underline-offset-2">
-              destinations
+              {t("footerPrompt.destinations")}
             </Link>
             .
           </p>

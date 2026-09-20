@@ -1,0 +1,81 @@
+{
+  "nav": {
+    "destinations": "Destinations",
+    "coworkings": "Coworking spaces",
+    "community": "Community",
+    "impact": "Our Impact"
+  },
+  "auth": {
+    "login": "Log in",
+    "signup": "Create an account",
+    "myProfile": "My profile",
+    "admin": "Admin",
+    "administration": "Administration",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu"
+  },
+  "footer": {
+    "tagline": "An exceptional retreat in the Comoros. Premium domes facing the Indian Ocean, coworking and wellness in an eco-luxury boutique setting.",
+    "columns": {
+      "discover": "Discover",
+      "community": "Community",
+      "impact": "Impact",
+      "support": "Support"
+    },
+    "discover": {
+      "destinations": "Destinations",
+      "coworkings": "Coworking spaces",
+      "accommodations": "Accommodations",
+      "activities": "Activities",
+      "mobility": "Soft mobility"
+    },
+    "community": {
+      "blog": "Blog & Stories",
+      "reviews": "Traveler reviews",
+      "events": "Events",
+      "ambassadors": "Ambassadors"
+    },
+    "impact": {
+      "mission": "Our Mission",
+      "carbonCalculator": "Carbon Calculator",
+      "partners": "Partner Associations",
+      "report": "Impact Report"
+    },
+    "support": {
+      "help": "Help Center",
+      "becomePartner": "Become a Partner",
+      "contact": "Contact",
+      "faq": "FAQ"
+    },
+    "rights": "© {{year}} Amani Resorts. All rights reserved.",
+    "legal": {
+      "privacy": "Privacy",
+      "terms": "Terms",
+      "cookies": "Cookies"
+    }
+  },
+  "language": {
+    "fr": "Français",
+    "en": "English",
+    "zdj": "Shikomori",
+    "switchTo": "Switch language"
+  },
+  "report": {
+    "loginRequired": "Log in to report content",
+    "success": "Report sent — our team will review it, thank you",
+    "duplicate": "You have already reported this content",
+    "error": "Could not send the report",
+    "button": "Report",
+    "title": "Report this content",
+    "reasonPlaceholder": "Reason for reporting",
+    "reasons": {
+      "spam": "Spam / advertising",
+      "abus": "Abuse, harassment",
+      "contenu_inapproprie": "Inappropriate content",
+      "fausse_information": "False information",
+      "autre": "Other"
+    },
+    "detailsPlaceholder": "Details (optional)",
+    "cancel": "Cancel"
+  }
+}

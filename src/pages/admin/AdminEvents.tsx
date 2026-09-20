@@ -144,6 +144,7 @@ const AdminEvents = () => {
     <AdminLayout
       title="Événements"
       description="Événements affichés sur /events."
+      allowedRoles={["organizer"]}
       actions={
         <div className="flex items-center gap-2">
           <Button variant="outline" asChild>

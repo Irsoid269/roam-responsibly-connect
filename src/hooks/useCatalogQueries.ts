@@ -157,12 +157,20 @@ export function useAccommodations(destinationId?: string) {
   });
 }
 
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 export function useActivities(destinationId?: string) {
   return useQuery({
     queryKey: [...queryKeys.activities, destinationId || "all"],
     queryFn: async () => {
       let q = supabase.from("activities").select("*").order("name");
-      if (destinationId) q = q.eq("destination_id", destinationId);
+      if (destinationId && UUID_RE.test(destinationId)) {
+        // Multi-location circuits (no single destination_id, e.g. the Coworkation
+        // Eco-Comores catalogue) stay bookable from any destination's page.
+        q = q.or(`destination_id.eq.${destinationId},destination_id.is.null`);
+      } else if (destinationId) {
+        q = q.eq("destination_id", destinationId);
+      }
       const { data, error } = await q;
       if (error) throw error;
       return data ?? [];
@@ -310,6 +318,7 @@ export function useSaveCarbonEstimate() {
       activities: number;
       total: number;
       offsetAmount?: number;
+      emissionFactorSetId?: string | null;
     }) => {
       const { error } = await supabase.from("carbon_footprint_history").insert({
         user_id: payload.userId,
@@ -319,6 +328,7 @@ export function useSaveCarbonEstimate() {
         total_carbon: payload.total,
         offset_amount: payload.offsetAmount ?? 0,
         date: new Date().toISOString().slice(0, 10),
+        emission_factor_set_id: payload.emissionFactorSetId ?? null,
       });
       if (error) throw error;
     },
@@ -759,6 +769,109 @@ export function useGlobalSearchCatalog() {
   });
 }
 
+export function useActiveNgos() {
+  return useQuery({
+    queryKey: ["ngos", "active"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("ngos")
+        .select("*")
+        .eq("is_active", true)
+        .order("sort_order");
+      if (error) throw error;
+      return data ?? [];
+    },
+    staleTime: 60_000,
+  });
+}
+
+export function useCreateDonation() {
+  return useMutation({
+    mutationFn: async (payload: {
+      userId: string;
+      ngoId: string;
+      amount: number;
+      co2OffsetKg?: number;
+      reservationId?: string | null;
+    }) => {
+      const { data, error } = await supabase
+        .from("donations")
+        .insert({
+          user_id: payload.userId,
+          ngo_id: payload.ngoId,
+          amount: payload.amount,
+          co2_offset_kg: payload.co2OffsetKg ?? null,
+          reservation_id: payload.reservationId ?? null,
+        })
+        .select()
+        .single();
+      if (error) throw error;
+      return data;
+    },
+  });
+}
+
+export interface ActionSessionWithAction {
+  id: string;
+  action_id: string;
+  location: string | null;
+  starts_at: string;
+  ends_at: string | null;
+  capacity: number;
+  registered_count: number;
+  sustainable_actions: {
+    title: string;
+    description: string | null;
+    category: string | null;
+  } | null;
+}
+
+export function useUpcomingActionSessions() {
+  return useQuery({
+    queryKey: ["action-sessions", "upcoming"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("action_sessions")
+        .select("*, sustainable_actions(title, description, category)")
+        .gt("starts_at", new Date().toISOString())
+        .order("starts_at");
+      if (error) throw error;
+      return (data ?? []) as unknown as ActionSessionWithAction[];
+    },
+    staleTime: 30_000,
+  });
+}
+
+export function useMyParticipation(sessionId: string | undefined, userId: string | undefined) {
+  return useQuery({
+    queryKey: ["action-participations", "mine", sessionId, userId],
+    enabled: !!sessionId && !!userId,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("action_participations")
+        .select("*")
+        .eq("session_id", sessionId!)
+        .eq("user_id", userId!)
+        .neq("status", "cancelled")
+        .maybeSingle();
+      if (error) throw error;
+      return data;
+    },
+  });
+}
+
+export function useRegisterForAction() {
+  return useMutation({
+    mutationFn: async (sessionId: string) => {
+      const { data, error } = await supabase.rpc("register_for_action", {
+        p_session_id: sessionId,
+      });
+      if (error) throw error;
+      return data;
+    },
+  });
+}
+
 export function useAmbassadors(admin = false) {
   return useQuery({
     queryKey: [...queryKeys.ambassadors, admin ? "admin" : "public"],
@@ -853,6 +966,172 @@ export function useAdminCreateReview() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: queryKeys.adminReviews });
       qc.invalidateQueries({ queryKey: queryKeys.reviews });
+    },
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Modération & signalement (cahier §7.9)
+// ---------------------------------------------------------------------------
+
+export type ReportTargetType = "story" | "review" | "comment";
+export type ReportReason =
+  | "spam"
+  | "abus"
+  | "contenu_inapproprie"
+  | "fausse_information"
+  | "autre";
+
+export function useCreateReport() {
+  return useMutation({
+    mutationFn: async (payload: {
+      reporterUserId: string;
+      targetType: ReportTargetType;
+      targetId: string;
+      reason: ReportReason;
+      comment?: string;
+    }) => {
+      const { error } = await supabase.from("reports").insert({
+        reporter_user_id: payload.reporterUserId,
+        target_type: payload.targetType,
+        target_id: payload.targetId,
+        reason: payload.reason,
+        comment: payload.comment || null,
+      });
+      if (error) throw error;
+    },
+  });
+}
+
+export interface ReportRow {
+  id: string;
+  reporter_user_id: string;
+  target_type: ReportTargetType;
+  target_id: string;
+  reason: ReportReason;
+  comment: string | null;
+  status: "open" | "in_review" | "actioned" | "rejected";
+  created_at: string;
+  resolved_at: string | null;
+  resolved_by: string | null;
+}
+
+export function useReports(statusFilter: string) {
+  return useQuery({
+    queryKey: ["reports", "admin", statusFilter],
+    queryFn: async () => {
+      let query = supabase
+        .from("reports")
+        .select("*")
+        .order("created_at", { ascending: false });
+      if (statusFilter !== "all") query = query.eq("status", statusFilter);
+      const { data, error } = await query;
+      if (error) throw error;
+      return (data ?? []) as ReportRow[];
+    },
+  });
+}
+
+export function useResolveReport() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (payload: {
+      reportId: string;
+      action: "soft_delete" | "ban" | "warn" | "dismiss";
+      reason?: string;
+    }) => {
+      const { error } = await supabase.rpc("resolve_report", {
+        p_report_id: payload.reportId,
+        p_action: payload.action,
+        p_reason: payload.reason || null,
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["reports", "admin"] });
+      qc.invalidateQueries({ queryKey: ["profiles", "banned"] });
+    },
+  });
+}
+
+export function useUnbanUser() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (payload: { userId: string; reason?: string }) => {
+      const { error } = await supabase.rpc("unban_user", {
+        p_user_id: payload.userId,
+        p_reason: payload.reason || null,
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["profiles", "banned"] });
+    },
+  });
+}
+
+export interface NotificationRow {
+  id: string;
+  user_id: string | null;
+  recipient_email: string | null;
+  type: string;
+  subject: string;
+  payload: Record<string, unknown>;
+  status: "pending" | "sent" | "failed" | "skipped_no_provider";
+  error: string | null;
+  created_at: string;
+  sent_at: string | null;
+}
+
+export function useNotifications(statusFilter: string) {
+  return useQuery({
+    queryKey: ["notifications", "admin", statusFilter],
+    queryFn: async () => {
+      let query = supabase
+        .from("notifications")
+        .select("*")
+        .order("created_at", { ascending: false })
+        .limit(200);
+      if (statusFilter !== "all") query = query.eq("status", statusFilter);
+      const { data, error } = await query;
+      if (error) throw error;
+      return (data ?? []) as NotificationRow[];
+    },
+  });
+}
+
+export interface DuplicateIpSignal {
+  session_id: string;
+  registration_ip: string;
+  distinct_users: number;
+  user_ids: string[];
+}
+
+export function useDuplicateRegistrationSignals() {
+  return useQuery({
+    queryKey: ["action-participation-ip-duplicates"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("action_participation_ip_duplicates")
+        .select("*");
+      if (error) throw error;
+      return (data ?? []) as DuplicateIpSignal[];
+    },
+    staleTime: 60_000,
+  });
+}
+
+export function useBannedUsers() {
+  return useQuery({
+    queryKey: ["profiles", "banned"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("user_id, full_name, banned_at, banned_reason")
+        .eq("is_banned", true)
+        .order("banned_at", { ascending: false });
+      if (error) throw error;
+      return data ?? [];
     },
   });
 }

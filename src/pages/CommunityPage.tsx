@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { formatDistanceToNow } from "date-fns";
 import { fr } from "date-fns/locale";
 import {
@@ -32,6 +33,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 
 const CommunityPage = () => {
+  const { t } = useTranslation("community");
   const { user } = useAuth();
   const navigate = useNavigate();
   const [storyOpen, setStoryOpen] = useState(false);
@@ -50,34 +52,34 @@ const CommunityPage = () => {
     return [
       {
         icon: Users,
-        label: "Voyageurs Amani",
+        label: t("stats.travelers"),
         value: String(counts?.travelers ?? leaders.length),
         color: "text-primary",
       },
       {
         icon: TreePine,
-        label: "CO₂ compensé",
+        label: t("stats.carbonOffset"),
         value: `${Math.round(carbon)} kg`,
         color: "text-carbon",
       },
       {
         icon: MapPin,
-        label: "Destinations",
+        label: t("stats.destinations"),
         value: String(counts?.destinations ?? "—"),
         color: "text-accent",
       },
       {
         icon: Star,
-        label: "Note moyenne",
+        label: t("stats.avgRating"),
         value: avg ? `${avg.toFixed(1)}/5` : "—",
         color: "text-warning",
       },
     ];
-  }, [leaders, reviews, counts]);
+  }, [leaders, reviews, counts, t]);
 
   const openStory = () => {
     if (!user) {
-      toast.info("Connectez-vous pour partager un récit");
+      toast.info(t("stories.loginToShare"));
       navigate("/login");
       return;
     }
@@ -85,28 +87,28 @@ const CommunityPage = () => {
   };
 
   const badgeFor = (carbon: number, trips: number) => {
-    if (carbon >= 200 || trips >= 8) return "Eco Pioneer";
-    if (carbon >= 100 || trips >= 4) return "Carbon Saver";
-    if (trips >= 1) return "Explorer";
-    return "Nouveau";
+    if (carbon >= 200 || trips >= 8) return t("travelers.badges.ecoPioneer");
+    if (carbon >= 100 || trips >= 4) return t("travelers.badges.carbonSaver");
+    if (trips >= 1) return t("travelers.badges.explorer");
+    return t("travelers.badges.newcomer");
   };
 
   return (
     <main className="page-main">
       <PageHero
-        eyebrow="Communauté"
-        title="Voyageurs responsables aux Comores"
-        description="Récits validés, avis publiés et voyageurs qui réduisent leur empreinte avec Amani."
+        eyebrow={t("hero.eyebrow")}
+        title={t("hero.title")}
+        description={t("hero.description")}
       >
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <Button size="lg" onClick={openStory} className="gap-2">
             <PenLine className="w-4 h-4" />
-            Partager mon récit
+            {t("shareStory")}
           </Button>
           <Button size="lg" variant="outline" asChild>
             <Link to="/reviews">
               <MessageCircle className="w-4 h-4 mr-2" />
-              Voir les avis
+              {t("viewReviews")}
             </Link>
           </Button>
         </div>
@@ -128,9 +130,9 @@ const CommunityPage = () => {
 
           <Tabs defaultValue="stories" className="max-w-5xl mx-auto">
             <TabsList className="mb-6">
-              <TabsTrigger value="stories">Récits</TabsTrigger>
-              <TabsTrigger value="members">Voyageurs</TabsTrigger>
-              <TabsTrigger value="reviews">Avis récents</TabsTrigger>
+              <TabsTrigger value="stories">{t("tabs.stories")}</TabsTrigger>
+              <TabsTrigger value="members">{t("tabs.travelers")}</TabsTrigger>
+              <TabsTrigger value="reviews">{t("tabs.reviews")}</TabsTrigger>
             </TabsList>
 
             <TabsContent value="stories">
@@ -141,10 +143,10 @@ const CommunityPage = () => {
               ) : stories.length === 0 ? (
                 <Card>
                   <CardContent className="py-12 text-center">
-                    <p className="font-medium">Aucun récit publié</p>
+                    <p className="font-medium">{t("stories.empty")}</p>
                     <Button onClick={openStory} className="mt-4 gap-2">
                       <PenLine className="w-4 h-4" />
-                      Être le premier
+                      {t("stories.beFirst")}
                     </Button>
                   </CardContent>
                 </Card>
@@ -198,7 +200,7 @@ const CommunityPage = () => {
                 </div>
               ) : leaders.length === 0 ? (
                 <p className="text-center text-muted-foreground py-12">
-                  Les profils apparaîtront ici après les premiers séjours.
+                  {t("travelers.empty")}
                 </p>
               ) : (
                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -213,7 +215,7 @@ const CommunityPage = () => {
                         </Avatar>
                         <div className="min-w-0">
                           <p className="font-medium truncate">
-                            {member.full_name || "Voyageur Amani"}
+                            {member.full_name || t("travelers.defaultName")}
                           </p>
                           <Badge variant="outline" className="mt-1 text-xs">
                             {badgeFor(
@@ -223,8 +225,8 @@ const CommunityPage = () => {
                           </Badge>
                           <p className="text-xs text-muted-foreground mt-1.5 flex items-center gap-1">
                             <Leaf className="w-3 h-3 text-accent" />
-                            {member.total_carbon_saved || 0} kg · {member.trips_count || 0}{" "}
-                            séjour{(member.trips_count || 0) > 1 ? "s" : ""}
+                            {member.total_carbon_saved || 0} kg ·{" "}
+                            {t("travelers.trip", { count: member.trips_count || 0 })}
                           </p>
                         </div>
                       </CardContent>
@@ -237,9 +239,9 @@ const CommunityPage = () => {
             <TabsContent value="reviews">
               {reviews.length === 0 ? (
                 <p className="text-center text-muted-foreground py-12">
-                  Aucun avis publié —{" "}
+                  {t("reviews.empty")}{" "}
                   <Link to="/reviews" className="text-primary underline">
-                    laissez le premier
+                    {t("reviews.leaveFirst")}
                   </Link>
                   .
                 </p>
@@ -278,7 +280,7 @@ const CommunityPage = () => {
                   ))}
                   <div className="text-center pt-2">
                     <Button variant="outline" asChild>
-                      <Link to="/reviews">Tous les avis</Link>
+                      <Link to="/reviews">{t("reviews.viewAll")}</Link>
                     </Button>
                   </div>
                 </div>

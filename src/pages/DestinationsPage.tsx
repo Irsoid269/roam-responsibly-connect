@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Link, useSearchParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { 
   Search, Filter, Star, Wifi, Leaf, MapPin, 
   SlidersHorizontal, Grid, List, Loader2
@@ -23,6 +24,7 @@ import PageHero from "@/components/layout/PageHero";
 const defaultImage = "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800";
 
 const DestinationsPage = () => {
+  const { t } = useTranslation("destinations");
   const [searchParams] = useSearchParams();
   const destinationId = searchParams.get("destination") || undefined;
   const from = searchParams.get("from") || undefined;
@@ -57,15 +59,15 @@ const DestinationsPage = () => {
   return (
     <main className="page-main">
         <PageHero
-          eyebrow="Catalogue Amani"
-          title="Explorez nos destinations"
-          description="Découvrez les meilleurs spots pour travailler et vivre aux Comores, sélectionnés pour leur qualité et leur impact environnemental réduit."
+          eyebrow={t("hero.eyebrow")}
+          title={t("hero.title")}
+          description={t("hero.description")}
         >
           <div className="flex flex-col sm:flex-row gap-3 max-w-2xl mx-auto">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
               <Input
-                placeholder="Rechercher une destination..."
+                placeholder={t("searchPlaceholder")}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-10 h-12 bg-background/80 backdrop-blur-sm"
@@ -73,7 +75,7 @@ const DestinationsPage = () => {
             </div>
             <Button size="lg" variant="outline" className="h-12">
               <Filter className="w-4 h-4 mr-2" />
-              Filtres
+              {t("filters")}
             </Button>
           </div>
         </PageHero>
@@ -88,28 +90,30 @@ const DestinationsPage = () => {
             ) : destinations.length === 0 ? (
               <div className="text-center py-16">
                 <MapPin className="w-12 h-12 mx-auto mb-4 text-muted-foreground opacity-50" />
-                <h3 className="text-lg font-medium text-foreground">Aucune destination disponible</h3>
-                <p className="text-muted-foreground mt-1">Les destinations seront ajoutées prochainement</p>
+                <h3 className="text-lg font-medium text-foreground">{t("empty.title")}</h3>
+                <p className="text-muted-foreground mt-1">{t("empty.subtitle")}</p>
               </div>
             ) : (
             <>
             {/* Toolbar */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
               <p className="text-muted-foreground">
-                <span className="font-medium text-foreground">{filteredDestinations.length}</span> destinations trouvées
+                <span className="font-medium text-foreground">
+                  {t("resultsCount", { count: filteredDestinations.length })}
+                </span>
               </p>
-              
+
               <div className="flex items-center gap-3">
                 <Select value={sortBy} onValueChange={setSortBy}>
                   <SelectTrigger className="w-[180px]">
                     <SlidersHorizontal className="w-4 h-4 mr-2" />
-                    <SelectValue placeholder="Trier par" />
+                    <SelectValue placeholder={t("sort.placeholder")} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="popular">Populaire</SelectItem>
-                    <SelectItem value="price-low">Prix croissant</SelectItem>
-                    <SelectItem value="price-high">Prix décroissant</SelectItem>
-                    <SelectItem value="carbon">Score carbone</SelectItem>
+                    <SelectItem value="popular">{t("sort.popular")}</SelectItem>
+                    <SelectItem value="price-low">{t("sort.priceLow")}</SelectItem>
+                    <SelectItem value="price-high">{t("sort.priceHigh")}</SelectItem>
+                    <SelectItem value="carbon">{t("sort.carbon")}</SelectItem>
                   </SelectContent>
                 </Select>
 
@@ -194,7 +198,7 @@ const DestinationsPage = () => {
                                 <span className="text-lg font-bold text-foreground">
                                   {destination.avg_price_per_day}€
                                 </span>
-                                <span className="text-sm text-muted-foreground">/jour</span>
+                                <span className="text-sm text-muted-foreground">{t("perDay")}</span>
                               </div>
                             )}
                           </div>
@@ -207,14 +211,14 @@ const DestinationsPage = () => {
                               </div>
                               <div className="flex items-center gap-1 text-muted-foreground">
                                 <Wifi className="w-4 h-4" />
-                                <span className="text-sm">{destination.coworking_count} espaces</span>
+                                <span className="text-sm">{destination.coworking_count} {t("spaces")}</span>
                               </div>
                             </div>
-                            
+
                             {viewMode === "grid" && (
                               <div className="flex items-center gap-1 text-carbon">
                                 <Leaf className="w-4 h-4" />
-                                <span className="text-xs font-medium">Éco</span>
+                                <span className="text-xs font-medium">{t("eco")}</span>
                               </div>
                             )}
                           </div>
@@ -225,7 +229,7 @@ const DestinationsPage = () => {
                                 <span className="text-lg font-bold text-foreground">
                                   {destination.avg_price_per_day}€
                                 </span>
-                                <span className="text-sm text-muted-foreground">/jour</span>
+                                <span className="text-sm text-muted-foreground">{t("perDay")}</span>
                               </div>
                             </div>
                           )}
@@ -240,8 +244,8 @@ const DestinationsPage = () => {
               {filteredDestinations.length === 0 && searchQuery && (
                 <div className="text-center py-16">
                   <MapPin className="w-12 h-12 mx-auto mb-4 text-muted-foreground opacity-50" />
-                  <h3 className="text-lg font-medium text-foreground">Aucune destination trouvée</h3>
-                  <p className="text-muted-foreground mt-1">Essayez une autre recherche</p>
+                  <h3 className="text-lg font-medium text-foreground">{t("notFound.title")}</h3>
+                  <p className="text-muted-foreground mt-1">{t("notFound.subtitle")}</p>
                 </div>
               )}
             </>

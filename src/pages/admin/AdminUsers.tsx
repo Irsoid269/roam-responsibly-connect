@@ -34,6 +34,25 @@ import { fr } from "date-fns/locale";
 import { toast } from "sonner";
 import { AppRole } from "@/hooks/useAdminAuth";
 
+const roleLabels: Record<AppRole, string> = {
+  admin: "Admin",
+  moderator: "Modérateur",
+  user: "Utilisateur",
+  organizer: "Organisateur",
+  partner_manager: "Gestionnaire partenaires",
+  support: "Support",
+  finance: "Finance",
+};
+
+const assignableRoles: AppRole[] = [
+  "admin",
+  "moderator",
+  "organizer",
+  "partner_manager",
+  "support",
+  "finance",
+];
+
 interface UserProfile {
   id: string;
   user_id: string;
@@ -193,11 +212,7 @@ const AdminUsers = () => {
                             key={role}
                             variant={role === "admin" ? "default" : "secondary"}
                           >
-                            {role === "admin"
-                              ? "Admin"
-                              : role === "moderator"
-                              ? "Modérateur"
-                              : "Utilisateur"}
+                            {roleLabels[role] || role}
                           </Badge>
                         ))
                       )}
@@ -340,27 +355,20 @@ const AdminUsers = () => {
               </div>
               <div className="space-y-2">
                 <p className="text-sm font-medium">Ajouter un rôle</p>
-                <div className="flex gap-2">
-                  {!userForRole.roles.includes("admin") && (
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => addRole(userForRole.user_id, "admin")}
-                    >
-                      <Shield className="h-4 w-4 mr-1" />
-                      Admin
-                    </Button>
-                  )}
-                  {!userForRole.roles.includes("moderator") && (
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => addRole(userForRole.user_id, "moderator")}
-                    >
-                      <Shield className="h-4 w-4 mr-1" />
-                      Modérateur
-                    </Button>
-                  )}
+                <div className="flex gap-2 flex-wrap">
+                  {assignableRoles
+                    .filter((role) => !userForRole.roles.includes(role))
+                    .map((role) => (
+                      <Button
+                        key={role}
+                        size="sm"
+                        variant="outline"
+                        onClick={() => addRole(userForRole.user_id, role)}
+                      >
+                        <Shield className="h-4 w-4 mr-1" />
+                        {roleLabels[role]}
+                      </Button>
+                    ))}
                 </div>
               </div>
             </div>

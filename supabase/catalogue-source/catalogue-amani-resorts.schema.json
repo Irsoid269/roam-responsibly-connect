@@ -1,0 +1,116 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://amani-resorts.example/schemas/catalogue-amani-resorts.schema.json",
+  "title": "Catalogue Amani Resorts",
+  "type": "object",
+  "required": ["catalogue", "universes", "providers", "activities"],
+  "properties": {
+    "catalogue": {
+      "type": "object",
+      "required": ["id", "brand", "title", "version", "last_updated", "booking_channel"],
+      "properties": {
+        "id": { "type": "string" },
+        "brand": { "type": "string" },
+        "project": { "type": "string" },
+        "title": { "$ref": "#/$defs/localizedText" },
+        "version": { "type": "string" },
+        "last_updated": { "type": "string", "format": "date" },
+        "beneficiary": { "type": "string" },
+        "location": { "type": "string" },
+        "booking_channel": { "type": "string" }
+      }
+    },
+    "universes": {
+      "type": "array",
+      "minItems": 4,
+      "items": {
+        "type": "object",
+        "required": ["id", "code", "name", "description", "sort_order"],
+        "properties": {
+          "id": { "type": "string" },
+          "code": { "enum": ["A", "B", "C", "D"] },
+          "name": { "$ref": "#/$defs/localizedText" },
+          "description": { "$ref": "#/$defs/localizedText" },
+          "color": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$" },
+          "sort_order": { "type": "integer", "minimum": 1 }
+        }
+      }
+    },
+    "providers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "positioning", "status"],
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "positioning": { "$ref": "#/$defs/localizedText" },
+          "status": { "enum": ["active_contract_formalization", "active", "inactive"] }
+        }
+      }
+    },
+    "activities": {
+      "type": "array",
+      "minItems": 17,
+      "items": { "$ref": "#/$defs/activity" }
+    }
+  },
+  "$defs": {
+    "localizedText": {
+      "type": "object",
+      "required": ["fr"],
+      "properties": {
+        "fr": { "type": "string" },
+        "en": { "type": ["string", "null"] }
+      }
+    },
+    "activity": {
+      "type": "object",
+      "required": ["id", "catalogue_number", "slug", "universe_id", "provider_id", "name", "short_description", "long_description", "booking", "media", "active", "sort_order"],
+      "properties": {
+        "id": { "type": "string" },
+        "catalogue_number": { "type": "integer", "minimum": 1, "maximum": 17 },
+        "slug": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+        "universe_id": { "type": "string" },
+        "provider_id": { "type": "string" },
+        "name": { "$ref": "#/$defs/localizedText" },
+        "short_description": { "$ref": "#/$defs/localizedText" },
+        "long_description": { "$ref": "#/$defs/localizedText" },
+        "islands": { "type": "array", "items": { "type": "string" } },
+        "locations": { "type": "array", "items": { "type": "string" } },
+        "tags": { "type": "array", "items": { "type": "string" } },
+        "options": { "type": "array" },
+        "included": { "type": "array" },
+        "excluded": { "type": "array" },
+        "booking": {
+          "type": "object",
+          "required": ["price", "currency", "duration_minutes", "booking_enabled"],
+          "properties": {
+            "price": { "type": ["number", "null"], "minimum": 0 },
+            "currency": { "enum": ["KMF", "EUR", null] },
+            "duration_minutes": { "type": ["integer", "null"], "minimum": 1 },
+            "min_capacity": { "type": ["integer", "null"], "minimum": 1 },
+            "max_capacity": { "type": ["integer", "null"], "minimum": 1 },
+            "meeting_point": { "oneOf": [{ "$ref": "#/$defs/localizedText" }, { "type": "null" }] },
+            "minimum_age": { "type": ["integer", "null"], "minimum": 0 },
+            "physical_level": { "enum": ["easy", "moderate", "difficult", null] },
+            "cancellation_policy": { "oneOf": [{ "$ref": "#/$defs/localizedText" }, { "type": "null" }] },
+            "booking_enabled": { "type": "boolean" }
+          }
+        },
+        "media": {
+          "type": "object",
+          "required": ["cover_image", "gallery", "alt"],
+          "properties": {
+            "cover_image": { "type": "string" },
+            "gallery": { "type": "array", "items": { "type": "string" } },
+            "alt": { "$ref": "#/$defs/localizedText" }
+          }
+        },
+        "featured": { "type": "boolean" },
+        "active": { "type": "boolean" },
+        "sort_order": { "type": "integer", "minimum": 1 }
+      }
+    }
+  }
+}

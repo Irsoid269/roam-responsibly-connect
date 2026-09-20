@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { ArrowRight, Star, Wifi, Leaf, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ecoScoreBadge } from "@/lib/eco-score";
@@ -9,6 +10,7 @@ const fallbackImage =
   "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800";
 
 const DestinationsSection = () => {
+  const { t } = useTranslation("home");
   const { data: destinations = [], isLoading } = useHomeDestinations(4);
 
   return (
@@ -22,7 +24,7 @@ const DestinationsSection = () => {
               viewport={{ once: true }}
               className="section-eyebrow"
             >
-              Les îles des Comores
+              {t("destinations.eyebrow")}
             </motion.span>
             <motion.h2
               initial={{ opacity: 0, y: 10 }}
@@ -31,7 +33,7 @@ const DestinationsSection = () => {
               transition={{ delay: 0.1 }}
               className="font-display text-3xl md:text-4xl font-medium text-foreground mt-3"
             >
-              Où allez-vous travailler ?
+              {t("destinations.title")}
             </motion.h2>
           </div>
           <motion.div
@@ -42,7 +44,7 @@ const DestinationsSection = () => {
           >
             <Button variant="outline" className="group" asChild>
               <Link to="/destinations">
-                Voir toutes les destinations
+                {t("destinations.viewAll")}
                 <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
               </Link>
             </Button>
@@ -55,7 +57,7 @@ const DestinationsSection = () => {
           </div>
         ) : destinations.length === 0 ? (
           <p className="text-center text-muted-foreground py-12">
-            Aucune destination mise en avant. Configurez-les depuis l&apos;admin.
+            {t("destinations.empty")}
           </p>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -115,7 +117,7 @@ const DestinationsSection = () => {
                         <div className="flex items-center gap-1.5 text-muted-foreground">
                           <Wifi className="w-4 h-4" />
                           <span className="text-sm">
-                            {destination.coworking_count ?? 0} espaces
+                            {destination.coworking_count ?? 0} {t("destinations.spaces")}
                           </span>
                         </div>
                       </div>
@@ -125,11 +127,11 @@ const DestinationsSection = () => {
                           <span className="text-lg font-bold text-foreground">
                             {destination.avg_price_per_day ?? "—"}€
                           </span>
-                          <span className="text-sm text-muted-foreground">/jour</span>
+                          <span className="text-sm text-muted-foreground">{t("destinations.perDay")}</span>
                         </div>
                         <div className="flex items-center gap-1 text-carbon">
                           <Leaf className="w-4 h-4" />
-                          <span className="text-xs font-medium">Éco-friendly</span>
+                          <span className="text-xs font-medium">{t("destinations.ecoFriendly")}</span>
                         </div>
                       </div>
                     </div>

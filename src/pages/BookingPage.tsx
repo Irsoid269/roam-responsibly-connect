@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { 
   ArrowLeft, ArrowRight, Building2, Home, Bike, Compass, 
   Leaf, Calendar, Check, ShoppingCart, Trash2, Plus, Minus,
@@ -17,6 +18,12 @@ import {
   DialogContent,
 } from "@/components/ui/dialog";
 import { useAuth } from "@/hooks/useAuth";
+import { useCart, type CartItemType } from "@/hooks/useCart";
+import HoldCountdown from "@/components/booking/HoldCountdown";
+import SlotPickerDialog from "@/components/booking/SlotPickerDialog";
+import { offerHasUpcomingSchedules, type OfferSchedule } from "@/hooks/useOfferSchedules";
+import StripePaymentForm from "@/components/booking/StripePaymentForm";
+import { isStripeConfigured } from "@/lib/stripe";
 import { useToast } from "@/hooks/use-toast";
 import BookingConfirmation, {
   type BookingConfirmationData,
@@ -38,22 +45,13 @@ import { useQueryClient } from "@tanstack/react-query";
 import { queryKeys } from "@/hooks/useCatalogQueries";
 import { toDateInputValue } from "@/lib/search-booking-params";
 
-interface CartItem {
-  id: string;
-  type: "coworking" | "accommodation" | "mobility" | "activity";
-  name: string;
-  price: number;
-  quantity: number;
-  carbonImpact: number;
-}
-
-const steps = [
-  { id: 1, label: "Dates & Services", icon: Calendar },
-  { id: 2, label: "Récapitulatif", icon: ShoppingCart },
-  { id: 3, label: "Paiement", icon: CreditCard },
-];
-
 const BookingPage = () => {
+  const { t } = useTranslation("booking");
+  const steps = [
+    { id: 1, label: t("steps.datesServices"), icon: Calendar },
+    { id: 2, label: t("steps.summary"), icon: ShoppingCart },
+    { id: 3, label: t("steps.payment"), icon: CreditCard },
+  ];
   const { id } = useParams();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -88,12 +86,21 @@ const BookingPage = () => {
   const activities = (liveActivities ?? []).map((a) => ({
     id: a.id,
     name: a.name,
-    price: Number(a.price || 0),
+    price: a.price != null ? Number(a.price) : null,
     carbonImpact: Number(a.carbon_impact || 0),
   }));
   
+  const {
+    items: cart,
+    addToCart: addToCartRaw,
+    removeFromCart,
+    updateQuantity,
+    confirmHolds,
+    clearCart,
+    totalPrice,
+    totalCarbon,
+  } = useCart();
   const [currentStep, setCurrentStep] = useState(1);
-  const [cart, setCart] = useState<CartItem[]>([]);
   const [dates, setDates] = useState({
     checkIn: toDateInputValue(searchParams.get("from") || undefined),
     checkOut: toDateInputValue(searchParams.get("to") || undefined),
@@ -101,44 +108,64 @@ const BookingPage = () => {
   const [confirmation, setConfirmation] = useState<BookingConfirmationData | null>(null);
   const [showEmailPreview, setShowEmailPreview] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [slotPickerItem, setSlotPickerItem] = useState<{
+    id: string;
+    type: CartItemType;
+    name: string;
+    price: number;
+    carbonImpact: number;
+  } | null>(null);
 
-  const addToCart = (item: Omit<CartItem, "quantity">) => {
-    const existing = cart.find((c) => c.id === item.id);
-    if (existing) {
-      setCart(cart.map((c) => 
-        c.id === item.id ? { ...c, quantity: c.quantity + 1 } : c
-      ));
-    } else {
-      setCart([...cart, { ...item, quantity: 1 }]);
+  const addToCart = async (
+    item: Parameters<typeof addToCartRaw>[0],
+  ) => {
+    try {
+      await addToCartRaw(item);
+      toast({
+        title: t("toast.added"),
+        description: item.name,
+      });
+    } catch (err) {
+      toast({
+        title: t("toast.unavailable"),
+        description:
+          err instanceof Error ? err.message : t("toast.unavailableDefault"),
+        variant: "destructive",
+      });
     }
-    toast({
-      title: "Ajouté au panier",
-      description: item.name,
+  };
+
+  /** Only offers a slot picker when the item actually has bookable schedules —
+   * everything else keeps adding to the cart instantly, unchanged. */
+  const handleAddClick = async (item: {
+    id: string;
+    type: CartItemType;
+    name: string;
+    price: number;
+    carbonImpact: number;
+  }) => {
+    const hasSlots = await offerHasUpcomingSchedules(item.id);
+    if (hasSlots) {
+      setSlotPickerItem(item);
+      return;
+    }
+    await addToCart(item);
+  };
+
+  const handleSlotConfirm = async (schedule: OfferSchedule) => {
+    if (!slotPickerItem) return;
+    await addToCart({
+      ...slotPickerItem,
+      price: schedule.price_eur ?? slotPickerItem.price,
+      scheduleId: schedule.id,
     });
   };
-
-  const removeFromCart = (itemId: string) => {
-    setCart(cart.filter((c) => c.id !== itemId));
-  };
-
-  const updateQuantity = (itemId: string, delta: number) => {
-    setCart(cart.map((c) => {
-      if (c.id === itemId) {
-        const newQty = Math.max(1, c.quantity + delta);
-        return { ...c, quantity: newQty };
-      }
-      return c;
-    }));
-  };
-
-  const totalPrice = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const totalCarbon = cart.reduce((sum, item) => sum + item.carbonImpact * item.quantity, 0);
 
   const handleConfirmBooking = async () => {
     if (!user) {
       toast({
-        title: "Connexion requise",
-        description: "Veuillez vous connecter pour finaliser votre réservation",
+        title: t("toast.loginRequired"),
+        description: t("toast.loginRequiredDesc"),
         variant: "destructive",
       });
       navigate("/login");
@@ -147,8 +174,8 @@ const BookingPage = () => {
 
     if (!dates.checkIn || !dates.checkOut) {
       toast({
-        title: "Dates requises",
-        description: "Indiquez vos dates d'arrivée et de départ",
+        title: t("toast.datesRequired"),
+        description: t("toast.datesRequiredDesc"),
         variant: "destructive",
       });
       setCurrentStep(1);
@@ -168,18 +195,23 @@ const BookingPage = () => {
         destinationLabel: destination?.name || "Comores",
       });
 
+      // The reservation now exists for good: freeze any held slots (so they
+      // don't silently expire and free up capacity) instead of releasing them.
+      await confirmHolds();
+      clearCart();
+
       buildBookingConfirmationEmail(result.confirmation);
       setConfirmation(result.confirmation);
       queryClient.invalidateQueries({ queryKey: queryKeys.reservations(user.id) });
       queryClient.invalidateQueries({ queryKey: queryKeys.profile(user.id) });
       toast({
-        title: "Réservation confirmée — Amani Resorts",
-        description: `Réf. ${result.confirmation.reference} · Enregistrée dans votre espace`,
+        title: t("toast.confirmed"),
+        description: t("toast.confirmedDesc", { ref: result.confirmation.reference }),
       });
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Erreur lors de la réservation";
+      const message = err instanceof Error ? err.message : t("toast.failedDefault");
       toast({
-        title: "Échec de la réservation",
+        title: t("toast.failed"),
         description: message,
         variant: "destructive",
       });
@@ -207,10 +239,10 @@ const BookingPage = () => {
               className="mb-4"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
-              Retour
+              {t("back")}
             </Button>
-            <h1 className="text-3xl font-bold text-foreground">Composer mon séjour</h1>
-            <p className="text-muted-foreground mt-1">Sélectionnez vos services pour créer votre expérience idéale</p>
+            <h1 className="text-3xl font-bold text-foreground">{t("title")}</h1>
+            <p className="text-muted-foreground mt-1">{t("subtitle")}</p>
           </div>
 
           {/* Progress Steps */}
@@ -258,13 +290,13 @@ const BookingPage = () => {
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2">
                         <Calendar className="w-5 h-5 text-primary" />
-                        Dates du séjour
+                        {t("dates.title")}
                       </CardTitle>
                     </CardHeader>
                     <CardContent>
                       <div className="grid grid-cols-2 gap-4">
                         <div>
-                          <Label>Arrivée</Label>
+                          <Label>{t("dates.checkIn")}</Label>
                           <Input
                             type="date"
                             value={dates.checkIn}
@@ -272,7 +304,7 @@ const BookingPage = () => {
                           />
                         </div>
                         <div>
-                          <Label>Départ</Label>
+                          <Label>{t("dates.checkOut")}</Label>
                           <Input
                             type="date"
                             value={dates.checkOut}
@@ -288,7 +320,7 @@ const BookingPage = () => {
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2">
                         <Building2 className="w-5 h-5 text-primary" />
-                        Espaces de coworking
+                        {t("sections.coworking")}
                       </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-3">
@@ -296,7 +328,7 @@ const BookingPage = () => {
                         <div key={space.id} className="flex items-center justify-between p-3 border rounded-lg hover:border-primary transition-colors">
                           <div>
                             <p className="font-medium">{space.name}</p>
-                            <p className="text-sm text-muted-foreground">{space.price}€/jour</p>
+                            <p className="text-sm text-muted-foreground">{space.price}{t("perDay")}</p>
                           </div>
                           <div className="flex items-center gap-2">
                             <Badge variant="outline" className="text-carbon">
@@ -305,7 +337,7 @@ const BookingPage = () => {
                             </Badge>
                             <Button
                               size="sm"
-                              onClick={() => addToCart({
+                              onClick={() => handleAddClick({
                                 id: space.id,
                                 type: "coworking",
                                 name: space.name,
@@ -313,7 +345,7 @@ const BookingPage = () => {
                                 carbonImpact: space.carbonImpact,
                               })}
                             >
-                              Ajouter
+                              {t("add")}
                             </Button>
                           </div>
                         </div>
@@ -326,7 +358,7 @@ const BookingPage = () => {
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2">
                         <Home className="w-5 h-5 text-secondary" />
-                        Hébergements
+                        {t("sections.accommodation")}
                       </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-3">
@@ -334,7 +366,7 @@ const BookingPage = () => {
                         <div key={accom.id} className="flex items-center justify-between p-3 border rounded-lg hover:border-primary transition-colors">
                           <div>
                             <p className="font-medium">{accom.name}</p>
-                            <p className="text-sm text-muted-foreground">{accom.price}€/nuit</p>
+                            <p className="text-sm text-muted-foreground">{accom.price}{t("perNight")}</p>
                           </div>
                           <div className="flex items-center gap-2">
                             <Badge variant="outline" className="text-carbon">
@@ -343,7 +375,7 @@ const BookingPage = () => {
                             </Badge>
                             <Button
                               size="sm"
-                              onClick={() => addToCart({
+                              onClick={() => handleAddClick({
                                 id: accom.id,
                                 type: "accommodation",
                                 name: accom.name,
@@ -351,7 +383,7 @@ const BookingPage = () => {
                                 carbonImpact: accom.carbonImpact,
                               })}
                             >
-                              Ajouter
+                              {t("add")}
                             </Button>
                           </div>
                         </div>
@@ -364,7 +396,7 @@ const BookingPage = () => {
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2">
                         <Bike className="w-5 h-5 text-accent" />
-                        Mobilité douce
+                        {t("sections.mobility")}
                       </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-3">
@@ -372,16 +404,16 @@ const BookingPage = () => {
                         <div key={mob.id} className="flex items-center justify-between p-3 border rounded-lg hover:border-primary transition-colors">
                           <div>
                             <p className="font-medium">{mob.name}</p>
-                            <p className="text-sm text-muted-foreground">{mob.price}€/jour</p>
+                            <p className="text-sm text-muted-foreground">{mob.price}{t("perDay")}</p>
                           </div>
                           <div className="flex items-center gap-2">
                             <Badge variant="outline" className="text-success">
                               <Leaf className="w-3 h-3 mr-1" />
-                              {mob.carbonImpact === 0 ? "0 émission" : `${mob.carbonImpact} kg`}
+                              {mob.carbonImpact === 0 ? t("zeroEmission") : `${mob.carbonImpact} kg`}
                             </Badge>
                             <Button
                               size="sm"
-                              onClick={() => addToCart({
+                              onClick={() => handleAddClick({
                                 id: mob.id,
                                 type: "mobility",
                                 name: mob.name,
@@ -389,7 +421,7 @@ const BookingPage = () => {
                                 carbonImpact: mob.carbonImpact,
                               })}
                             >
-                              Ajouter
+                              {t("add")}
                             </Button>
                           </div>
                         </div>
@@ -402,7 +434,7 @@ const BookingPage = () => {
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2">
                         <Compass className="w-5 h-5 text-carbon" />
-                        Activités
+                        {t("sections.activity")}
                       </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-3">
@@ -410,11 +442,13 @@ const BookingPage = () => {
                         <div key={act.id} className="flex items-center justify-between p-3 border rounded-lg hover:border-primary transition-colors">
                           <div className="flex items-center gap-2">
                             <div>
-                              <p className="font-medium flex items-center gap-2">
+                              <div className="font-medium flex items-center gap-2">
                                 {act.name}
-                                <Badge className="bg-eco-a text-primary-foreground text-xs">Éco</Badge>
+                                <Badge className="bg-eco-a text-primary-foreground text-xs">{t("eco")}</Badge>
+                              </div>
+                              <p className="text-sm text-muted-foreground">
+                                {act.price != null ? `${act.price}€` : t("priceUpcoming")}
                               </p>
-                              <p className="text-sm text-muted-foreground">{act.price}€</p>
                             </div>
                           </div>
                           <div className="flex items-center gap-2">
@@ -424,15 +458,16 @@ const BookingPage = () => {
                             </Badge>
                             <Button
                               size="sm"
-                              onClick={() => addToCart({
+                              disabled={act.price == null}
+                              onClick={() => handleAddClick({
                                 id: act.id,
                                 type: "activity",
                                 name: act.name,
-                                price: act.price,
+                                price: act.price ?? 0,
                                 carbonImpact: act.carbonImpact,
                               })}
                             >
-                              Ajouter
+                              {t("add")}
                             </Button>
                           </div>
                         </div>
@@ -449,12 +484,12 @@ const BookingPage = () => {
                 >
                   <Card>
                     <CardHeader>
-                      <CardTitle>Récapitulatif de votre séjour</CardTitle>
+                      <CardTitle>{t("summaryTitle")}</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
                       {cart.length === 0 ? (
                         <p className="text-center text-muted-foreground py-8">
-                          Votre panier est vide. Ajoutez des services pour continuer.
+                          {t("emptyCart")}
                         </p>
                       ) : (
                         cart.map((item) => {
@@ -468,6 +503,9 @@ const BookingPage = () => {
                                 <div>
                                   <p className="font-medium">{item.name}</p>
                                   <p className="text-sm text-muted-foreground">{item.price}€ × {item.quantity}</p>
+                                  {item.holdExpiresAt && (
+                                    <HoldCountdown expiresAt={item.holdExpiresAt} className="mt-1" />
+                                  )}
                                 </div>
                               </div>
                               <div className="flex items-center gap-3">
@@ -476,6 +514,7 @@ const BookingPage = () => {
                                     size="icon"
                                     variant="outline"
                                     className="h-8 w-8"
+                                    disabled={!!item.holdId}
                                     onClick={() => updateQuantity(item.id, -1)}
                                   >
                                     <Minus className="w-4 h-4" />
@@ -485,6 +524,7 @@ const BookingPage = () => {
                                     size="icon"
                                     variant="outline"
                                     className="h-8 w-8"
+                                    disabled={!!item.holdId}
                                     onClick={() => updateQuantity(item.id, 1)}
                                   >
                                     <Plus className="w-4 h-4" />
@@ -518,54 +558,67 @@ const BookingPage = () => {
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2">
                         <CreditCard className="w-5 h-5" />
-                        Paiement
+                        {t("payment.title")}
                       </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
-                      <div className="p-4 bg-muted rounded-lg text-center">
-                        <Shield className="w-12 h-12 mx-auto mb-4 text-primary" />
-                        <p className="font-medium">Paiement sécurisé</p>
-                        <p className="text-sm text-muted-foreground mt-1">
-                          L'intégration Stripe sera disponible prochainement
-                        </p>
-                      </div>
+                      {!isStripeConfigured && (
+                        <div className="p-4 bg-muted rounded-lg text-center">
+                          <Shield className="w-12 h-12 mx-auto mb-4 text-primary" />
+                          <p className="font-medium">{t("payment.securePayment")}</p>
+                          <p className="text-sm text-muted-foreground mt-1">
+                            {t("payment.stripeSoon")}
+                          </p>
+                        </div>
+                      )}
 
                       <Separator />
 
                       <div className="space-y-2">
                         <div className="flex justify-between text-sm">
-                          <span>Sous-total</span>
+                          <span>{t("payment.subtotal")}</span>
                           <span>{totalPrice}€</span>
                         </div>
                         <div className="flex justify-between text-sm text-carbon">
                           <span className="flex items-center gap-1">
                             <Leaf className="w-4 h-4" />
-                            Compensation carbone
+                            {t("payment.carbonOffset")}
                           </span>
                           <span>{(totalCarbon * 2).toFixed(2)}€</span>
                         </div>
                         <Separator />
                         <div className="flex justify-between font-semibold text-lg">
-                          <span>Total</span>
+                          <span>{t("payment.total")}</span>
                           <span>{(totalPrice + totalCarbon * 2).toFixed(2)}€</span>
                         </div>
                       </div>
 
-                      <Button
-                        className="w-full"
-                        size="lg"
-                        onClick={handleConfirmBooking}
-                        disabled={cart.length === 0 || submitting}
-                      >
-                        {submitting ? (
-                          <>
-                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                            Enregistrement…
-                          </>
-                        ) : (
-                          "Confirmer la réservation"
-                        )}
-                      </Button>
+                      {isStripeConfigured ? (
+                        <StripePaymentForm
+                          amount={Number((totalPrice + totalCarbon * 2).toFixed(2))}
+                          holdIds={cart.filter((c) => c.holdId).map((c) => c.holdId!)}
+                          onSuccess={handleConfirmBooking}
+                          onError={(message) =>
+                            toast({ title: t("payment.declined"), description: message, variant: "destructive" })
+                          }
+                        />
+                      ) : (
+                        <Button
+                          className="w-full"
+                          size="lg"
+                          onClick={handleConfirmBooking}
+                          disabled={cart.length === 0 || submitting}
+                        >
+                          {submitting ? (
+                            <>
+                              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                              {t("payment.saving")}
+                            </>
+                          ) : (
+                            t("payment.confirm")
+                          )}
+                        </Button>
+                      )}
                     </CardContent>
                   </Card>
                 </motion.div>
@@ -579,14 +632,14 @@ const BookingPage = () => {
                   disabled={currentStep === 1}
                 >
                   <ArrowLeft className="w-4 h-4 mr-2" />
-                  Précédent
+                  {t("nav.previous")}
                 </Button>
                 {currentStep < 3 && (
                   <Button
                     onClick={() => setCurrentStep(currentStep + 1)}
                     disabled={cart.length === 0}
                   >
-                    Suivant
+                    {t("nav.next")}
                     <ArrowRight className="w-4 h-4 ml-2" />
                   </Button>
                 )}
@@ -600,27 +653,30 @@ const BookingPage = () => {
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <ShoppingCart className="w-5 h-5" />
-                      Votre panier
+                      {t("cart.title")}
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     {cart.length === 0 ? (
                       <p className="text-sm text-muted-foreground text-center py-4">
-                        Aucun service sélectionné
+                        {t("cart.empty")}
                       </p>
                     ) : (
                       <>
                         {cart.map((item) => (
-                          <div key={item.id} className="flex justify-between text-sm">
+                          <div key={item.id} className="flex justify-between text-sm gap-2">
                             <span className="text-muted-foreground">
                               {item.name} × {item.quantity}
+                              {item.holdExpiresAt && (
+                                <HoldCountdown expiresAt={item.holdExpiresAt} className="ml-2" />
+                              )}
                             </span>
-                            <span>{item.price * item.quantity}€</span>
+                            <span className="shrink-0">{item.price * item.quantity}€</span>
                           </div>
                         ))}
                         <Separator />
                         <div className="flex justify-between font-semibold">
-                          <span>Total</span>
+                          <span>{t("cart.total")}</span>
                           <span>{totalPrice}€</span>
                         </div>
                       </>
@@ -630,13 +686,13 @@ const BookingPage = () => {
                     <div className="p-4 bg-carbon-light rounded-lg space-y-3">
                       <div className="flex items-center gap-2">
                         <Leaf className="w-5 h-5 text-carbon" />
-                        <span className="font-medium text-carbon">Impact carbone</span>
+                        <span className="font-medium text-carbon">{t("carbonImpact.title")}</span>
                       </div>
                       <p className="text-2xl font-display font-medium text-carbon">
                         {totalCarbon.toFixed(1)} kg CO₂
                       </p>
                       <p className="text-xs text-muted-foreground">
-                        Score {ecoScoreFromKg(totalCarbon).grade} · Compensation incluse
+                        {t("carbonImpact.scoreLabel", { grade: ecoScoreFromKg(totalCarbon).grade })}
                       </p>
                       <EcoScoreLegend compact />
                     </div>
@@ -658,18 +714,18 @@ const BookingPage = () => {
                   const result = printAmaniInvoice(confirmation);
                   if (!result.ok) {
                     toast({
-                      title: "Facture indisponible",
+                      title: t("toast.invoiceUnavailable"),
                       description: result.reason,
                       variant: "destructive",
                     });
                     return;
                   }
                   toast({
-                    title: "Facture générée",
+                    title: t("toast.invoiceGenerated"),
                     description:
                       result.mode === "print"
-                        ? "Fenêtre ouverte — Imprimer ou enregistrer en PDF"
-                        : "Fichier HTML téléchargé sur votre appareil",
+                        ? t("toast.invoicePrint")
+                        : t("toast.invoiceDownloaded"),
                   });
                 }}
                 onClose={() => {
@@ -683,7 +739,8 @@ const BookingPage = () => {
                   className="w-full"
                   onClick={() => setShowEmailPreview((v) => !v)}
                 >
-                  {showEmailPreview ? "Masquer" : "Aperçu"} email de confirmation Amani
+                  {showEmailPreview ? t("confirmation.hideEmail") : t("confirmation.previewEmail")}{" "}
+                  {t("confirmation.emailSuffix")}
                 </Button>
                 {showEmailPreview && (
                   <div className="mt-3">
@@ -695,6 +752,17 @@ const BookingPage = () => {
           )}
         </DialogContent>
       </Dialog>
+
+      {slotPickerItem && (
+        <SlotPickerDialog
+          open={!!slotPickerItem}
+          onOpenChange={(open) => !open && setSlotPickerItem(null)}
+          offerId={slotPickerItem.id}
+          offerName={slotPickerItem.name}
+          fallbackPrice={slotPickerItem.price}
+          onConfirm={handleSlotConfirm}
+        />
+      )}
     </>
   );
 };
