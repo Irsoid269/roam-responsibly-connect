@@ -1,0 +1,13 @@
+-- Bug de sécurité découvert en testant le bannissement (§7.9) : la policy
+-- INSERT d'origine "Authenticated users can create reviews" (migration
+-- 20260119070739, WITH CHECK auth.uid() IS NOT NULL) n'a jamais été
+-- supprimée. La migration 20260711200000 a dropé "Users can create reviews"
+-- (nom différent) et créé "Users can create their own reviews", en laissant
+-- l'ancienne policy en place. Postgres évalue les policies RLS d'un même
+-- FOR INSERT en OR : un utilisateur banni pouvait donc toujours publier un
+-- avis, la condition NOT is_banned() de la nouvelle policy étant contournée
+-- par l'ancienne qui ne vérifie que l'authentification.
+--
+-- Vérifié empiriquement : un utilisateur banni recevait bien 403 sur
+-- community_stories et community_story_comments, mais 201 sur reviews.
+DROP POLICY IF EXISTS "Authenticated users can create reviews" ON public.reviews;

@@ -176,6 +176,7 @@ const AdminCoworkings = () => {
     <AdminLayout
       title="Gestion des coworkings"
       description="Espaces de coworking liés aux destinations Amani."
+      allowedRoles={["partner_manager"]}
       actions={
         <Button onClick={() => openEditDialog()}>
           <Plus className="h-4 w-4 mr-2" />

@@ -193,6 +193,7 @@ const AdminDestinations = () => {
     <AdminLayout
       title="Gestion des destinations"
       description="Recherche = barre du hero. Grille = section « Où allez-vous travailler ? » (max. 4 cartes par note)."
+      allowedRoles={["partner_manager"]}
       actions={
         <Button onClick={() => openEditDialog()}>
           <Plus className="h-4 w-4 mr-2" />

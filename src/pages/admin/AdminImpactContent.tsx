@@ -381,6 +381,7 @@ const AdminImpactContent = () => {
     <AdminLayout
       title="Impact & Mission"
       description="Contenu des pages Notre Mission, Calculateur Carbone, Partenaires et Rapport d'Impact."
+      allowedRoles={["partner_manager"]}
     >
       <Tabs value={tab} onValueChange={setTab}>
         <TabsList className="flex flex-wrap h-auto gap-1">

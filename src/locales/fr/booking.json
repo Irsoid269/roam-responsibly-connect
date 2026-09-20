@@ -1,0 +1,75 @@
+{
+  "back": "Retour",
+  "title": "Composer mon séjour",
+  "subtitle": "Sélectionnez vos services pour créer votre expérience idéale",
+  "steps": {
+    "datesServices": "Dates & Services",
+    "summary": "Récapitulatif",
+    "payment": "Paiement"
+  },
+  "dates": {
+    "title": "Dates du séjour",
+    "checkIn": "Arrivée",
+    "checkOut": "Départ"
+  },
+  "sections": {
+    "coworking": "Espaces de coworking",
+    "accommodation": "Hébergements",
+    "mobility": "Mobilité douce",
+    "activity": "Activités"
+  },
+  "perDay": "€/jour",
+  "perNight": "€/nuit",
+  "zeroEmission": "0 émission",
+  "priceUpcoming": "Prix à venir",
+  "eco": "Éco",
+  "add": "Ajouter",
+  "summaryTitle": "Récapitulatif de votre séjour",
+  "emptyCart": "Votre panier est vide. Ajoutez des services pour continuer.",
+  "payment": {
+    "title": "Paiement",
+    "securePayment": "Paiement sécurisé",
+    "stripeSoon": "L'intégration Stripe sera disponible prochainement",
+    "subtotal": "Sous-total",
+    "carbonOffset": "Compensation carbone",
+    "total": "Total",
+    "confirm": "Confirmer la réservation",
+    "saving": "Enregistrement…",
+    "declined": "Paiement refusé"
+  },
+  "nav": {
+    "previous": "Précédent",
+    "next": "Suivant"
+  },
+  "cart": {
+    "title": "Votre panier",
+    "empty": "Aucun service sélectionné",
+    "total": "Total"
+  },
+  "carbonImpact": {
+    "title": "Impact carbone",
+    "scoreLabel": "Score {{grade}} · Compensation incluse"
+  },
+  "toast": {
+    "added": "Ajouté au panier",
+    "unavailable": "Indisponible",
+    "unavailableDefault": "Impossible d'ajouter ce service.",
+    "loginRequired": "Connexion requise",
+    "loginRequiredDesc": "Veuillez vous connecter pour finaliser votre réservation",
+    "datesRequired": "Dates requises",
+    "datesRequiredDesc": "Indiquez vos dates d'arrivée et de départ",
+    "confirmed": "Réservation confirmée — Amani Resorts",
+    "confirmedDesc": "Réf. {{ref}} · Enregistrée dans votre espace",
+    "failed": "Échec de la réservation",
+    "failedDefault": "Erreur lors de la réservation",
+    "invoiceUnavailable": "Facture indisponible",
+    "invoiceGenerated": "Facture générée",
+    "invoicePrint": "Fenêtre ouverte — Imprimer ou enregistrer en PDF",
+    "invoiceDownloaded": "Fichier HTML téléchargé sur votre appareil"
+  },
+  "confirmation": {
+    "hideEmail": "Masquer",
+    "previewEmail": "Aperçu",
+    "emailSuffix": "email de confirmation Amani"
+  }
+}

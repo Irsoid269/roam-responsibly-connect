@@ -122,6 +122,7 @@ const AdminBlog = () => {
     <AdminLayout
         title="Blog & Récits"
       description="Articles publiés sur /blog — visibles si « Publié » est activé."
+      allowedRoles={["organizer"]}
       actions={
         <div className="flex items-center gap-2">
           <Button variant="outline" asChild>

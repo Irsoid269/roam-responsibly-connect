@@ -1,0 +1,73 @@
+{
+  "hero": {
+    "eyebrow": "Communauté",
+    "title": "Voyageurs responsables aux Comores",
+    "description": "Récits validés, avis publiés et voyageurs qui réduisent leur empreinte avec Amani."
+  },
+  "shareStory": "Partager mon récit",
+  "viewReviews": "Voir les avis",
+  "stats": {
+    "travelers": "Voyageurs Amani",
+    "carbonOffset": "CO₂ compensé",
+    "destinations": "Destinations",
+    "avgRating": "Note moyenne"
+  },
+  "tabs": {
+    "stories": "Récits",
+    "travelers": "Voyageurs",
+    "reviews": "Avis récents"
+  },
+  "stories": {
+    "empty": "Aucun récit publié",
+    "beFirst": "Être le premier",
+    "loginToShare": "Connectez-vous pour partager un récit"
+  },
+  "travelers": {
+    "empty": "Les profils apparaîtront ici après les premiers séjours.",
+    "defaultName": "Voyageur Amani",
+    "badges": {
+      "ecoPioneer": "Eco Pioneer",
+      "carbonSaver": "Carbon Saver",
+      "explorer": "Explorer",
+      "newcomer": "Nouveau"
+    },
+    "trip_one": "{{count}} séjour",
+    "trip_other": "{{count}} séjours"
+  },
+  "reviews": {
+    "empty": "Aucun avis publié —",
+    "leaveFirst": "laissez le premier",
+    "viewAll": "Tous les avis"
+  },
+  "engagement": {
+    "loginToInteract": "Connectez-vous pour interagir",
+    "likeError": "Impossible — appliquez la migration story_likes_comments",
+    "commentPosted": "Commentaire publié",
+    "removeLike": "Retirer J'adore",
+    "like": "J'adore",
+    "comments": "Commentaires",
+    "commentAction": "Commenter",
+    "noComments": "Aucun commentaire — soyez le premier.",
+    "writeComment": "Écrire un commentaire…",
+    "loginToComment": "Connectez-vous pour commenter",
+    "publish": "Publier"
+  },
+  "submitStory": {
+    "loginRequired": "Connectez-vous pour partager un récit",
+    "tooShort": "Le récit doit contenir au moins 20 caractères",
+    "success": "Récit envoyé ! Il sera visible après validation par l'équipe Amani.",
+    "sendError": "Envoi impossible",
+    "title": "Partager mon récit Amani",
+    "description": "Votre témoignage sera publié dans la section Communauté après approbation par un administrateur.",
+    "yourName": "Votre nom",
+    "homeCity": "Ville d'origine (optionnel)",
+    "destination": "Destination",
+    "yourStory": "Votre récit",
+    "storyPlaceholder": "Racontez votre séjour Amani aux Comores…",
+    "charCount": "{{count}}/1000 · min. 20 caractères",
+    "photo": "Photo (optionnel)",
+    "cancel": "Annuler",
+    "sending": "Envoi…",
+    "submit": "Envoyer pour validation"
+  }
+}

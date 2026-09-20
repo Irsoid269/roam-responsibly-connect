@@ -186,6 +186,7 @@ const AdminMobility = () => {
     <AdminLayout
       title="Gestion de la mobilité"
       description="Options de mobilité douce (vélo, scooter, navette…)."
+      allowedRoles={["partner_manager"]}
       actions={
         <Button onClick={() => openEditDialog()}>
           <Plus className="h-4 w-4 mr-2" />

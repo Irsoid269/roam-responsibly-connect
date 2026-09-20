@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { Menu, X, Shield } from "lucide-react";
 import amaniSymbol from "@/assets/amani-symbol-gold.jpg";
 import { Button } from "@/components/ui/button";
@@ -9,20 +10,22 @@ import { useAuth } from "@/hooks/useAuth";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
 import { cn } from "@/lib/utils";
 import GlobalSearch from "@/components/layout/GlobalSearch";
-
-const navLinks = [
-  { label: "Destinations", href: "/destinations" },
-  { label: "Coworkings", href: "/coworkings" },
-  { label: "Communauté", href: "/community" },
-  { label: "Notre Impact", href: "/impact" },
-];
+import LanguageSwitcher from "@/components/layout/LanguageSwitcher";
 
 const Header = () => {
+  const { t } = useTranslation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const { user, loading } = useAuth();
   const { isAdmin } = useAdminAuth();
   const location = useLocation();
+
+  const navLinks = [
+    { label: t("nav.destinations"), href: "/destinations" },
+    { label: t("nav.coworkings"), href: "/coworkings" },
+    { label: t("nav.community"), href: "/community" },
+    { label: t("nav.impact"), href: "/impact" },
+  ];
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -94,6 +97,7 @@ const Header = () => {
 
             <div className="hidden md:flex items-center gap-2">
               <GlobalSearch />
+              <LanguageSwitcher />
               {!loading &&
                 (user ? (
                   <div className="flex items-center gap-2">
@@ -101,7 +105,7 @@ const Header = () => {
                       <Link to="/admin">
                         <Button variant="outline" size="sm" className="gap-1.5">
                           <Shield className="w-4 h-4" />
-                          Admin
+                          {t("auth.admin")}
                         </Button>
                       </Link>
                     )}
@@ -117,12 +121,12 @@ const Header = () => {
                   <>
                     <Link to="/login">
                       <Button variant="ghost" size="sm">
-                        Se connecter
+                        {t("auth.login")}
                       </Button>
                     </Link>
                     <Link to="/signup">
                       <Button variant="default" size="sm">
-                        Créer un compte
+                        {t("auth.signup")}
                       </Button>
                     </Link>
                   </>
@@ -131,11 +135,12 @@ const Header = () => {
 
             <div className="flex items-center gap-1 lg:hidden">
               <GlobalSearch />
+              <LanguageSwitcher />
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                aria-label={isMenuOpen ? "Fermer le menu" : "Ouvrir le menu"}
+                aria-label={isMenuOpen ? t("auth.closeMenu") : t("auth.openMenu")}
               >
                 {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </Button>
@@ -180,13 +185,13 @@ const Header = () => {
                         <Link to="/admin" onClick={() => setIsMenuOpen(false)}>
                           <Button variant="outline" className="w-full gap-2">
                             <Shield className="w-4 h-4" />
-                            Administration
+                            {t("auth.administration")}
                           </Button>
                         </Link>
                       )}
                       <Link to="/profile" onClick={() => setIsMenuOpen(false)}>
                         <Button variant="default" className="w-full">
-                          Mon profil
+                          {t("auth.myProfile")}
                         </Button>
                       </Link>
                     </div>
@@ -194,12 +199,12 @@ const Header = () => {
                     <div className="flex gap-2 pt-2">
                       <Link to="/login" className="flex-1" onClick={() => setIsMenuOpen(false)}>
                         <Button variant="outline" className="w-full">
-                          Se connecter
+                          {t("auth.login")}
                         </Button>
                       </Link>
                       <Link to="/signup" className="flex-1" onClick={() => setIsMenuOpen(false)}>
                         <Button variant="default" className="w-full">
-                          Créer un compte
+                          {t("auth.signup")}
                         </Button>
                       </Link>
                     </div>

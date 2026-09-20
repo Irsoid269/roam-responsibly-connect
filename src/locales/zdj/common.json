@@ -1,0 +1,23 @@
+{
+  "nav": {
+    "destinations": "Mahali",
+    "coworkings": "Coworking",
+    "community": "Jumuiya",
+    "impact": "Atari yatru"
+  },
+  "auth": {
+    "login": "Ingiya",
+    "signup": "Jisajili",
+    "myProfile": "Wasifu wangu",
+    "admin": "Msimamizi",
+    "administration": "Uongozi",
+    "openMenu": "Fungua menyu",
+    "closeMenu": "Bandra menyu"
+  },
+  "language": {
+    "fr": "Faransa",
+    "en": "Ingereza",
+    "zdj": "Shikomori",
+    "switchTo": "Badilisha lugha"
+  }
+}

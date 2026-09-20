@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { MapPin, ArrowRight, PenLine, Loader2 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { fr } from "date-fns/locale";
@@ -12,6 +13,7 @@ import StoryEngagement from "@/components/community/StoryEngagement";
 import { toast } from "sonner";
 
 const CommunitySection = () => {
+  const { t } = useTranslation("home");
   const { user } = useAuth();
   const navigate = useNavigate();
   const { data: stories = [], isLoading } = useApprovedCommunityStories(6);
@@ -20,7 +22,7 @@ const CommunitySection = () => {
 
   const openSubmit = () => {
     if (!user) {
-      toast.info("Connectez-vous pour partager votre récit");
+      toast.info(t("community.loginToShare"));
       navigate("/login");
       return;
     }
@@ -38,7 +40,7 @@ const CommunitySection = () => {
               viewport={{ once: true }}
               className="section-eyebrow"
             >
-              Communauté
+              {t("community.eyebrow")}
             </motion.span>
             <motion.h2
               initial={{ opacity: 0, y: 10 }}
@@ -47,10 +49,10 @@ const CommunitySection = () => {
               transition={{ delay: 0.1 }}
               className="font-display text-3xl md:text-4xl font-medium text-foreground mt-3"
             >
-              Récits de séjours Amani
+              {t("community.title")}
             </motion.h2>
             <p className="mt-2 text-sm text-muted-foreground max-w-xl">
-              Témoignages publiés après validation par l&apos;équipe Amani.
+              {t("community.subtitle")}
             </p>
           </div>
           <motion.div
@@ -62,11 +64,11 @@ const CommunitySection = () => {
           >
             <Button onClick={openSubmit} className="gap-2">
               <PenLine className="w-4 h-4" />
-              Partager mon récit
+              {t("community.shareCta")}
             </Button>
             <Button variant="outline" className="group" asChild>
               <Link to="/community">
-                Voir la communauté
+                {t("community.viewCommunity")}
                 <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
               </Link>
             </Button>
@@ -79,13 +81,13 @@ const CommunitySection = () => {
           </div>
         ) : stories.length === 0 ? (
           <div className="rounded-2xl border border-border bg-card p-10 text-center">
-            <p className="font-medium text-foreground">Aucun récit publié pour le moment</p>
+            <p className="font-medium text-foreground">{t("community.emptyTitle")}</p>
             <p className="mt-2 text-sm text-muted-foreground">
-              Soyez le premier à partager votre séjour Amani — il apparaîtra ici après approbation.
+              {t("community.emptySubtitle")}
             </p>
             <Button onClick={openSubmit} className="mt-6 gap-2">
               <PenLine className="w-4 h-4" />
-              Partager mon récit
+              {t("community.shareCta")}
             </Button>
           </div>
         ) : (

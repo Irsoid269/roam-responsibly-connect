@@ -1,0 +1,75 @@
+{
+  "hero": {
+    "eyebrow": "Catalogue Amani",
+    "title": "Explorez nos destinations",
+    "description": "Découvrez les meilleurs spots pour travailler et vivre aux Comores, sélectionnés pour leur qualité et leur impact environnemental réduit."
+  },
+  "searchPlaceholder": "Rechercher une destination...",
+  "filters": "Filtres",
+  "empty": {
+    "title": "Aucune destination disponible",
+    "subtitle": "Les destinations seront ajoutées prochainement"
+  },
+  "notFound": {
+    "title": "Aucune destination trouvée",
+    "subtitle": "Essayez une autre recherche"
+  },
+  "resultsCount_one": "{{count}} destination trouvée",
+  "resultsCount_other": "{{count}} destinations trouvées",
+  "sort": {
+    "placeholder": "Trier par",
+    "popular": "Populaire",
+    "priceLow": "Prix croissant",
+    "priceHigh": "Prix décroissant",
+    "carbon": "Score carbone"
+  },
+  "spaces": "espaces",
+  "perDay": "/jour",
+  "eco": "Éco",
+  "detail": {
+    "back": "Retour",
+    "notFound": "Destination non trouvée",
+    "carbonScore": "Score Carbone {{score}}",
+    "avgRating": "Note moyenne",
+    "coworkings": "Coworkings",
+    "avgWifi": "WiFi moyen",
+    "perDayLabel": "Par jour",
+    "about": "À propos de {{name}}",
+    "tabs": {
+      "coworkings": "Coworkings",
+      "accommodations": "Hébergements",
+      "activities": "Activités"
+    },
+    "noCoworking": "Aucun coworking pour cette destination.",
+    "noAccommodation": "Aucun hébergement pour cette destination.",
+    "noActivity": "Aucune activité pour cette destination.",
+    "perNight": "/nuit",
+    "book": "Réserver",
+    "ecoCertified": "Éco-certifié",
+    "planStay": "Planifier mon séjour",
+    "dates": "Dates",
+    "flexibleDates": "Dates flexibles",
+    "travelers": "Voyageurs",
+    "traveler_one": "{{count}} voyageur",
+    "traveler_other": "{{count}} voyageurs",
+    "composeStay": "Composer mon séjour",
+    "flexibleCancellation": "Annulation flexible",
+    "securePayment": "Paiement sécurisé",
+    "carbonIncluded": "Compensation carbone incluse",
+    "types": {
+      "hotel": "Hôtel",
+      "apartment": "Appartement",
+      "coliving": "Coliving",
+      "hostel": "Auberge",
+      "eco-lodge": "Éco-lodge"
+    },
+    "categories": {
+      "culture": "Culture",
+      "nature": "Nature",
+      "sport": "Sport",
+      "wellness": "Bien-être",
+      "gastronomy": "Gastronomie",
+      "eco-tour": "Éco-tour"
+    }
+  }
+}

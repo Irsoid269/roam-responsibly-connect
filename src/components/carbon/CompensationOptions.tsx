@@ -17,102 +17,92 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import EcoScoreLegend from "@/components/carbon/EcoScoreLegend";
 import { ecoScoreFromKg } from "@/lib/eco-score";
+import { useAuth } from "@/hooks/useAuth";
+import { useNavigate } from "react-router-dom";
+import {
+  useActiveNgos,
+  useCreateDonation,
+  useUpcomingActionSessions,
+  useRegisterForAction,
+} from "@/hooks/useCatalogQueries";
+import { toast } from "sonner";
+import { QRCodeSVG } from "qrcode.react";
+import { format } from "date-fns";
+import { fr } from "date-fns/locale";
 
 interface CompensationOptionsProps {
   totalCO2: number;
 }
 
 const CompensationOptions = ({ totalCO2 }: CompensationOptionsProps) => {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const { data: ngos = [] } = useActiveNgos();
+  const createDonation = useCreateDonation();
+
   const [selectedTab, setSelectedTab] = useState<"donation" | "action">("donation");
-  const [selectedAssociation, setSelectedAssociation] = useState<number | null>(null);
-  const [selectedAction, setSelectedAction] = useState<number | null>(null);
+  const [selectedAssociation, setSelectedAssociation] = useState<string | null>(null);
+  const [selectedAction, setSelectedAction] = useState<string | null>(null);
   const [customAmount, setCustomAmount] = useState<number>(0);
+  const [donated, setDonated] = useState(false);
 
   // Calculate suggested donation (approximately €25 per tonne of CO2)
   const suggestedAmount = Math.round((totalCO2 / 1000) * 25);
   const defaultAmount = Math.max(suggestedAmount, 5);
 
-  const associations = [
-    {
-      id: 1,
-      name: "Reforest'Action",
-      description: "Plantation d'arbres en France et dans le monde",
-      logo: "🌳",
-      impact: "1 arbre planté = 25kg CO₂ absorbés/an",
-      verified: true
-    },
-    {
-      id: 2,
-      name: "Sea Shepherd",
-      description: "Protection des océans et de la vie marine",
-      logo: "🐋",
-      impact: "Protection directe des écosystèmes marins",
-      verified: true
-    },
-    {
-      id: 3,
-      name: "Surfrider Foundation",
-      description: "Protection du littoral et des océans",
-      logo: "🌊",
-      impact: "Nettoyage des plages et sensibilisation",
-      verified: true
-    },
-    {
-      id: 4,
-      name: "WWF France",
-      description: "Protection de la biodiversité mondiale",
-      logo: "🐼",
-      impact: "Conservation des espèces menacées",
-      verified: true
+  const handleDonate = async () => {
+    if (!user) {
+      toast.error("Connectez-vous pour enregistrer votre don");
+      navigate("/login");
+      return;
     }
-  ];
+    if (!selectedAssociation) return;
+    const amount = customAmount || defaultAmount;
+    try {
+      await createDonation.mutateAsync({
+        userId: user.id,
+        ngoId: selectedAssociation,
+        amount,
+        co2OffsetKg: totalCO2,
+      });
+      setDonated(true);
+      toast.success("Don enregistré — nous revenons vers vous pour la confirmation du paiement");
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Erreur lors de l'enregistrement du don");
+    }
+  };
 
-  const actions = [
-    {
-      id: 1,
-      title: "Plantation d'arbres",
-      location: "Grande Comore, Comores",
-      date: "15-16 Février 2025",
-      description: "Rejoignez notre groupe pour planter 200 arbres autour de Moroni et Itsandra",
-      participants: 12,
-      maxParticipants: 20,
-      co2Impact: 50,
-      image: "🌲"
-    },
-    {
-      id: 2,
-      title: "Nettoyage de plage",
-      location: "Itsandra, Grande Comore",
-      date: "22 Février 2025",
-      description: "Journée de nettoyage de la plage avec l'association locale Comores Bleues",
-      participants: 8,
-      maxParticipants: 30,
-      co2Impact: 15,
-      image: "🏖️"
-    },
-    {
-      id: 3,
-      title: "Restauration mangrove",
-      location: "Mohéli, Comores",
-      date: "1-2 Mars 2025",
-      description: "Plantation de mangroves dans la zone protégée de Mohéli",
-      participants: 15,
-      maxParticipants: 25,
-      co2Impact: 80,
-      image: "🌴"
-    },
-    {
-      id: 4,
-      title: "Atelier compostage",
-      location: "Mutsamudu, Anjouan",
-      date: "8 Mars 2025",
-      description: "Apprenez à composter et créez votre composteur avec des matériaux recyclés",
-      participants: 5,
-      maxParticipants: 15,
-      co2Impact: 20,
-      image: "♻️"
+  const { data: actionSessions = [] } = useUpcomingActionSessions();
+  const registerForAction = useRegisterForAction();
+  const [registeredQr, setRegisteredQr] = useState<string | null>(null);
+
+  const categoryEmoji: Record<string, string> = {
+    plantation: "🌲",
+    nettoyage: "🏖️",
+    sensibilisation: "♻️",
+  };
+
+  const handleRegister = async () => {
+    if (!user) {
+      toast.error("Connectez-vous pour vous inscrire");
+      navigate("/login");
+      return;
     }
-  ];
+    if (!selectedAction) return;
+    try {
+      const participation = await registerForAction.mutateAsync(selectedAction);
+      setRegisteredQr((participation as { qr_code: string }).qr_code);
+      toast.success("Inscription confirmée !");
+    } catch (error) {
+      const code = error instanceof Error ? error.message : "";
+      const messages: Record<string, string> = {
+        already_registered: "Vous êtes déjà inscrit à cette session",
+        session_full: "Cette session est complète",
+        session_not_found: "Session introuvable",
+      };
+      toast.error(messages[code] || "Erreur lors de l'inscription");
+    }
+  };
 
   const donationAmounts = [5, 10, 20, 50];
 
@@ -225,53 +215,73 @@ const CompensationOptions = ({ totalCO2 }: CompensationOptionsProps) => {
               </div>
 
               {/* Associations */}
-              <div>
-                <label className="text-sm font-medium mb-3 block">Choisir une association</label>
-                <div className="grid md:grid-cols-2 gap-3">
-                  {associations.map((assoc) => (
-                    <button
-                      key={assoc.id}
-                      onClick={() => setSelectedAssociation(assoc.id)}
-                      className={cn(
-                        "p-4 rounded-xl border-2 text-left transition-all",
-                        selectedAssociation === assoc.id
-                          ? "border-carbon-saved bg-carbon-saved/5"
-                          : "border-border hover:border-carbon-saved/50"
-                      )}
-                    >
-                      <div className="flex items-start gap-3">
-                        <span className="text-3xl">{assoc.logo}</span>
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2">
-                            <span className="font-semibold">{assoc.name}</span>
-                            {assoc.verified && (
-                              <CheckCircle2 className="w-4 h-4 text-carbon-saved" />
-                            )}
-                          </div>
-                          <p className="text-sm text-muted-foreground mt-1">{assoc.description}</p>
-                          <p className="text-xs text-carbon-saved mt-2">{assoc.impact}</p>
-                        </div>
-                      </div>
-                    </button>
-                  ))}
+              {donated ? (
+                <div className="text-center py-8 space-y-3">
+                  <CheckCircle2 className="w-12 h-12 text-carbon-saved mx-auto" />
+                  <p className="font-medium">Don enregistré, merci !</p>
+                  <p className="text-sm text-muted-foreground max-w-sm mx-auto">
+                    Nous vous contacterons pour finaliser le paiement et vous envoyer votre reçu.
+                    Retrouvez le suivi dans votre espace voyageur.
+                  </p>
                 </div>
-              </div>
+              ) : (
+                <>
+                  <div>
+                    <label className="text-sm font-medium mb-3 block">Choisir une association</label>
+                    {ngos.length === 0 ? (
+                      <p className="text-sm text-muted-foreground">
+                        Aucune association disponible pour le moment.
+                      </p>
+                    ) : (
+                      <div className="grid md:grid-cols-2 gap-3">
+                        {ngos.map((ngo) => (
+                          <button
+                            key={ngo.id}
+                            onClick={() => setSelectedAssociation(ngo.id)}
+                            className={cn(
+                              "p-4 rounded-xl border-2 text-left transition-all",
+                              selectedAssociation === ngo.id
+                                ? "border-carbon-saved bg-carbon-saved/5"
+                                : "border-border hover:border-carbon-saved/50"
+                            )}
+                          >
+                            <div className="flex items-start gap-3">
+                              <span className="text-3xl">{ngo.logo_url}</span>
+                              <div className="flex-1">
+                                <div className="flex items-center gap-2">
+                                  <span className="font-semibold">{ngo.name}</span>
+                                  <CheckCircle2 className="w-4 h-4 text-carbon-saved" />
+                                </div>
+                                <p className="text-sm text-muted-foreground mt-1">{ngo.description}</p>
+                                {ngo.impact_label && (
+                                  <p className="text-xs text-carbon-saved mt-2">{ngo.impact_label}</p>
+                                )}
+                              </div>
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
 
-              {/* CTA */}
-              <Button 
-                variant="carbon" 
-                size="lg" 
-                className="w-full gap-2"
-                disabled={!selectedAssociation || customAmount <= 0}
-              >
-                <Heart className="w-5 h-5" />
-                Faire un don de {customAmount || defaultAmount}€
-                <ArrowRight className="w-4 h-4" />
-              </Button>
+                  {/* CTA */}
+                  <Button
+                    variant="carbon"
+                    size="lg"
+                    className="w-full gap-2"
+                    disabled={!selectedAssociation || createDonation.isPending}
+                    onClick={handleDonate}
+                  >
+                    <Heart className="w-5 h-5" />
+                    Faire un don de {customAmount || defaultAmount}€
+                    <ArrowRight className="w-4 h-4" />
+                  </Button>
 
-              <p className="text-xs text-center text-muted-foreground">
-                Paiement sécurisé · Reçu fiscal Amani Resorts envoyé par email.
-              </p>
+                  <p className="text-xs text-center text-muted-foreground">
+                    Don enregistré et confirmé manuellement pour l'instant · Reçu fiscal envoyé par email.
+                  </p>
+                </>
+              )}
             </motion.div>
           ) : (
             <motion.div
@@ -292,85 +302,101 @@ const CompensationOptions = ({ totalCO2 }: CompensationOptionsProps) => {
                 </p>
               </div>
 
-              {/* Actions List */}
-              <div className="space-y-4">
-                {actions.map((action) => (
-                  <button
-                    key={action.id}
-                    onClick={() => setSelectedAction(action.id)}
-                    className={cn(
-                      "w-full p-4 rounded-xl border-2 text-left transition-all",
-                      selectedAction === action.id
-                        ? "border-carbon-offset bg-carbon-offset/5"
-                        : "border-border hover:border-carbon-offset/50"
-                    )}
-                  >
-                    <div className="flex gap-4">
-                      <span className="text-4xl">{action.image}</span>
-                      <div className="flex-1">
-                        <div className="flex items-center justify-between mb-2">
-                          <h4 className="font-semibold">{action.title}</h4>
-                          <span className="text-xs font-medium px-2 py-1 rounded-full bg-carbon-saved/10 text-carbon-saved">
-                            -{action.co2Impact} kgCO₂
-                          </span>
-                        </div>
-                        <p className="text-sm text-muted-foreground mb-3">{action.description}</p>
-                        <div className="flex flex-wrap gap-3 text-xs text-muted-foreground">
-                          <span className="flex items-center gap-1">
-                            <MapPin className="w-3 h-3" />
-                            {action.location}
-                          </span>
-                          <span className="flex items-center gap-1">
-                            <Calendar className="w-3 h-3" />
-                            {action.date}
-                          </span>
-                          <span className="flex items-center gap-1">
-                            <Users className="w-3 h-3" />
-                            {action.participants}/{action.maxParticipants} participants
-                          </span>
-                        </div>
-                        {/* Progress bar */}
-                        <div className="mt-3 h-1.5 bg-muted rounded-full overflow-hidden">
-                          <div 
-                            className="h-full bg-carbon-offset rounded-full"
-                            style={{ width: `${(action.participants / action.maxParticipants) * 100}%` }}
-                          />
-                        </div>
-                      </div>
+              {registeredQr ? (
+                <div className="text-center py-6 space-y-4">
+                  <CheckCircle2 className="w-12 h-12 text-carbon-offset mx-auto" />
+                  <p className="font-medium">Inscription confirmée !</p>
+                  <p className="text-sm text-muted-foreground max-w-sm mx-auto">
+                    Présentez ce QR à l'organisateur le jour de l'action pour valider votre participation.
+                    Usage unique.
+                  </p>
+                  <div className="flex justify-center">
+                    <div className="p-4 bg-white rounded-xl border border-border">
+                      <QRCodeSVG value={registeredQr} size={180} />
                     </div>
-                  </button>
-                ))}
-              </div>
-
-              {/* CTA */}
-              <Button 
-                variant="warm" 
-                size="lg" 
-                className="w-full gap-2"
-                disabled={!selectedAction}
-              >
-                <HandHeart className="w-5 h-5" />
-                S'inscrire à l'action
-                <ArrowRight className="w-4 h-4" />
-              </Button>
-
-              {/* Badges Preview */}
-              <div className="bg-muted/30 rounded-xl p-4">
-                <div className="flex items-center gap-2 mb-3">
-                  <Award className="w-5 h-5 text-primary" />
-                  <span className="font-medium text-sm">Badges à débloquer</span>
+                  </div>
                 </div>
-                <div className="flex gap-3">
-                  {["🌱 Premier pas", "🌳 Eco-warrior", "🌍 Globetrotter vert"].map((badge, i) => (
-                    <span 
-                      key={i}
-                      className="text-xs px-3 py-1.5 rounded-full bg-background border border-border"
-                    >
-                      {badge}
-                    </span>
-                  ))}
-                </div>
-              </div>
+              ) : (
+                <>
+                  {/* Actions List */}
+                  <div className="space-y-4">
+                    {actionSessions.length === 0 ? (
+                      <p className="text-sm text-muted-foreground">
+                        Aucune session programmée pour le moment.
+                      </p>
+                    ) : (
+                      actionSessions.map((session) => {
+                        const full = session.registered_count >= session.capacity;
+                        return (
+                          <button
+                            key={session.id}
+                            disabled={full}
+                            onClick={() => setSelectedAction(session.id)}
+                            className={cn(
+                              "w-full p-4 rounded-xl border-2 text-left transition-all",
+                              full && "opacity-50 cursor-not-allowed",
+                              selectedAction === session.id
+                                ? "border-carbon-offset bg-carbon-offset/5"
+                                : "border-border hover:border-carbon-offset/50"
+                            )}
+                          >
+                            <div className="flex gap-4">
+                              <span className="text-4xl">
+                                {categoryEmoji[session.sustainable_actions?.category || ""] || "🌍"}
+                              </span>
+                              <div className="flex-1">
+                                <h4 className="font-semibold mb-2">{session.sustainable_actions?.title}</h4>
+                                <p className="text-sm text-muted-foreground mb-3">
+                                  {session.sustainable_actions?.description}
+                                </p>
+                                <div className="flex flex-wrap gap-3 text-xs text-muted-foreground">
+                                  {session.location && (
+                                    <span className="flex items-center gap-1">
+                                      <MapPin className="w-3 h-3" />
+                                      {session.location}
+                                    </span>
+                                  )}
+                                  <span className="flex items-center gap-1">
+                                    <Calendar className="w-3 h-3" />
+                                    {format(new Date(session.starts_at), "d MMMM yyyy", { locale: fr })}
+                                  </span>
+                                  <span className="flex items-center gap-1">
+                                    <Users className="w-3 h-3" />
+                                    {full
+                                      ? "Complet"
+                                      : `${session.registered_count}/${session.capacity} participants`}
+                                  </span>
+                                </div>
+                                <div className="mt-3 h-1.5 bg-muted rounded-full overflow-hidden">
+                                  <div
+                                    className="h-full bg-carbon-offset rounded-full"
+                                    style={{
+                                      width: `${(session.registered_count / session.capacity) * 100}%`,
+                                    }}
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          </button>
+                        );
+                      })
+                    )}
+                  </div>
+
+                  {/* CTA */}
+                  <Button
+                    variant="warm"
+                    size="lg"
+                    className="w-full gap-2"
+                    disabled={!selectedAction || registerForAction.isPending}
+                    onClick={handleRegister}
+                  >
+                    <HandHeart className="w-5 h-5" />
+                    S'inscrire à l'action
+                    <ArrowRight className="w-4 h-4" />
+                  </Button>
+                </>
+              )}
             </motion.div>
           )}
         </AnimatePresence>

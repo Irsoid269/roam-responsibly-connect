@@ -1,0 +1,267 @@
+{
+  "catalogue": {
+    "id": "amani-resorts-circuits-2026",
+    "brand": "Amani Resorts",
+    "project": "Coworkation Eco-Comores",
+    "title": { "fr": "Circuits & activités", "en": null },
+    "version": "1.0.0",
+    "last_updated": "2026-09-17",
+    "beneficiary": "Comores Coworking (ComWork Partners)",
+    "location": "Moroni, Union des Comores",
+    "booking_channel": "Application mobile Amani Resorts"
+  },
+  "universes": [
+    {
+      "id": "gastronomie-savoir-faire",
+      "code": "A",
+      "name": { "fr": "Gastronomie & savoir-faire local", "en": null },
+      "description": { "fr": "Goûter, apprendre et créer aux côtés des artisans et familles comoriennes.", "en": null },
+      "color": "#C66A4A",
+      "sort_order": 1
+    },
+    {
+      "id": "decouverte-terrestre",
+      "code": "B",
+      "name": { "fr": "Circuits & découverte terrestre", "en": null },
+      "description": { "fr": "Découvrir Ngazidja de la côte aux flancs du Karthala, en véhicule, en quad, en buggy ou à pied.", "en": null },
+      "color": "#37695C",
+      "sort_order": 2
+    },
+    {
+      "id": "mer-faune-marine",
+      "code": "C",
+      "name": { "fr": "Mer & faune marine", "en": null },
+      "description": { "fr": "Explorer l’Océan Indien, ses récifs et sa faune marine dans le respect du vivant.", "en": null },
+      "color": "#2F7E86",
+      "sort_order": 3
+    },
+    {
+      "id": "evasion-immersion",
+      "code": "D",
+      "name": { "fr": "Évasion & immersion", "en": null },
+      "description": { "fr": "Prolonger l’expérience par un bivouac ou un séjour de plusieurs jours à Mohéli.", "en": null },
+      "color": "#E8D8BD",
+      "sort_order": 4
+    }
+  ],
+  "providers": [
+    {
+      "id": "vlc",
+      "name": "VLC",
+      "positioning": { "fr": "Acteur local de la découverte et de l’immersion terrestre, gastronomique et culturelle.", "en": null },
+      "status": "active_contract_formalization"
+    },
+    {
+      "id": "discovermores",
+      "name": "DISCOVERMORES",
+      "positioning": { "fr": "Opérateur d’activités et de sports nature, de randonnée, de plongée et de découverte de la faune marine.", "en": null },
+      "status": "active_contract_formalization"
+    }
+  ],
+  "activities": [
+    {
+      "id": "activity-001",
+      "catalogue_number": 1,
+      "slug": "saveurs-comoriennes-chez-habitant",
+      "universe_id": "gastronomie-savoir-faire",
+      "provider_id": "vlc",
+      "name": { "fr": "Saveurs comoriennes chez l’habitant", "en": null },
+      "short_description": { "fr": "Préparez et dégustez des plats traditionnels dans une maison comorienne.", "en": null },
+      "long_description": { "fr": "Partagez un moment authentique en préparant et en dégustant des plats traditionnels dans une maison comorienne, située dans la Médina de Moroni ou dans le village de Nioumadzaha Bambao.", "en": null },
+      "islands": ["Ngazidja"],
+      "locations": ["Médina de Moroni", "Nioumadzaha Bambao"],
+      "tags": ["gastronomie", "chez l’habitant", "culture", "immersion"],
+      "options": [], "included": [], "excluded": [],
+      "booking": { "price": null, "currency": null, "duration_minutes": null, "min_capacity": null, "max_capacity": null, "meeting_point": null, "minimum_age": null, "physical_level": null, "cancellation_policy": null, "booking_enabled": false },
+      "media": { "cover_image": "assets/activities/saveurs-comoriennes-chez-habitant/cover.webp", "gallery": [], "alt": { "fr": "Préparation d’un repas traditionnel comorien chez l’habitant", "en": null } },
+      "featured": true, "active": true, "sort_order": 1
+    },
+    {
+      "id": "activity-002", "catalogue_number": 2, "slug": "paint-and-discover", "universe_id": "gastronomie-savoir-faire", "provider_id": "vlc",
+      "name": { "fr": "Paint & discover", "en": null },
+      "short_description": { "fr": "Peignez en plein air tout en découvrant les paysages des Comores.", "en": null },
+      "long_description": { "fr": "Alliez créativité et détente en laissant libre cours à vos pinceaux, tout en découvrant les magnifiques paysages des Comores.", "en": null },
+      "islands": ["Non précisé"], "locations": [], "tags": ["peinture", "créativité", "paysage", "détente"],
+      "options": [], "included": [], "excluded": [],
+      "booking": { "price": null, "currency": null, "duration_minutes": null, "min_capacity": null, "max_capacity": null, "meeting_point": null, "minimum_age": null, "physical_level": null, "cancellation_policy": null, "booking_enabled": false },
+      "media": { "cover_image": "assets/activities/paint-and-discover/cover.webp", "gallery": [], "alt": { "fr": "Atelier de peinture en plein air aux Comores", "en": null } },
+      "featured": false, "active": true, "sort_order": 2
+    },
+    {
+      "id": "activity-003", "catalogue_number": 3, "slug": "secrets-vanille", "universe_id": "gastronomie-savoir-faire", "provider_id": "vlc",
+      "name": { "fr": "Les secrets de la vanille", "en": null },
+      "short_description": { "fr": "Rencontrez les cultivateurs et découvrez la préparation de la vanille comorienne.", "en": null },
+      "long_description": { "fr": "Partez à la rencontre des cultivateurs et initiez-vous à l’art de la préparation de la vanille comorienne.", "en": null },
+      "islands": ["Non précisé"], "locations": [], "tags": ["vanille", "agriculture", "savoir-faire", "producteurs"],
+      "options": [], "included": [], "excluded": [],
+      "booking": { "price": null, "currency": null, "duration_minutes": null, "min_capacity": null, "max_capacity": null, "meeting_point": null, "minimum_age": null, "physical_level": null, "cancellation_policy": null, "booking_enabled": false },
+      "media": { "cover_image": "assets/activities/secrets-vanille/cover.webp", "gallery": [], "alt": { "fr": "Culture et préparation de la vanille comorienne", "en": null } },
+      "featured": true, "active": true, "sort_order": 3
+    },
+    {
+      "id": "activity-004", "catalogue_number": 4, "slug": "initiation-menuiserie-comorienne", "universe_id": "gastronomie-savoir-faire", "provider_id": "vlc",
+      "name": { "fr": "Initiation à la menuiserie comorienne", "en": null },
+      "short_description": { "fr": "Découvrez le travail du bois et créez une pièce unique.", "en": null },
+      "long_description": { "fr": "Initiez-vous au savoir-faire comorien du bois et repartez avec une pièce unique façonnée par vos soins.", "en": null },
+      "islands": ["Non précisé"], "locations": [], "tags": ["menuiserie", "artisanat", "bois", "atelier"],
+      "options": [], "included": [], "excluded": [],
+      "booking": { "price": null, "currency": null, "duration_minutes": null, "min_capacity": null, "max_capacity": null, "meeting_point": null, "minimum_age": null, "physical_level": null, "cancellation_policy": null, "booking_enabled": false },
+      "media": { "cover_image": "assets/activities/initiation-menuiserie-comorienne/cover.webp", "gallery": [], "alt": { "fr": "Initiation au travail artisanal du bois aux Comores", "en": null } },
+      "featured": false, "active": true, "sort_order": 4
+    },
+    {
+      "id": "activity-005", "catalogue_number": 5, "slug": "circuit-nord", "universe_id": "decouverte-terrestre", "provider_id": "vlc",
+      "name": { "fr": "Circuit nord", "en": null },
+      "short_description": { "fr": "Découvrez le nord de Ngazidja entre plages, histoire et paysages volcaniques.", "en": null },
+      "long_description": { "fr": "Entre plage, histoire et paysages volcaniques, partez à la découverte du nord de la Grande Comore (Ngazidja).", "en": null },
+      "islands": ["Ngazidja"], "locations": ["Nord de la Grande Comore"], "tags": ["circuit", "plage", "histoire", "volcan"],
+      "options": [], "included": [], "excluded": [],
+      "booking": { "price": null, "currency": null, "duration_minutes": null, "min_capacity": null, "max_capacity": null, "meeting_point": null, "minimum_age": null, "physical_level": null, "cancellation_policy": null, "booking_enabled": false },
+      "media": { "cover_image": "assets/activities/circuit-nord/cover.webp", "gallery": [], "alt": { "fr": "Paysage côtier du nord de la Grande Comore", "en": null } },
+      "featured": true, "active": true, "sort_order": 5
+    },
+    {
+      "id": "activity-006", "catalogue_number": 6, "slug": "circuit-sud", "universe_id": "decouverte-terrestre", "provider_id": "vlc",
+      "name": { "fr": "Circuit sud", "en": null },
+      "short_description": { "fr": "Explorez le sud de Ngazidja entre panoramas, patrimoine et rencontres.", "en": null },
+      "long_description": { "fr": "Cap vers le sud de la Grande Comore : vues panoramiques, patrimoine et rencontres locales.", "en": null },
+      "islands": ["Ngazidja"], "locations": ["Sud de la Grande Comore"], "tags": ["circuit", "panorama", "patrimoine", "rencontres"],
+      "options": [], "included": [], "excluded": [],
+      "booking": { "price": null, "currency": null, "duration_minutes": null, "min_capacity": null, "max_capacity": null, "meeting_point": null, "minimum_age": null, "physical_level": null, "cancellation_policy": null, "booking_enabled": false },
+      "media": { "cover_image": "assets/activities/circuit-sud/cover.webp", "gallery": [], "alt": { "fr": "Vue panoramique du sud de la Grande Comore", "en": null } },
+      "featured": false, "active": true, "sort_order": 6
+    },
+    {
+      "id": "activity-007", "catalogue_number": 7, "slug": "quad-nord", "universe_id": "decouverte-terrestre", "provider_id": "vlc",
+      "name": { "fr": "Quad dans le nord", "en": null },
+      "short_description": { "fr": "Explorez le nord de Ngazidja en quad.", "en": null },
+      "long_description": { "fr": "Explorez le nord de la Grande Comore, entre Maloudja et le Dos du dragon, en quad.", "en": null },
+      "islands": ["Ngazidja"], "locations": ["Maloudja", "Dos du dragon"], "tags": ["quad", "aventure", "nord", "volcan"],
+      "options": [], "included": [], "excluded": [],
+      "booking": { "price": null, "currency": null, "duration_minutes": null, "min_capacity": null, "max_capacity": null, "meeting_point": null, "minimum_age": null, "physical_level": null, "cancellation_policy": null, "booking_enabled": false },
+      "media": { "cover_image": "assets/activities/quad-nord/cover.webp", "gallery": [], "alt": { "fr": "Excursion en quad dans le nord de la Grande Comore", "en": null } },
+      "featured": false, "active": true, "sort_order": 7
+    },
+    {
+      "id": "activity-008", "catalogue_number": 8, "slug": "rando-karthala", "universe_id": "decouverte-terrestre", "provider_id": "discovermores",
+      "name": { "fr": "Rando Karthala", "en": null },
+      "short_description": { "fr": "Découvrez le volcan Karthala selon plusieurs formules d’ascension.", "en": null },
+      "long_description": { "fr": "Découvrez le majestueux volcan Karthala grâce à plusieurs formules adaptées au temps disponible et à la condition physique.", "en": null },
+      "islands": ["Ngazidja"], "locations": ["Karthala"], "tags": ["randonnée", "volcan", "bivouac", "4x4"],
+      "options": [
+        { "id": "rando-2-jours-bivouac", "name": { "fr": "Randonnée 2 jours avec bivouac", "en": null }, "description": { "fr": "Une immersion complète avec une nuit en bivouac.", "en": null } },
+        { "id": "excursion-journee-4x4-marche", "name": { "fr": "Excursion journée 4x4 et marche", "en": null }, "description": { "fr": "Une formule combinée pour accéder aux panoramas du volcan.", "en": null } },
+        { "id": "ascension-4x4", "name": { "fr": "Ascension complète en 4x4", "en": null }, "description": { "fr": "Une formule motorisée jusqu’au sommet.", "en": null } }
+      ],
+      "included": [], "excluded": [],
+      "booking": { "price": null, "currency": null, "duration_minutes": null, "min_capacity": null, "max_capacity": null, "meeting_point": null, "minimum_age": null, "physical_level": "difficult", "cancellation_policy": null, "booking_enabled": false },
+      "media": { "cover_image": "assets/activities/rando-karthala/cover.webp", "gallery": [], "alt": { "fr": "Randonnée sur le volcan Karthala", "en": null } },
+      "featured": true, "active": true, "sort_order": 8
+    },
+    {
+      "id": "activity-009", "catalogue_number": 9, "slug": "buggy-karthala-nord", "universe_id": "decouverte-terrestre", "provider_id": "discovermores",
+      "name": { "fr": "Buggy Karthala / Nord", "en": null },
+      "short_description": { "fr": "Explorez le Karthala ou le nord en buggy.", "en": null },
+      "long_description": { "fr": "Vivez des sensations fortes en explorant le Karthala ou le nord en buggy, à travers paysages volcaniques, sentiers escarpés et panoramas spectaculaires.", "en": null },
+      "islands": ["Ngazidja"], "locations": ["Karthala", "Nord de la Grande Comore"], "tags": ["buggy", "aventure", "volcan", "panorama"],
+      "options": [], "included": [], "excluded": [],
+      "booking": { "price": null, "currency": null, "duration_minutes": null, "min_capacity": null, "max_capacity": null, "meeting_point": null, "minimum_age": null, "physical_level": "moderate", "cancellation_policy": null, "booking_enabled": false },
+      "media": { "cover_image": "assets/activities/buggy-karthala-nord/cover.webp", "gallery": [], "alt": { "fr": "Excursion en buggy sur les pistes volcaniques de Ngazidja", "en": null } },
+      "featured": false, "active": true, "sort_order": 9
+    },
+    {
+      "id": "activity-010", "catalogue_number": 10, "slug": "recherche-dauphins", "universe_id": "mer-faune-marine", "provider_id": "vlc",
+      "name": { "fr": "À la recherche des dauphins", "en": null },
+      "short_description": { "fr": "Partez en mer à la recherche des dauphins de l’Océan Indien.", "en": null },
+      "long_description": { "fr": "Embarquez pour une sortie en mer à la recherche des magnifiques dauphins de l’Océan Indien.", "en": null },
+      "islands": ["Ngazidja"], "locations": [], "tags": ["dauphins", "sortie en mer", "faune marine"],
+      "options": [], "included": [], "excluded": [],
+      "booking": { "price": null, "currency": null, "duration_minutes": null, "min_capacity": null, "max_capacity": null, "meeting_point": null, "minimum_age": null, "physical_level": "easy", "cancellation_policy": null, "booking_enabled": false },
+      "media": { "cover_image": "assets/activities/recherche-dauphins/cover.webp", "gallery": [], "alt": { "fr": "Dauphins nageant dans l’Océan Indien", "en": null } },
+      "featured": true, "active": true, "sort_order": 10
+    },
+    {
+      "id": "activity-011", "catalogue_number": 11, "slug": "dauphins-circuit-nord", "universe_id": "mer-faune-marine", "provider_id": "vlc",
+      "name": { "fr": "À la recherche des dauphins + Circuit nord", "en": null },
+      "short_description": { "fr": "Combinez une sortie dauphins et la découverte du nord de Ngazidja.", "en": null },
+      "long_description": { "fr": "Formule complète combinant la sortie en mer à la recherche des dauphins et la découverte du nord de la Grande Comore.", "en": null },
+      "islands": ["Ngazidja"], "locations": ["Nord de la Grande Comore"], "tags": ["dauphins", "circuit", "nord", "journée complète"],
+      "options": [], "included": [], "excluded": [],
+      "booking": { "price": null, "currency": null, "duration_minutes": null, "min_capacity": null, "max_capacity": null, "meeting_point": null, "minimum_age": null, "physical_level": "easy", "cancellation_policy": null, "booking_enabled": false },
+      "media": { "cover_image": "assets/activities/dauphins-circuit-nord/cover.webp", "gallery": [], "alt": { "fr": "Sortie dauphins et circuit dans le nord de Ngazidja", "en": null } },
+      "featured": true, "active": true, "sort_order": 11
+    },
+    {
+      "id": "activity-012", "catalogue_number": 12, "slug": "randonnee-palmee-iconi", "universe_id": "mer-faune-marine", "provider_id": "discovermores",
+      "name": { "fr": "Randonnée palmée", "en": null },
+      "short_description": { "fr": "Explorez les fonds marins d’Iconi en snorkeling.", "en": null },
+      "long_description": { "fr": "Partez en randonnée palmée à Iconi et découvrez les jardins de coraux, poissons tropicaux et tortues marines dans leur habitat naturel.", "en": null },
+      "islands": ["Ngazidja"], "locations": ["Iconi"], "tags": ["snorkeling", "coraux", "tortues", "poissons tropicaux"],
+      "options": [], "included": [], "excluded": [],
+      "booking": { "price": null, "currency": null, "duration_minutes": null, "min_capacity": null, "max_capacity": null, "meeting_point": null, "minimum_age": null, "physical_level": "easy", "cancellation_policy": null, "booking_enabled": false },
+      "media": { "cover_image": "assets/activities/randonnee-palmee-iconi/cover.webp", "gallery": [], "alt": { "fr": "Randonnée palmée au-dessus des récifs d’Iconi", "en": null } },
+      "featured": false, "active": true, "sort_order": 12
+    },
+    {
+      "id": "activity-013", "catalogue_number": 13, "slug": "plongee-sous-marine-bapteme", "universe_id": "mer-faune-marine", "provider_id": "discovermores",
+      "name": { "fr": "Plongée sous-marine / Baptême", "en": null },
+      "short_description": { "fr": "Découvrez les fonds marins selon votre niveau de plongée.", "en": null },
+      "long_description": { "fr": "Explorez les fonds marins des Comores en plongée bouteille, à un rythme adapté à chaque niveau.", "en": null },
+      "islands": ["Non précisé"], "locations": [], "tags": ["plongée", "baptême", "coraux", "tortues"],
+      "options": [
+        { "id": "initiation", "name": { "fr": "Initiation", "en": null }, "description": { "fr": "Baptême encadré et découverte des premiers coraux.", "en": null } },
+        { "id": "intermediaire", "name": { "fr": "Intermédiaire", "en": null }, "description": { "fr": "Jardins de coraux plus vastes et observation des tortues.", "en": null } },
+        { "id": "avance", "name": { "fr": "Avancé", "en": null }, "description": { "fr": "Sites spectaculaires aux reliefs variés.", "en": null } },
+        { "id": "exploration", "name": { "fr": "Exploration", "en": null }, "description": { "fr": "Expéditions personnalisées sur des sites préservés.", "en": null } }
+      ],
+      "included": [], "excluded": [],
+      "booking": { "price": null, "currency": null, "duration_minutes": null, "min_capacity": null, "max_capacity": null, "meeting_point": null, "minimum_age": null, "physical_level": "moderate", "cancellation_policy": null, "booking_enabled": false },
+      "media": { "cover_image": "assets/activities/plongee-sous-marine-bapteme/cover.webp", "gallery": [], "alt": { "fr": "Plongée sous-marine dans les récifs des Comores", "en": null } },
+      "featured": true, "active": true, "sort_order": 13
+    },
+    {
+      "id": "activity-014", "catalogue_number": 14, "slug": "geants-ocean", "universe_id": "mer-faune-marine", "provider_id": "discovermores",
+      "name": { "fr": "À la découverte des géants de l’océan", "en": null },
+      "short_description": { "fr": "Observez les grands animaux marins selon les saisons.", "en": null },
+      "long_description": { "fr": "Sortie en mer à la rencontre des baleines, dauphins, requins-baleines, cachalots et parfois orques, selon les saisons et dans le respect de la vie marine.", "en": null },
+      "islands": ["Non précisé"], "locations": [], "tags": ["baleines", "requins-baleines", "cachalots", "dauphins", "saisonnier"],
+      "options": [], "included": [], "excluded": [],
+      "booking": { "price": null, "currency": null, "duration_minutes": null, "min_capacity": null, "max_capacity": null, "meeting_point": null, "minimum_age": null, "physical_level": "easy", "cancellation_policy": null, "booking_enabled": false },
+      "media": { "cover_image": "assets/activities/geants-ocean/cover.webp", "gallery": [], "alt": { "fr": "Observation de grands animaux marins dans l’Océan Indien", "en": null } },
+      "featured": true, "active": true, "sort_order": 14
+    },
+    {
+      "id": "activity-015", "catalogue_number": 15, "slug": "peche-traditionnelle", "universe_id": "mer-faune-marine", "provider_id": "discovermores",
+      "name": { "fr": "Initiation à la pêche traditionnelle", "en": null },
+      "short_description": { "fr": "Découvrez les techniques de pêche avec les pêcheurs locaux.", "en": null },
+      "long_description": { "fr": "Initiez-vous aux techniques de pêche traditionnelle comorienne avec les pêcheurs locaux, dans le respect des pratiques durables.", "en": null },
+      "islands": ["Non précisé"], "locations": [], "tags": ["pêche", "tradition", "pêcheurs", "durable"],
+      "options": [], "included": [], "excluded": [],
+      "booking": { "price": null, "currency": null, "duration_minutes": null, "min_capacity": null, "max_capacity": null, "meeting_point": null, "minimum_age": null, "physical_level": "moderate", "cancellation_policy": null, "booking_enabled": false },
+      "media": { "cover_image": "assets/activities/peche-traditionnelle/cover.webp", "gallery": [], "alt": { "fr": "Initiation à la pêche traditionnelle comorienne", "en": null } },
+      "featured": false, "active": true, "sort_order": 15
+    },
+    {
+      "id": "activity-016", "catalogue_number": 16, "slug": "bivouac-nord", "universe_id": "evasion-immersion", "provider_id": "discovermores",
+      "name": { "fr": "Bivouac (nuitée camping nord)", "en": null },
+      "short_description": { "fr": "Passez une nuit sous les étoiles dans le nord des Comores.", "en": null },
+      "long_description": { "fr": "Vivez une expérience unique en passant la nuit en bivouac dans le nord des Comores, au cœur de paysages naturels préservés et sous un ciel étoilé.", "en": null },
+      "islands": ["Ngazidja"], "locations": ["Nord de la Grande Comore"], "tags": ["bivouac", "camping", "nuit", "nature"],
+      "options": [], "included": [], "excluded": [],
+      "booking": { "price": null, "currency": null, "duration_minutes": null, "min_capacity": null, "max_capacity": null, "meeting_point": null, "minimum_age": null, "physical_level": "easy", "cancellation_policy": null, "booking_enabled": false },
+      "media": { "cover_image": "assets/activities/bivouac-nord/cover.webp", "gallery": [], "alt": { "fr": "Bivouac sous les étoiles dans le nord de Ngazidja", "en": null } },
+      "featured": true, "active": true, "sort_order": 16
+    },
+    {
+      "id": "activity-017", "catalogue_number": 17, "slug": "circuit-moheli-3-jours-2-nuits", "universe_id": "evasion-immersion", "provider_id": "discovermores",
+      "name": { "fr": "Circuit 3 jours / 2 nuits à Mohéli", "en": null },
+      "short_description": { "fr": "Découvrez Mohéli pendant trois jours en formule tout compris.", "en": null },
+      "long_description": { "fr": "Partez pour un circuit de 3 jours et 2 nuits à Mohéli, l’Île Nature des Comores, en formule all inclusive : plages, forêts, récifs, faune marine, randonnée, plongée et snorkeling, avec hébergement et restauration.", "en": null },
+      "islands": ["Mohéli"], "locations": ["Mohéli"], "tags": ["séjour", "all inclusive", "plage", "forêt", "plongée", "snorkeling"],
+      "options": [], "included": [], "excluded": [],
+      "booking": { "price": null, "currency": null, "duration_minutes": 4320, "min_capacity": null, "max_capacity": null, "meeting_point": null, "minimum_age": null, "physical_level": "moderate", "cancellation_policy": null, "booking_enabled": false },
+      "media": { "cover_image": "assets/activities/circuit-moheli-3-jours-2-nuits/cover.webp", "gallery": [], "alt": { "fr": "Plage et lagon de Mohéli", "en": null } },
+      "featured": true, "active": true, "sort_order": 17
+    }
+  ]
+}

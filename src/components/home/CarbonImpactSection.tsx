@@ -1,15 +1,25 @@
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { Leaf, TrendingDown, Heart, Trees, Award, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-const impactStats = [
-  { value: "45,000", label: "Tonnes CO₂ mesurées", icon: Leaf },
-  { value: "12,500", label: "Tonnes compensées", icon: TrendingDown },
-  { value: "€85,000", label: "Dons aux associations", icon: Heart },
-  { value: "8,400", label: "Arbres plantés", icon: Trees },
-];
+const impactStatDefs = [
+  { value: "45,000", key: "measured", icon: Leaf },
+  { value: "12,500", key: "offset", icon: TrendingDown },
+  { value: "€85,000", key: "donations", icon: Heart },
+  { value: "8,400", key: "treesPlanted", icon: Trees },
+] as const;
 
 const CarbonImpactSection = () => {
+  const { t } = useTranslation("home");
+  const impactStats = impactStatDefs.map((s) => ({ ...s, label: t(`carbon.stats.${s.key}`) }));
+  const breakdown = [
+    { label: t("carbon.score.transport"), value: 45, color: "bg-secondary" },
+    { label: t("carbon.score.accommodation"), value: 25, color: "bg-primary-glow" },
+    { label: t("carbon.score.mobility"), value: 15, color: "bg-accent" },
+    { label: t("carbon.score.activities"), value: 15, color: "bg-carbon-offset" },
+  ];
+
   return (
     <section className="py-16 md:py-24 bg-carbon text-carbon-foreground relative overflow-hidden">
       {/* Background Pattern */}
@@ -29,7 +39,7 @@ const CarbonImpactSection = () => {
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-carbon-foreground/10 text-sm font-medium mb-6"
             >
               <Award className="w-4 h-4" />
-              Notre engagement climat
+              {t("carbon.eyebrow")}
             </motion.div>
 
             <motion.h2
@@ -39,9 +49,9 @@ const CarbonImpactSection = () => {
               transition={{ delay: 0.1 }}
               className="font-display text-3xl md:text-4xl lg:text-5xl font-medium mb-6 leading-tight"
             >
-              Voyagez en conscience,
+              {t("carbon.titleLine1")}
               <br />
-              <span className="text-carbon-saved">compensez avec impact</span>
+              <span className="text-carbon-saved">{t("carbon.titleHighlight")}</span>
             </motion.h2>
 
             <motion.p
@@ -51,9 +61,7 @@ const CarbonImpactSection = () => {
               transition={{ delay: 0.2 }}
               className="text-lg text-carbon-foreground/80 mb-8 leading-relaxed"
             >
-              Chaque séjour génère une empreinte carbone. Nous la calculons automatiquement 
-              et vous proposons des moyens concrets de la réduire ou de la compenser — 
-              par des dons à des associations ou des actions terrain.
+              {t("carbon.subtitle")}
             </motion.p>
 
             <motion.div
@@ -70,17 +78,17 @@ const CarbonImpactSection = () => {
                 asChild
               >
                 <a href="/carbon-calculator">
-                  Calculer mon impact
+                  {t("carbon.calculateCta")}
                   <ArrowRight className="w-4 h-4" />
                 </a>
               </Button>
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 size="lg"
                 className="border-carbon-foreground/40 bg-transparent text-carbon-foreground hover:bg-carbon-foreground/15 hover:text-carbon-foreground"
                 asChild
               >
-                <a href="/partners">Découvrir nos partenaires</a>
+                <a href="/partners">{t("carbon.partnersCta")}</a>
               </Button>
             </motion.div>
           </div>
@@ -119,19 +127,14 @@ const CarbonImpactSection = () => {
         >
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div>
-              <h3 className="text-xl font-semibold mb-2">Score carbone de votre dernier séjour</h3>
-              <p className="text-carbon-foreground/70">Moroni, 15 jours - Janvier 2025</p>
+              <h3 className="text-xl font-semibold mb-2">{t("carbon.score.title")}</h3>
+              <p className="text-carbon-foreground/70">{t("carbon.score.subtitle")}</p>
             </div>
 
             <div className="flex items-center gap-8">
               {/* Carbon Breakdown */}
               <div className="flex-1 grid grid-cols-4 gap-3">
-                {[
-                  { label: "Transport", value: 45, color: "bg-secondary" },
-                  { label: "Hébergement", value: 25, color: "bg-primary-glow" },
-                  { label: "Mobilité", value: 15, color: "bg-accent" },
-                  { label: "Activités", value: 15, color: "bg-carbon-offset" },
-                ].map((item, idx) => (
+                {breakdown.map((item, idx) => (
                   <div key={idx} className="text-center">
                     <div className="h-20 flex items-end justify-center mb-2">
                       <div 
@@ -148,7 +151,7 @@ const CarbonImpactSection = () => {
               {/* Total Score */}
               <div className="text-center px-6 py-4 bg-carbon-saved/20 rounded-xl">
                 <p className="text-4xl font-bold text-carbon-saved">B+</p>
-                <p className="text-sm text-carbon-foreground/70 mt-1">Score global</p>
+                <p className="text-sm text-carbon-foreground/70 mt-1">{t("carbon.score.globalScore")}</p>
               </div>
             </div>
           </div>

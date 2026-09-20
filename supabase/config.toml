@@ -1,1 +1,12 @@
 project_id = "jdfwaypygieyfzvhhatg"
+
+[functions.create-payment-intent]
+verify_jwt = true
+
+[functions.stripe-webhook]
+# Called by Stripe directly (no Supabase session) — auth is the Stripe
+# signature check inside the function itself, not a Supabase JWT.
+verify_jwt = false
+
+[functions.create-refund]
+verify_jwt = true

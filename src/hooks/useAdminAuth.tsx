@@ -2,7 +2,14 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 
-export type AppRole = "admin" | "moderator" | "user";
+export type AppRole =
+  | "admin"
+  | "moderator"
+  | "user"
+  | "organizer"
+  | "partner_manager"
+  | "support"
+  | "finance";
 
 interface UseAdminAuthReturn {
   isAdmin: boolean;
@@ -10,6 +17,7 @@ interface UseAdminAuthReturn {
   roles: AppRole[];
   loading: boolean;
   checkRole: (role: AppRole) => boolean;
+  hasAnyRole: (allowed: AppRole[]) => boolean;
 }
 
 export const useAdminAuth = (): UseAdminAuthReturn => {
@@ -56,11 +64,15 @@ export const useAdminAuth = (): UseAdminAuthReturn => {
   const isAdmin = roles.includes("admin");
   const isModerator = roles.includes("moderator") || isAdmin;
 
+  const hasAnyRole = (allowed: AppRole[]): boolean =>
+    isAdmin || allowed.some((role) => roles.includes(role));
+
   return {
     isAdmin,
     isModerator,
     roles,
     loading: authLoading || loading,
     checkRole,
+    hasAnyRole,
   };
 };

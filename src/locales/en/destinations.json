@@ -1,0 +1,75 @@
+{
+  "hero": {
+    "eyebrow": "Amani Catalogue",
+    "title": "Explore our destinations",
+    "description": "Discover the best spots to work and live in the Comoros, selected for their quality and reduced environmental impact."
+  },
+  "searchPlaceholder": "Search a destination...",
+  "filters": "Filters",
+  "empty": {
+    "title": "No destination available",
+    "subtitle": "Destinations will be added soon"
+  },
+  "notFound": {
+    "title": "No destination found",
+    "subtitle": "Try a different search"
+  },
+  "resultsCount_one": "{{count}} destination found",
+  "resultsCount_other": "{{count}} destinations found",
+  "sort": {
+    "placeholder": "Sort by",
+    "popular": "Popular",
+    "priceLow": "Price: low to high",
+    "priceHigh": "Price: high to low",
+    "carbon": "Carbon score"
+  },
+  "spaces": "spaces",
+  "perDay": "/day",
+  "eco": "Eco",
+  "detail": {
+    "back": "Back",
+    "notFound": "Destination not found",
+    "carbonScore": "Carbon score {{score}}",
+    "avgRating": "Average rating",
+    "coworkings": "Coworking spaces",
+    "avgWifi": "Average WiFi",
+    "perDayLabel": "Per day",
+    "about": "About {{name}}",
+    "tabs": {
+      "coworkings": "Coworking",
+      "accommodations": "Accommodations",
+      "activities": "Activities"
+    },
+    "noCoworking": "No coworking space for this destination.",
+    "noAccommodation": "No accommodation for this destination.",
+    "noActivity": "No activity for this destination.",
+    "perNight": "/night",
+    "book": "Book",
+    "ecoCertified": "Eco-certified",
+    "planStay": "Plan my stay",
+    "dates": "Dates",
+    "flexibleDates": "Flexible dates",
+    "travelers": "Travelers",
+    "traveler_one": "{{count}} traveler",
+    "traveler_other": "{{count}} travelers",
+    "composeStay": "Build my stay",
+    "flexibleCancellation": "Flexible cancellation",
+    "securePayment": "Secure payment",
+    "carbonIncluded": "Carbon offset included",
+    "types": {
+      "hotel": "Hotel",
+      "apartment": "Apartment",
+      "coliving": "Coliving",
+      "hostel": "Hostel",
+      "eco-lodge": "Eco-lodge"
+    },
+    "categories": {
+      "culture": "Culture",
+      "nature": "Nature",
+      "sport": "Sport",
+      "wellness": "Wellness",
+      "gastronomy": "Gastronomy",
+      "eco-tour": "Eco-tour"
+    }
+  }
+}

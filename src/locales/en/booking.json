@@ -1,0 +1,75 @@
+{
+  "back": "Back",
+  "title": "Build my stay",
+  "subtitle": "Select your services to create your ideal experience",
+  "steps": {
+    "datesServices": "Dates & Services",
+    "summary": "Summary",
+    "payment": "Payment"
+  },
+  "dates": {
+    "title": "Stay dates",
+    "checkIn": "Check-in",
+    "checkOut": "Check-out"
+  },
+  "sections": {
+    "coworking": "Coworking spaces",
+    "accommodation": "Accommodations",
+    "mobility": "Soft mobility",
+    "activity": "Activities"
+  },
+  "perDay": "€/day",
+  "perNight": "€/night",
+  "zeroEmission": "0 emissions",
+  "priceUpcoming": "Price coming soon",
+  "eco": "Eco",
+  "add": "Add",
+  "summaryTitle": "Summary of your stay",
+  "emptyCart": "Your cart is empty. Add services to continue.",
+  "payment": {
+    "title": "Payment",
+    "securePayment": "Secure payment",
+    "stripeSoon": "Stripe integration will be available soon",
+    "subtotal": "Subtotal",
+    "carbonOffset": "Carbon offset",
+    "total": "Total",
+    "confirm": "Confirm booking",
+    "saving": "Saving…",
+    "declined": "Payment declined"
+  },
+  "nav": {
+    "previous": "Previous",
+    "next": "Next"
+  },
+  "cart": {
+    "title": "Your cart",
+    "empty": "No service selected",
+    "total": "Total"
+  },
+  "carbonImpact": {
+    "title": "Carbon impact",
+    "scoreLabel": "Score {{grade}} · Offset included"
+  },
+  "toast": {
+    "added": "Added to cart",
+    "unavailable": "Unavailable",
+    "unavailableDefault": "Could not add this service.",
+    "loginRequired": "Login required",
+    "loginRequiredDesc": "Please log in to complete your booking",
+    "datesRequired": "Dates required",
+    "datesRequiredDesc": "Please provide your check-in and check-out dates",
+    "confirmed": "Booking confirmed — Amani Resorts",
+    "confirmedDesc": "Ref. {{ref}} · Saved to your account",
+    "failed": "Booking failed",
+    "failedDefault": "Error while booking",
+    "invoiceUnavailable": "Invoice unavailable",
+    "invoiceGenerated": "Invoice generated",
+    "invoicePrint": "Window opened — Print or save as PDF",
+    "invoiceDownloaded": "HTML file downloaded to your device"
+  },
+  "confirmation": {
+    "hideEmail": "Hide",
+    "previewEmail": "Preview",
+    "emailSuffix": "Amani confirmation email"
+  }
+}

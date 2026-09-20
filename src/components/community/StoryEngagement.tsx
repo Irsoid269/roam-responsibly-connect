@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { formatDistanceToNow } from "date-fns";
 import { fr } from "date-fns/locale";
 import { Heart, MessageCircle, Loader2, Send } from "lucide-react";
@@ -18,6 +19,7 @@ import {
   useStoryComments,
   useAddStoryComment,
 } from "@/hooks/useCatalogQueries";
+import ReportDialog from "@/components/moderation/ReportDialog";
 import { toast } from "sonner";
 
 type StoryEngagementProps = {
@@ -35,6 +37,7 @@ const StoryEngagement = ({
   likedByMe = false,
   compact = false,
 }: StoryEngagementProps) => {
+  const { t } = useTranslation("community");
   const { user } = useAuth();
   const navigate = useNavigate();
   const toggleLike = useToggleStoryLike();
@@ -47,7 +50,7 @@ const StoryEngagement = ({
 
   const requireAuth = () => {
     if (!user) {
-      toast.info("Connectez-vous pour interagir");
+      toast.info(t("engagement.loginToInteract"));
       navigate("/login");
       return false;
     }
@@ -63,11 +66,7 @@ const StoryEngagement = ({
         liked: likedByMe,
       });
     } catch (e) {
-      toast.error(
-        e instanceof Error
-          ? e.message
-          : "Impossible — appliquez la migration story_likes_comments"
-      );
+      toast.error(e instanceof Error ? e.message : t("engagement.likeError"));
     }
   };
 
@@ -81,17 +80,13 @@ const StoryEngagement = ({
         authorName:
           (user!.user_metadata?.full_name as string) ||
           user!.email?.split("@")[0] ||
-          "Voyageur Amani",
+          t("travelers.defaultName"),
         content: text,
       });
       setText("");
-      toast.success("Commentaire publié");
+      toast.success(t("engagement.commentPosted"));
     } catch (e) {
-      toast.error(
-        e instanceof Error
-          ? e.message
-          : "Impossible — appliquez la migration story_likes_comments"
-      );
+      toast.error(e instanceof Error ? e.message : t("engagement.likeError"));
     }
   };
 
@@ -109,7 +104,7 @@ const StoryEngagement = ({
               : "text-muted-foreground hover:text-destructive",
             compact ? "text-xs" : "text-sm"
           )}
-          aria-label={likedByMe ? "Retirer J'adore" : "J'adore"}
+          aria-label={likedByMe ? t("engagement.removeLike") : t("engagement.like")}
         >
           <Heart
             className={cn(
@@ -118,7 +113,7 @@ const StoryEngagement = ({
             )}
           />
           <span>{likesCount}</span>
-          {!compact && <span className="hidden sm:inline">J&apos;adore</span>}
+          {!compact && <span className="hidden sm:inline">{t("engagement.like")}</span>}
         </button>
 
         <button
@@ -128,18 +123,20 @@ const StoryEngagement = ({
             "flex items-center gap-1.5 text-muted-foreground hover:text-primary transition-colors",
             compact ? "text-xs" : "text-sm"
           )}
-          aria-label="Commentaires"
+          aria-label={t("engagement.comments")}
         >
           <MessageCircle className={compact ? "w-3.5 h-3.5" : "w-4 h-4"} />
           <span>{commentsCount}</span>
-          {!compact && <span className="hidden sm:inline">Commenter</span>}
+          {!compact && <span className="hidden sm:inline">{t("engagement.commentAction")}</span>}
         </button>
+
+        <ReportDialog targetType="story" targetId={storyId} compact={compact} />
       </div>
 
       <Dialog open={commentsOpen} onOpenChange={setCommentsOpen}>
         <DialogContent className="max-w-md max-h-[85vh] flex flex-col">
           <DialogHeader>
-            <DialogTitle>Commentaires</DialogTitle>
+            <DialogTitle>{t("engagement.comments")}</DialogTitle>
           </DialogHeader>
 
           <div className="flex-1 overflow-y-auto space-y-3 min-h-[120px] max-h-[40vh] pr-1">
@@ -149,7 +146,7 @@ const StoryEngagement = ({
               </div>
             ) : comments.length === 0 ? (
               <p className="text-sm text-muted-foreground text-center py-8">
-                Aucun commentaire — soyez le premier.
+                {t("engagement.noComments")}
               </p>
             ) : (
               comments.map((c) => (
@@ -164,6 +161,9 @@ const StoryEngagement = ({
                     </p>
                   </div>
                   <p className="text-sm text-foreground/90">{c.content}</p>
+                  <div className="mt-1.5 flex justify-end">
+                    <ReportDialog targetType="comment" targetId={c.id} compact />
+                  </div>
                 </div>
               ))
             )}
@@ -172,7 +172,7 @@ const StoryEngagement = ({
           <div className="space-y-2 pt-2 border-t">
             <Textarea
               placeholder={
-                user ? "Écrire un commentaire…" : "Connectez-vous pour commenter"
+                user ? t("engagement.writeComment") : t("engagement.loginToComment")
               }
               value={text}
               onChange={(e) => setText(e.target.value)}
@@ -190,7 +190,7 @@ const StoryEngagement = ({
               ) : (
                 <Send className="w-4 h-4" />
               )}
-              Publier
+              {t("engagement.publish")}
             </Button>
           </div>
         </DialogContent>

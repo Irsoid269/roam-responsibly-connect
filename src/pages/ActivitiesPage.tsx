@@ -154,7 +154,7 @@ const ActivitiesPage = () => {
                         <div className="flex items-center justify-between text-sm text-muted-foreground mb-4">
                           <div className="flex items-center gap-1">
                             <Clock className="w-4 h-4" />
-                            {activity.duration_hours}h
+                            {activity.duration_hours != null ? `${activity.duration_hours}h` : "Durée à venir"}
                           </div>
                           <div className="flex items-center gap-1 text-carbon">
                             <Leaf className="w-4 h-4" />
@@ -164,7 +164,7 @@ const ActivitiesPage = () => {
 
                         <div className="flex items-center justify-between pt-3 border-t border-border">
                           <span className="text-lg font-bold text-foreground">
-                            {activity.price}€
+                            {activity.price != null ? `${activity.price}€` : "Prix à venir"}
                           </span>
                           <Button size="sm" asChild>
                             <Link

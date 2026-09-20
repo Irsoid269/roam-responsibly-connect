@@ -1,0 +1,55 @@
+{
+  "types": {
+    "destination": "Destination",
+    "coworking": "Coworking",
+    "accommodation": "Hébergement",
+    "activity": "Activité"
+  },
+  "loginToReview": "Connectez-vous pour laisser un avis",
+  "hero": {
+    "eyebrow": "Communauté",
+    "title": "Avis voyageurs",
+    "description": "Retours d'expérience validés par l'équipe Amani pour préparer votre séjour aux Comores."
+  },
+  "avgRating": "Note moyenne",
+  "reviewsPublished": "Avis publiés",
+  "leaveReview": "Laisser un avis",
+  "resultsCount_one": "{{count}} avis",
+  "resultsCount_other": "{{count}} avis",
+  "filterPlaceholder": "Filtrer",
+  "filters": {
+    "all": "Tous",
+    "destination": "Destinations",
+    "coworking": "Coworkings",
+    "accommodation": "Hébergements",
+    "activity": "Activités"
+  },
+  "empty": {
+    "title": "Aucun avis publié pour le moment",
+    "subtitle": "Soyez le premier — votre avis apparaîtra après validation.",
+    "cta": "Écrire un avis"
+  },
+  "footerPrompt": {
+    "question": "Vous avez voyagé avec Amani ?",
+    "share": "Partagez votre expérience",
+    "or": "ou explorez nos",
+    "destinations": "destinations"
+  },
+  "submit": {
+    "chooseDestination": "Choisissez une destination",
+    "tooShort": "Écrivez au moins 10 caractères",
+    "success": "Avis envoyé — visible après validation Amani",
+    "error": "Erreur lors de l'envoi",
+    "title": "Partager mon avis",
+    "description": "Votre avis sera publié après modération par l'équipe Amani.",
+    "destination": "Destination",
+    "choosePlaceholder": "Choisir…",
+    "rating": "Note",
+    "starsLabel": "{{count}} étoiles",
+    "yourExperience": "Votre expérience",
+    "experiencePlaceholder": "Ce que vous avez aimé pendant votre séjour Amani…",
+    "cancel": "Annuler",
+    "sending": "Envoi…",
+    "send": "Envoyer"
+  }
+}

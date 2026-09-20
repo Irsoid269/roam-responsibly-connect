@@ -1,7 +1,7 @@
 import { ReactNode, useEffect, useState } from "react";
 import { useNavigate, Link, useLocation, NavLink } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { useAdminAuth } from "@/hooks/useAdminAuth";
+import { useAdminAuth, AppRole } from "@/hooks/useAdminAuth";
 import { useAuth } from "@/hooks/useAuth";
 import {
   LayoutDashboard,
@@ -27,6 +27,12 @@ import {
   Heart,
   TrendingUp,
   ExternalLink,
+  Gauge,
+  HandHeart,
+  QrCode,
+  History,
+  Flag,
+  BellRing,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -38,14 +44,28 @@ interface AdminLayoutProps {
   title: string;
   description?: string;
   actions?: ReactNode;
+  // Rôles (en plus de admin, toujours autorisé) pouvant accéder à cette page.
+  // Omis = admin uniquement.
+  allowedRoles?: AppRole[];
 }
 
-const navGroups = [
+// roles omis = visible uniquement par admin (section sensible ou pas encore
+// ouverte à un rôle métier).
+const navGroups: {
+  label: string;
+  items: { label: string; href: string; icon: typeof LayoutDashboard; end?: boolean; roles?: AppRole[] }[];
+}[] = [
   {
     label: "Vue d'ensemble",
     items: [
-      { label: "Tableau de bord", href: "/admin", icon: LayoutDashboard, end: true },
-      { label: "Réservations", href: "/admin/reservations", icon: CalendarCheck },
+      {
+        label: "Tableau de bord",
+        href: "/admin",
+        icon: LayoutDashboard,
+        end: true,
+        roles: ["organizer", "partner_manager", "support", "finance"],
+      },
+      { label: "Réservations", href: "/admin/reservations", icon: CalendarCheck, roles: ["support", "finance"] },
       { label: "Utilisateurs", href: "/admin/users", icon: Users },
     ],
   },
@@ -53,16 +73,19 @@ const navGroups = [
     label: "Pages communauté",
     items: [
       { label: "Communauté", href: "/admin/community", icon: PenLine },
-      { label: "Blog & Récits", href: "/admin/blog", icon: Newspaper },
+      { label: "Blog & Récits", href: "/admin/blog", icon: Newspaper, roles: ["organizer"] },
       { label: "Avis voyageurs", href: "/admin/reviews", icon: MessageSquare },
-      { label: "Événements", href: "/admin/events", icon: CalendarDays },
-      { label: "Ambassadeurs", href: "/admin/ambassadors", icon: Award },
+      { label: "Événements", href: "/admin/events", icon: CalendarDays, roles: ["organizer"] },
+      { label: "Ambassadeurs", href: "/admin/ambassadors", icon: Award, roles: ["organizer"] },
     ],
   },
   {
     label: "Modération",
     items: [
-      { label: "Boîte de réception", href: "/admin/inbox", icon: Inbox },
+      { label: "Boîte de réception", href: "/admin/inbox", icon: Inbox, roles: ["support", "partner_manager"] },
+      { label: "Signalements", href: "/admin/moderation", icon: Flag, roles: ["support"] },
+      { label: "Notifications", href: "/admin/notifications", icon: BellRing, roles: ["support"] },
+      { label: "Journal d'audit", href: "/admin/audit-log", icon: History },
     ],
   },
   {
@@ -70,7 +93,10 @@ const navGroups = [
     items: [
       { label: "Notre Mission", href: "/admin/impact-content?tab=mission", icon: Target },
       { label: "Calculateur Carbone", href: "/admin/impact-content?tab=carbon", icon: Leaf },
-      { label: "Associations Partenaires", href: "/admin/impact-content?tab=partners", icon: Heart },
+      { label: "Facteurs carbone", href: "/admin/carbon-factors", icon: Gauge },
+      { label: "Compensation (dons)", href: "/admin/ngos", icon: HandHeart, roles: ["finance"] },
+      { label: "Actions durables", href: "/admin/sustainable-actions", icon: QrCode, roles: ["organizer"] },
+      { label: "Associations Partenaires", href: "/admin/impact-content?tab=partners", icon: Heart, roles: ["partner_manager"] },
       { label: "Rapport d'Impact", href: "/admin/impact-content?tab=report", icon: TrendingUp },
     ],
   },
@@ -78,32 +104,34 @@ const navGroups = [
     label: "Page d'accueil",
     items: [
       { label: "CTA Accueil", href: "/admin/homepage-cta", icon: Megaphone },
-      { label: "Destinations", href: "/admin/destinations", icon: MapPin },
+      { label: "Destinations", href: "/admin/destinations", icon: MapPin, roles: ["partner_manager"] },
     ],
   },
   {
     label: "Catalogue",
     items: [
-      { label: "Coworkings", href: "/admin/coworkings", icon: Building2 },
-      { label: "Hébergements", href: "/admin/accommodations", icon: Home },
-      { label: "Mobilité", href: "/admin/mobility", icon: Bike },
-      { label: "Activités", href: "/admin/activities", icon: Compass },
+      { label: "Coworkings", href: "/admin/coworkings", icon: Building2, roles: ["partner_manager"] },
+      { label: "Hébergements", href: "/admin/accommodations", icon: Home, roles: ["partner_manager"] },
+      { label: "Mobilité", href: "/admin/mobility", icon: Bike, roles: ["partner_manager"] },
+      { label: "Activités", href: "/admin/activities", icon: Compass, roles: ["partner_manager"] },
     ],
   },
 ];
 
-const AdminLayout = ({ children, title, description, actions }: AdminLayoutProps) => {
+const AdminLayout = ({ children, title, description, actions, allowedRoles }: AdminLayoutProps) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { isAdmin, loading } = useAdminAuth();
+  const { isAdmin, hasAnyRole, roles, loading } = useAdminAuth();
   const { user, signOut } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+  const authorized = hasAnyRole(allowedRoles ?? ["admin"]);
+
   useEffect(() => {
-    if (!loading && !isAdmin) {
+    if (!loading && !authorized) {
       navigate("/");
     }
-  }, [isAdmin, loading, navigate]);
+  }, [authorized, loading, navigate]);
 
   useEffect(() => {
     setSidebarOpen(false);
@@ -118,9 +146,12 @@ const AdminLayout = ({ children, title, description, actions }: AdminLayoutProps
     );
   }
 
-  if (!isAdmin) {
+  if (!authorized) {
     return null;
   }
+
+  const canSee = (itemRoles?: AppRole[]) =>
+    isAdmin || (!!itemRoles && itemRoles.some((r) => roles.includes(r)));
 
   const handleSignOut = async () => {
     await signOut();
@@ -146,7 +177,10 @@ const AdminLayout = ({ children, title, description, actions }: AdminLayoutProps
       </div>
 
       <nav className="flex-1 p-3 space-y-5 overflow-y-auto">
-        {navGroups.map((group) => (
+        {navGroups
+          .map((group) => ({ ...group, items: group.items.filter((item) => canSee(item.roles)) }))
+          .filter((group) => group.items.length > 0)
+          .map((group) => (
           <div key={group.label}>
             <p className="px-3 mb-1.5 text-[10px] font-semibold uppercase tracking-luxury text-muted-foreground/80">
               {group.label}

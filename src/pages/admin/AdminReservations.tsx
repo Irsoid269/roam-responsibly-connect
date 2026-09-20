@@ -26,10 +26,18 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { MoreHorizontal, Eye, CheckCircle, XCircle, Trash2, Laptop, Home, Car, Activity } from "lucide-react";
+import { MoreHorizontal, Eye, CheckCircle, XCircle, Trash2, Laptop, Home, Car, Activity, CreditCard, Undo2, Loader2 } from "lucide-react";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { toast } from "sonner";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface ReservationItem {
   id: string;
@@ -40,6 +48,22 @@ interface ReservationItem {
   total_price: number | null;
   start_date: string | null;
   end_date: string | null;
+}
+
+interface RefundInfo {
+  id: string;
+  amount: number;
+  status: string;
+}
+
+interface PaymentInfo {
+  id: string;
+  amount: number;
+  currency: string;
+  status: string;
+  stripe_payment_intent_id: string | null;
+  created_at: string;
+  refunds?: RefundInfo[];
 }
 
 interface Reservation {
@@ -60,7 +84,28 @@ interface Reservation {
     city: string;
   };
   items?: ReservationItem[];
+  payment?: PaymentInfo | null;
 }
+
+const paymentStatusColors: Record<string, string> = {
+  succeeded: "bg-success/10 text-success border-success/20",
+  processing: "bg-warning/15 text-warning-foreground border-warning/30",
+  requires_payment_method: "bg-warning/15 text-warning-foreground border-warning/30",
+  requires_confirmation: "bg-warning/15 text-warning-foreground border-warning/30",
+  requires_action: "bg-warning/15 text-warning-foreground border-warning/30",
+  failed: "bg-destructive/10 text-destructive border-destructive/20",
+  canceled: "bg-muted text-muted-foreground border-border",
+};
+
+const paymentStatusLabels: Record<string, string> = {
+  succeeded: "Payé",
+  processing: "En cours",
+  requires_payment_method: "En attente",
+  requires_confirmation: "En attente",
+  requires_action: "Action requise",
+  failed: "Échoué",
+  canceled: "Annulé",
+};
 
 const statusColors: Record<string, string> = {
   pending: "bg-warning/15 text-warning-foreground border-warning/30",
@@ -82,6 +127,10 @@ const AdminReservations = () => {
   const [selectedReservation, setSelectedReservation] = useState<Reservation | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [reservationToDelete, setReservationToDelete] = useState<string | null>(null);
+  const [refundPayment, setRefundPayment] = useState<PaymentInfo | null>(null);
+  const [refundAmount, setRefundAmount] = useState("");
+  const [refundReason, setRefundReason] = useState<string>("requested_by_customer");
+  const [refunding, setRefunding] = useState(false);
 
   const fetchReservations = async () => {
     try {
@@ -95,7 +144,7 @@ const AdminReservations = () => {
       // Fetch related data
       const reservationsWithDetails = await Promise.all(
         (reservationsData || []).map(async (reservation) => {
-          const [profileResult, destinationResult, itemsResult] = await Promise.all([
+          const [profileResult, destinationResult, itemsResult, paymentResult] = await Promise.all([
             supabase
               .from("profiles")
               .select("full_name")
@@ -112,6 +161,13 @@ const AdminReservations = () => {
               .from("reservation_items")
               .select("id, item_type, item_name, quantity, unit_price, total_price, start_date, end_date")
               .eq("reservation_id", reservation.id),
+            supabase
+              .from("payments")
+              .select("id, amount, currency, status, stripe_payment_intent_id, created_at, refunds(id, amount, status)")
+              .eq("reservation_id", reservation.id)
+              .order("created_at", { ascending: false })
+              .limit(1)
+              .maybeSingle(),
           ]);
 
           return {
@@ -119,6 +175,7 @@ const AdminReservations = () => {
             profile: profileResult.data || undefined,
             destination: destinationResult?.data || undefined,
             items: itemsResult.data || [],
+            payment: (paymentResult.data as PaymentInfo | null) || null,
           };
         })
       );
@@ -181,10 +238,65 @@ const AdminReservations = () => {
     }
   };
 
+  const remainingRefundable = (payment: PaymentInfo) => {
+    const alreadyRefunded = (payment.refunds || [])
+      .filter((r) => r.status !== "failed" && r.status !== "canceled")
+      .reduce((sum, r) => sum + Number(r.amount), 0);
+    return Math.max(0, Number(payment.amount) - alreadyRefunded);
+  };
+
+  const openRefundDialog = (payment: PaymentInfo) => {
+    setRefundPayment(payment);
+    setRefundAmount(String(remainingRefundable(payment)));
+    setRefundReason("requested_by_customer");
+  };
+
+  const handleRefund = async () => {
+    if (!refundPayment) return;
+    const amount = parseFloat(refundAmount);
+    if (!amount || amount <= 0) {
+      toast.error("Montant invalide");
+      return;
+    }
+    if (amount > remainingRefundable(refundPayment)) {
+      toast.error("Montant supérieur au solde remboursable");
+      return;
+    }
+
+    setRefunding(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("create-refund", {
+        body: {
+          paymentId: refundPayment.id,
+          amount,
+          reason: refundReason,
+          idempotencyKey: crypto.randomUUID(),
+        },
+      });
+
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+
+      toast.success(`Remboursement de ${amount} ${refundPayment.currency.toUpperCase()} initié`);
+      setRefundPayment(null);
+      fetchReservations();
+    } catch (error) {
+      console.error("Error creating refund:", error);
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Erreur lors du remboursement — vérifiez que l'Edge Function create-refund est déployée.",
+      );
+    } finally {
+      setRefunding(false);
+    }
+  };
+
   return (
     <AdminLayout
       title="Gestion des réservations"
       description="Suivi des séjours, statuts et détails des services réservés."
+      allowedRoles={["support", "finance"]}
     >
       <div className="rounded-xl border border-border bg-background shadow-sm overflow-hidden">
         {loading ? (
@@ -200,6 +312,7 @@ const AdminReservations = () => {
                 <TableHead>Services réservés</TableHead>
                 <TableHead>Dates</TableHead>
                 <TableHead>Montant</TableHead>
+                <TableHead>Paiement</TableHead>
                 <TableHead>Statut</TableHead>
                 <TableHead>Créée le</TableHead>
                 <TableHead className="w-[70px]"></TableHead>
@@ -246,6 +359,19 @@ const AdminReservations = () => {
                     })}
                   </TableCell>
                   <TableCell>{reservation.total_price} €</TableCell>
+                  <TableCell>
+                    {reservation.payment ? (
+                      <Badge
+                        variant="outline"
+                        className={paymentStatusColors[reservation.payment.status] || ""}
+                      >
+                        <CreditCard className="w-3 h-3 mr-1" />
+                        {paymentStatusLabels[reservation.payment.status] || reservation.payment.status}
+                      </Badge>
+                    ) : (
+                      <span className="text-xs text-muted-foreground">Sans paiement Stripe</span>
+                    )}
+                  </TableCell>
                   <TableCell>
                     <Badge
                       variant="outline"
@@ -374,6 +500,62 @@ const AdminReservations = () => {
                 </div>
               </div>
 
+              {/* Paiement Stripe */}
+              <div className="pt-4 border-t">
+                <p className="text-sm font-medium mb-3">Paiement</p>
+                {selectedReservation.payment ? (
+                  <div className="p-3 bg-muted/50 rounded-lg space-y-2">
+                    <div className="flex items-center justify-between">
+                      <Badge
+                        variant="outline"
+                        className={paymentStatusColors[selectedReservation.payment.status] || ""}
+                      >
+                        <CreditCard className="w-3 h-3 mr-1" />
+                        {paymentStatusLabels[selectedReservation.payment.status] ||
+                          selectedReservation.payment.status}
+                      </Badge>
+                      <span className="font-medium text-sm">
+                        {selectedReservation.payment.amount}{" "}
+                        {selectedReservation.payment.currency.toUpperCase()}
+                      </span>
+                    </div>
+                    {selectedReservation.payment.stripe_payment_intent_id && (
+                      <p className="text-xs text-muted-foreground font-mono">
+                        {selectedReservation.payment.stripe_payment_intent_id}
+                      </p>
+                    )}
+                    {selectedReservation.payment.refunds && selectedReservation.payment.refunds.length > 0 && (
+                      <div className="pt-2 border-t space-y-1">
+                        <p className="text-xs font-medium text-muted-foreground">Remboursements</p>
+                        {selectedReservation.payment.refunds.map((refund) => (
+                          <div key={refund.id} className="flex items-center justify-between text-xs">
+                            <span className="text-muted-foreground">{refund.status}</span>
+                            <span>{refund.amount} {selectedReservation.payment!.currency.toUpperCase()}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    {selectedReservation.payment.status === "succeeded" &&
+                      remainingRefundable(selectedReservation.payment) > 0 && (
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="w-full mt-1"
+                          onClick={() => openRefundDialog(selectedReservation.payment!)}
+                        >
+                          <Undo2 className="w-4 h-4 mr-2" />
+                          Rembourser ({remainingRefundable(selectedReservation.payment)}{" "}
+                          {selectedReservation.payment.currency.toUpperCase()} max)
+                        </Button>
+                      )}
+                  </div>
+                ) : (
+                  <p className="text-sm text-muted-foreground">
+                    Aucun paiement Stripe associé (réservation créée sans paiement en ligne).
+                  </p>
+                )}
+              </div>
+
               {/* Services réservés */}
               {selectedReservation.items && selectedReservation.items.length > 0 && (
                 <div className="pt-4 border-t">
@@ -431,6 +613,67 @@ const AdminReservations = () => {
             </Button>
             <Button variant="destructive" onClick={deleteReservation}>
               Supprimer
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Refund Dialog */}
+      <Dialog open={!!refundPayment} onOpenChange={(open) => !open && !refunding && setRefundPayment(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Rembourser le paiement</DialogTitle>
+            <DialogDescription>
+              Le remboursement est envoyé à Stripe immédiatement et ne peut pas être annulé.
+            </DialogDescription>
+          </DialogHeader>
+          {refundPayment && (
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <label className="text-sm font-medium">
+                  Montant ({refundPayment.currency.toUpperCase()}) — max {remainingRefundable(refundPayment)}
+                </label>
+                <Input
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  max={remainingRefundable(refundPayment)}
+                  value={refundAmount}
+                  onChange={(e) => setRefundAmount(e.target.value)}
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Motif</label>
+                <Select value={refundReason} onValueChange={setRefundReason}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="requested_by_customer">Demande du client</SelectItem>
+                    <SelectItem value="duplicate">Doublon</SelectItem>
+                    <SelectItem value="fraudulent">Frauduleux</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setRefundPayment(null)}
+              disabled={refunding}
+            >
+              Annuler
+            </Button>
+            <Button onClick={handleRefund} disabled={refunding}>
+              {refunding ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Remboursement…
+                </>
+              ) : (
+                "Confirmer le remboursement"
+              )}
             </Button>
           </DialogFooter>
         </DialogContent>

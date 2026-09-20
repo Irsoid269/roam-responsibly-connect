@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useParams, Link, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { 
   Star, Wifi, Leaf, MapPin, ArrowLeft, Calendar, Users, 
   Building2, Home, Compass, Clock, ChevronRight,
@@ -72,6 +73,7 @@ interface Activity {
 }
 
 const DestinationDetailPage = () => {
+  const { t } = useTranslation("destinations");
   const { id } = useParams();
   const [searchParams] = useSearchParams();
   const bookingParams = parseBookingSearchParams(searchParams);
@@ -96,7 +98,7 @@ const DestinationDetailPage = () => {
       }
     }
     if (from) return from;
-    return "Dates flexibles";
+    return t("detail.flexibleDates");
   })();
 
   if (loading) {
@@ -110,26 +112,26 @@ const DestinationDetailPage = () => {
   if (!destination) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
-        <p>Destination non trouvée</p>
+        <p>{t("detail.notFound")}</p>
       </div>
     );
   }
 
   const typeLabels: Record<string, string> = {
-    hotel: "Hôtel",
-    apartment: "Appartement",
-    coliving: "Coliving",
-    hostel: "Auberge",
-    "eco-lodge": "Éco-lodge",
+    hotel: t("detail.types.hotel"),
+    apartment: t("detail.types.apartment"),
+    coliving: t("detail.types.coliving"),
+    hostel: t("detail.types.hostel"),
+    "eco-lodge": t("detail.types.eco-lodge"),
   };
 
   const categoryLabels: Record<string, string> = {
-    culture: "Culture",
-    nature: "Nature",
-    sport: "Sport",
-    wellness: "Bien-être",
-    gastronomy: "Gastronomie",
-    "eco-tour": "Éco-tour",
+    culture: t("detail.categories.culture"),
+    nature: t("detail.categories.nature"),
+    sport: t("detail.categories.sport"),
+    wellness: t("detail.categories.wellness"),
+    gastronomy: t("detail.categories.gastronomy"),
+    "eco-tour": t("detail.categories.eco-tour"),
   };
 
   return (
@@ -149,7 +151,7 @@ const DestinationDetailPage = () => {
             className="absolute top-24 left-4 md:left-8 flex items-center gap-2 text-primary-foreground hover:opacity-80 transition-opacity"
           >
             <ArrowLeft className="w-5 h-5" />
-            <span className="text-sm font-medium">Retour</span>
+            <span className="text-sm font-medium">{t("detail.back")}</span>
           </Link>
 
           {/* Actions */}
@@ -173,7 +175,7 @@ const DestinationDetailPage = () => {
                   <span className={`px-3 py-1 rounded-full text-sm font-bold ${
                     ecoScoreBadge(destination.carbon_score || "B")
                   }`}>
-                    Score Carbone {destination.carbon_score}
+                    {t("detail.carbonScore", { score: destination.carbon_score })}
                   </span>
                   {destination.highlight && (
                     <Badge variant="secondary">{destination.highlight}</Badge>
@@ -207,28 +209,28 @@ const DestinationDetailPage = () => {
                     <CardContent className="p-4 text-center">
                       <Star className="w-6 h-6 mx-auto mb-2 text-warning" />
                       <p className="text-2xl font-bold">{destination.rating}</p>
-                      <p className="text-sm text-muted-foreground">Note moyenne</p>
+                      <p className="text-sm text-muted-foreground">{t("detail.avgRating")}</p>
                     </CardContent>
                   </Card>
                   <Card>
                     <CardContent className="p-4 text-center">
                       <Building2 className="w-6 h-6 mx-auto mb-2 text-primary" />
                       <p className="text-2xl font-bold">{destination.coworking_count}</p>
-                      <p className="text-sm text-muted-foreground">Coworkings</p>
+                      <p className="text-sm text-muted-foreground">{t("detail.coworkings")}</p>
                     </CardContent>
                   </Card>
                   <Card>
                     <CardContent className="p-4 text-center">
                       <Wifi className="w-6 h-6 mx-auto mb-2 text-accent" />
                       <p className="text-2xl font-bold">{destination.wifi_speed} Mbps</p>
-                      <p className="text-sm text-muted-foreground">WiFi moyen</p>
+                      <p className="text-sm text-muted-foreground">{t("detail.avgWifi")}</p>
                     </CardContent>
                   </Card>
                   <Card>
                     <CardContent className="p-4 text-center">
                       <Leaf className="w-6 h-6 mx-auto mb-2 text-carbon" />
                       <p className="text-2xl font-bold">{destination.avg_price_per_day}€</p>
-                      <p className="text-sm text-muted-foreground">Par jour</p>
+                      <p className="text-sm text-muted-foreground">{t("detail.perDayLabel")}</p>
                     </CardContent>
                   </Card>
                 </div>
@@ -242,7 +244,7 @@ const DestinationDetailPage = () => {
               >
                 <Card>
                   <CardHeader>
-                    <CardTitle>À propos de {destination.name}</CardTitle>
+                    <CardTitle>{t("detail.about", { name: destination.name })}</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <p className="text-muted-foreground leading-relaxed">
@@ -262,22 +264,22 @@ const DestinationDetailPage = () => {
                   <TabsList className="w-full grid grid-cols-3">
                     <TabsTrigger value="coworkings" className="flex items-center gap-2">
                       <Building2 className="w-4 h-4" />
-                      Coworkings
+                      {t("detail.tabs.coworkings")}
                     </TabsTrigger>
                     <TabsTrigger value="accommodations" className="flex items-center gap-2">
                       <Home className="w-4 h-4" />
-                      Hébergements
+                      {t("detail.tabs.accommodations")}
                     </TabsTrigger>
                     <TabsTrigger value="activities" className="flex items-center gap-2">
                       <Compass className="w-4 h-4" />
-                      Activités
+                      {t("detail.tabs.activities")}
                     </TabsTrigger>
                   </TabsList>
 
                   <TabsContent value="coworkings" className="mt-6 space-y-4">
                     {coworkings.length === 0 && (
                       <p className="text-sm text-muted-foreground text-center py-8">
-                        Aucun coworking pour cette destination.
+                        {t("detail.noCoworking")}
                       </p>
                     )}
                     {coworkings.map((space) => (
@@ -311,9 +313,9 @@ const DestinationDetailPage = () => {
                             </div>
                             <div className="text-right">
                               <p className="text-lg font-bold text-foreground">{space.price_per_day}€</p>
-                              <p className="text-sm text-muted-foreground">/jour</p>
+                              <p className="text-sm text-muted-foreground">{t("perDay")}</p>
                               <Button size="sm" className="mt-2" asChild>
-                                <Link to={bookingPath}>Réserver</Link>
+                                <Link to={bookingPath}>{t("detail.book")}</Link>
                               </Button>
                             </div>
                           </div>
@@ -325,7 +327,7 @@ const DestinationDetailPage = () => {
                   <TabsContent value="accommodations" className="mt-6 space-y-4">
                     {accommodations.length === 0 && (
                       <p className="text-sm text-muted-foreground text-center py-8">
-                        Aucun hébergement pour cette destination.
+                        {t("detail.noAccommodation")}
                       </p>
                     )}
                     {accommodations.map((accom) => (
@@ -353,9 +355,9 @@ const DestinationDetailPage = () => {
                             </div>
                             <div className="text-right">
                               <p className="text-lg font-bold text-foreground">{accom.price_per_night}€</p>
-                              <p className="text-sm text-muted-foreground">/nuit</p>
+                              <p className="text-sm text-muted-foreground">{t("detail.perNight")}</p>
                               <Button size="sm" className="mt-2" asChild>
-                                <Link to={bookingPath}>Réserver</Link>
+                                <Link to={bookingPath}>{t("detail.book")}</Link>
                               </Button>
                             </div>
                           </div>
@@ -367,7 +369,7 @@ const DestinationDetailPage = () => {
                   <TabsContent value="activities" className="mt-6 space-y-4">
                     {activities.length === 0 && (
                       <p className="text-sm text-muted-foreground text-center py-8">
-                        Aucune activité pour cette destination.
+                        {t("detail.noActivity")}
                       </p>
                     )}
                     {activities.map((activity) => (
@@ -380,7 +382,7 @@ const DestinationDetailPage = () => {
                                 {activity.eco_certified && (
                                   <Badge className="bg-carbon text-carbon-foreground">
                                     <Leaf className="w-3 h-3 mr-1" />
-                                    Éco-certifié
+                                    {t("detail.ecoCertified")}
                                   </Badge>
                                 )}
                               </div>
@@ -397,7 +399,7 @@ const DestinationDetailPage = () => {
                             <div className="text-right">
                               <p className="text-lg font-bold text-foreground">{activity.price}€</p>
                               <Button size="sm" className="mt-2" asChild>
-                                <Link to={bookingPath}>Réserver</Link>
+                                <Link to={bookingPath}>{t("detail.book")}</Link>
                               </Button>
                             </div>
                           </div>
@@ -420,16 +422,16 @@ const DestinationDetailPage = () => {
                 <Card className="shadow-lg">
                   <CardHeader>
                     <CardTitle className="flex items-center justify-between">
-                      <span>Planifier mon séjour</span>
+                      <span>{t("detail.planStay")}</span>
                       <span className="text-2xl font-bold text-primary">
                         {destination.avg_price_per_day}€
-                        <span className="text-sm font-normal text-muted-foreground">/jour</span>
+                        <span className="text-sm font-normal text-muted-foreground">{t("perDay")}</span>
                       </span>
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="p-3 border rounded-lg">
-                      <p className="text-xs text-muted-foreground mb-1">Dates</p>
+                      <p className="text-xs text-muted-foreground mb-1">{t("detail.dates")}</p>
                       <p className="font-medium flex items-center gap-1">
                         <Calendar className="w-4 h-4" />
                         {datesLabel}
@@ -437,16 +439,16 @@ const DestinationDetailPage = () => {
                     </div>
 
                     <div className="p-3 border rounded-lg">
-                      <p className="text-xs text-muted-foreground mb-1">Voyageurs</p>
+                      <p className="text-xs text-muted-foreground mb-1">{t("detail.travelers")}</p>
                       <p className="font-medium flex items-center gap-1">
                         <Users className="w-4 h-4" />
-                        {travelersCount} voyageur{travelersCount > 1 ? "s" : ""}
+                        {t("detail.traveler", { count: travelersCount })}
                       </p>
                     </div>
 
                     <Button className="w-full" size="lg" asChild>
                       <Link to={bookingPath}>
-                        Composer mon séjour
+                        {t("detail.composeStay")}
                         <ChevronRight className="w-4 h-4 ml-2" />
                       </Link>
                     </Button>
@@ -454,15 +456,15 @@ const DestinationDetailPage = () => {
                     <div className="pt-4 border-t space-y-2">
                       <div className="flex items-center gap-2 text-sm text-muted-foreground">
                         <Check className="w-4 h-4 text-success" />
-                        Annulation flexible
+                        {t("detail.flexibleCancellation")}
                       </div>
                       <div className="flex items-center gap-2 text-sm text-muted-foreground">
                         <Check className="w-4 h-4 text-success" />
-                        Paiement sécurisé
+                        {t("detail.securePayment")}
                       </div>
                       <div className="flex items-center gap-2 text-sm text-muted-foreground">
                         <Check className="w-4 h-4 text-carbon" />
-                        Compensation carbone incluse
+                        {t("detail.carbonIncluded")}
                       </div>
                     </div>
                   </CardContent>

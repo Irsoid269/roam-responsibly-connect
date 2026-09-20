@@ -1,43 +1,23 @@
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { MapPin, Briefcase, TreePine, Sparkles } from "lucide-react";
 import { staggerContainer, staggerItem, viewportOnce } from "@/lib/motion";
 
-const steps = [
-  {
-    icon: MapPin,
-    title: "Choisissez votre île",
-    description:
-      "Explorez les îles des Comores et trouvez l'endroit parfait pour votre prochain séjour de travail.",
-    color: "bg-secondary",
-    iconColor: "text-secondary-foreground",
-  },
-  {
-    icon: Briefcase,
-    title: "Composez votre séjour",
-    description:
-      "Hébergement, espace coworking, mobilité douce, activités locales — tout dans un seul panier.",
-    color: "bg-primary",
-    iconColor: "text-primary-foreground",
-  },
-  {
-    icon: TreePine,
-    title: "Mesurez votre impact",
-    description:
-      "Consultez votre empreinte carbone estimée et comparez les options pour voyager plus responsable.",
-    color: "bg-carbon",
-    iconColor: "text-carbon-foreground",
-  },
-  {
-    icon: Sparkles,
-    title: "Profitez & partagez",
-    description:
-      "Vivez votre expérience, rencontrez la communauté, et partagez vos découvertes.",
-    color: "bg-accent",
-    iconColor: "text-accent-foreground",
-  },
-];
+const stepDefs = [
+  { key: "chooseIsland", icon: MapPin, color: "bg-secondary", iconColor: "text-secondary-foreground" },
+  { key: "composeStay", icon: Briefcase, color: "bg-primary", iconColor: "text-primary-foreground" },
+  { key: "measureImpact", icon: TreePine, color: "bg-carbon", iconColor: "text-carbon-foreground" },
+  { key: "enjoyShare", icon: Sparkles, color: "bg-accent", iconColor: "text-accent-foreground" },
+] as const;
 
 const HowItWorksSection = () => {
+  const { t } = useTranslation("home");
+  const steps = stepDefs.map((s) => ({
+    ...s,
+    title: t(`howItWorks.steps.${s.key}.title`),
+    description: t(`howItWorks.steps.${s.key}.description`),
+  }));
+
   return (
     <section className="py-16 md:py-24 bg-muted/30">
       <div className="container mx-auto px-4">
@@ -49,17 +29,16 @@ const HowItWorksSection = () => {
           className="text-center max-w-2xl mx-auto mb-14"
         >
           <motion.span variants={staggerItem} className="section-eyebrow">
-            Comment ça marche
+            {t("howItWorks.eyebrow")}
           </motion.span>
           <motion.h2
             variants={staggerItem}
             className="font-display text-3xl md:text-4xl font-medium text-foreground mt-3 mb-4"
           >
-            Votre séjour en 4 étapes
+            {t("howItWorks.title")}
           </motion.h2>
           <motion.p variants={staggerItem} className="text-muted-foreground text-lg leading-relaxed">
-            De la recherche à la réservation, tout est pensé pour simplifier l&apos;organisation de
-            votre séjour Amani aux Comores.
+            {t("howItWorks.subtitle")}
           </motion.p>
         </motion.div>
 

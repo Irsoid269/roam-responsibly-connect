@@ -1,0 +1,73 @@
+{
+  "hero": {
+    "eyebrow": "Community",
+    "title": "Responsible travelers in the Comoros",
+    "description": "Approved stories, published reviews, and travelers reducing their footprint with Amani."
+  },
+  "shareStory": "Share my story",
+  "viewReviews": "View reviews",
+  "stats": {
+    "travelers": "Amani travelers",
+    "carbonOffset": "CO₂ offset",
+    "destinations": "Destinations",
+    "avgRating": "Average rating"
+  },
+  "tabs": {
+    "stories": "Stories",
+    "travelers": "Travelers",
+    "reviews": "Recent reviews"
+  },
+  "stories": {
+    "empty": "No story published",
+    "beFirst": "Be the first",
+    "loginToShare": "Log in to share a story"
+  },
+  "travelers": {
+    "empty": "Profiles will appear here after the first stays.",
+    "defaultName": "Amani traveler",
+    "badges": {
+      "ecoPioneer": "Eco Pioneer",
+      "carbonSaver": "Carbon Saver",
+      "explorer": "Explorer",
+      "newcomer": "Newcomer"
+    },
+    "trip_one": "{{count}} stay",
+    "trip_other": "{{count}} stays"
+  },
+  "reviews": {
+    "empty": "No review published yet —",
+    "leaveFirst": "leave the first one",
+    "viewAll": "All reviews"
+  },
+  "engagement": {
+    "loginToInteract": "Log in to interact",
+    "likeError": "Unable to like — apply the story_likes_comments migration",
+    "commentPosted": "Comment posted",
+    "removeLike": "Remove like",
+    "like": "Like",
+    "comments": "Comments",
+    "commentAction": "Comment",
+    "noComments": "No comments yet — be the first.",
+    "writeComment": "Write a comment…",
+    "loginToComment": "Log in to comment",
+    "publish": "Post"
+  },
+  "submitStory": {
+    "loginRequired": "Log in to share a story",
+    "tooShort": "Your story must be at least 20 characters long",
+    "success": "Story submitted! It will be visible after review by the Amani team.",
+    "sendError": "Could not submit",
+    "title": "Share my Amani story",
+    "description": "Your testimonial will be published in the Community section after approval by an administrator.",
+    "yourName": "Your name",
+    "homeCity": "Home city (optional)",
+    "destination": "Destination",
+    "yourStory": "Your story",
+    "storyPlaceholder": "Tell us about your Amani stay in the Comoros…",
+    "charCount": "{{count}}/1000 · min. 20 characters",
+    "photo": "Photo (optional)",
+    "cancel": "Cancel",
+    "sending": "Sending…",
+    "submit": "Submit for review"
+  }
+}
