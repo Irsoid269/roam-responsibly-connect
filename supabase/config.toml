@@ -10,3 +10,11 @@ verify_jwt = false
 
 [functions.create-refund]
 verify_jwt = true
+
+[functions.delete-account]
+verify_jwt = true
+
+[functions.send-notifications]
+# Appelée par un job planifié / un admin avec la service_role key en
+# Authorization — ce n'est pas une session utilisateur Supabase classique.
+verify_jwt = false

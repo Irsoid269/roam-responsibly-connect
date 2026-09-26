@@ -1,0 +1,27 @@
+{
+  "eyebrow": "Sustainable mobility",
+  "title": "Soft mobility",
+  "description": "Get around sustainably with our low-carbon mobility options.",
+  "searchPlaceholder": "Search...",
+  "all": "All",
+  "types": {
+    "bicycle": "Bicycle",
+    "electricBike": "Electric bike",
+    "electricScooter": "Electric scooter",
+    "publicTransport": "Public transport",
+    "walkingTour": "Guided walk"
+  },
+  "carbon": {
+    "zero": "Zero emissions",
+    "veryLow": "Very low",
+    "low": "Low",
+    "moderate": "Moderate"
+  },
+  "perDay": "/day",
+  "onRequest": "On request",
+  "book": "Book",
+  "noResults": {
+    "title": "No option found",
+    "description": "Try another search"
+  }
+}

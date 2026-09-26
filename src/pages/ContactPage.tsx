@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { Mail, MapPin, Phone, Send, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,31 +18,31 @@ import { useAuth } from "@/hooks/useAuth";
 import { useSubmitContactMessage } from "@/hooks/useCatalogQueries";
 import { toast } from "sonner";
 
-const contactMethods = [
-  {
-    icon: Mail,
-    title: "Email",
-    description: "Réponse sous 24h ouvrées",
-    value: "hello@amaniresorts.com",
-    action: "mailto:hello@amaniresorts.com",
-  },
-  {
-    icon: Phone,
-    title: "Téléphone",
-    description: "Lun-Ven, 9h-18h (EAT)",
-    value: "+269 773 00 00",
-    action: "tel:+2697730000",
-  },
-  {
-    icon: MapPin,
-    title: "Siège",
-    description: "Grande Comore",
-    value: "Moroni, Comores",
-    action: "/destinations",
-  },
-];
-
 const ContactPage = () => {
+  const { t } = useTranslation("contact");
+  const contactMethods = [
+    {
+      icon: Mail,
+      title: t("methods.email.title"),
+      description: t("methods.email.description"),
+      value: "hello@amaniresorts.com",
+      action: "mailto:hello@amaniresorts.com",
+    },
+    {
+      icon: Phone,
+      title: t("methods.phone.title"),
+      description: t("methods.phone.description"),
+      value: "+269 773 00 00",
+      action: "tel:+2697730000",
+    },
+    {
+      icon: MapPin,
+      title: t("methods.address.title"),
+      description: t("methods.address.description"),
+      value: "Moroni, Comores",
+      action: "/destinations",
+    },
+  ];
   const { user } = useAuth();
   const submit = useSubmitContactMessage();
   const [firstName, setFirstName] = useState("");
@@ -53,7 +54,7 @@ const ContactPage = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!firstName.trim() || !lastName.trim() || !email.trim() || !message.trim()) {
-      toast.error("Remplissez tous les champs obligatoires");
+      toast.error(t("form.fillRequired"));
       return;
     }
     try {
@@ -65,14 +66,14 @@ const ContactPage = () => {
         message: message.trim(),
         userId: user?.id,
       });
-      toast.success("Message envoyé — nous vous répondrons sous 24h");
+      toast.success(t("form.success"));
       setMessage("");
       setSubject("general");
     } catch (err) {
       toast.error(
         err instanceof Error
           ? err.message
-          : "Envoi impossible — appliquez la migration contact_messages"
+          : t("form.sendError")
       );
     }
   };
@@ -80,8 +81,8 @@ const ContactPage = () => {
   return (
     <main className="page-main">
       <PageHero
-        title="Contactez-nous"
-        description="Une question, une suggestion ou un partenariat ? Notre équipe Amani est là."
+        title={t("title")}
+        description={t("description")}
       />
 
       <section className="py-10">
@@ -114,12 +115,12 @@ const ContactPage = () => {
 
           <div className="max-w-xl mx-auto">
             <h2 className="font-display text-2xl font-medium mb-6 text-center">
-              Envoyez-nous un message
+              {t("form.title")}
             </h2>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-sm font-medium mb-1 block">Prénom</label>
+                  <label className="text-sm font-medium mb-1 block">{t("form.firstName")}</label>
                   <Input
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
@@ -127,7 +128,7 @@ const ContactPage = () => {
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium mb-1 block">Nom</label>
+                  <label className="text-sm font-medium mb-1 block">{t("form.lastName")}</label>
                   <Input
                     value={lastName}
                     onChange={(e) => setLastName(e.target.value)}
@@ -136,7 +137,7 @@ const ContactPage = () => {
                 </div>
               </div>
               <div>
-                <label className="text-sm font-medium mb-1 block">Email</label>
+                <label className="text-sm font-medium mb-1 block">{t("form.email")}</label>
                 <Input
                   type="email"
                   value={email}
@@ -145,23 +146,23 @@ const ContactPage = () => {
                 />
               </div>
               <div>
-                <label className="text-sm font-medium mb-1 block">Sujet</label>
+                <label className="text-sm font-medium mb-1 block">{t("form.subject")}</label>
                 <Select value={subject} onValueChange={setSubject}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="general">Question générale</SelectItem>
-                    <SelectItem value="booking">Réservation</SelectItem>
-                    <SelectItem value="partnership">Partenariat</SelectItem>
-                    <SelectItem value="press">Presse</SelectItem>
-                    <SelectItem value="support">Support</SelectItem>
-                    <SelectItem value="other">Autre</SelectItem>
+                    <SelectItem value="general">{t("form.subjects.general")}</SelectItem>
+                    <SelectItem value="booking">{t("form.subjects.booking")}</SelectItem>
+                    <SelectItem value="partnership">{t("form.subjects.partnership")}</SelectItem>
+                    <SelectItem value="press">{t("form.subjects.press")}</SelectItem>
+                    <SelectItem value="support">{t("form.subjects.support")}</SelectItem>
+                    <SelectItem value="other">{t("form.subjects.other")}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
               <div>
-                <label className="text-sm font-medium mb-1 block">Message</label>
+                <label className="text-sm font-medium mb-1 block">{t("form.message")}</label>
                 <Textarea
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
@@ -175,7 +176,7 @@ const ContactPage = () => {
                 ) : (
                   <Send className="w-4 h-4" />
                 )}
-                Envoyer
+                {t("form.send")}
               </Button>
             </form>
           </div>

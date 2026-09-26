@@ -12,12 +12,22 @@
     "destinationLabel": "Destination",
     "destinationPlaceholder": "Where are you going?",
     "noDestinations": "No destination available yet. Add some from the admin panel.",
+    "universeLabel": "Experience type",
+    "universePlaceholder": "What do you want to experience?",
+    "allUniverses": "All experiences",
+    "coworkingLabel": "Coworking space",
+    "coworkingPlaceholder": "Which space?",
+    "noCoworkings": "No space available yet. Add some from the admin panel.",
     "datesLabel": "Dates",
     "datesPlaceholder": "Pick your dates",
     "travelersLabel": "Travelers",
     "traveler_one": "{{count}} traveler",
     "traveler_other": "{{count}} travelers",
+    "positionsLabel": "Positions",
+    "position_one": "{{count}} position",
+    "position_other": "{{count}} positions",
     "search": "Search",
+    "explore": "Explore",
     "stats": {
       "destinations": "Destinations",
       "coworkings": "Coworking spaces",
@@ -88,5 +98,24 @@
     "spaces": "spaces",
     "perDay": "/day",
     "ecoFriendly": "Eco-friendly"
+  },
+  "activities": {
+    "eyebrow": "To experience on site",
+    "title": "Experiences you can book today",
+    "viewAll": "View all activities",
+    "empty": "No featured activity yet.",
+    "ecoCertified": "Eco-certified",
+    "durationSoon": "Duration coming soon",
+    "priceOnRequest": "On request",
+    "book": "Book →"
+  },
+  "cta": {
+    "badge": "Ready for adventure?",
+    "titleLine1": "Plan your first",
+    "titleLine2": "Amani stay in the Comoros",
+    "description": "Join a growing community of professionals who chose to work differently, in harmony with the planet.",
+    "primaryLabel": "Get started for free",
+    "secondaryLabel": "See a demo",
+    "trustItems": ["Free sign-up", "Flexible cancellation", "24/7 support"]
   }
 }

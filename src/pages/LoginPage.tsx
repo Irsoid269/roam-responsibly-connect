@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Mail, Lock, Eye, EyeOff, ArrowRight } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import { Mail, Lock, Eye, EyeOff, ArrowRight, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,11 +11,14 @@ import { useToast } from "@/hooks/use-toast";
 import amaniSymbol from "@/assets/amani-symbol-gold.jpg";
 
 const LoginPage = () => {
+  const { t } = useTranslation("authPages");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { signIn } = useAuth();
+  const [mode, setMode] = useState<"password" | "magicLink">("password");
+  const [magicLinkSent, setMagicLinkSent] = useState(false);
+  const { signIn, signInWithMagicLink } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -22,18 +26,33 @@ const LoginPage = () => {
     e.preventDefault();
     setLoading(true);
 
+    if (mode === "magicLink") {
+      const { error } = await signInWithMagicLink(email);
+      if (error) {
+        toast({
+          title: t("login.error"),
+          description: error.message,
+          variant: "destructive",
+        });
+      } else {
+        setMagicLinkSent(true);
+      }
+      setLoading(false);
+      return;
+    }
+
     const { error } = await signIn(email, password);
 
     if (error) {
       toast({
-        title: "Erreur de connexion",
+        title: t("login.loginError"),
         description: error.message,
         variant: "destructive",
       });
     } else {
       toast({
-        title: "Bienvenue chez Amani Resorts",
-        description: "Connexion réussie",
+        title: t("login.welcomeTitle"),
+        description: t("login.welcomeDescription"),
       });
       navigate("/");
     }
@@ -61,70 +80,110 @@ const LoginPage = () => {
           </Link>
 
           <h1 className="font-display text-3xl md:text-4xl font-medium text-foreground mb-2">
-            Bon retour
+            {t("login.title")}
           </h1>
           <p className="text-muted-foreground mb-8">
-            Connectez-vous pour accéder à vos réservations et séjours aux Comores.
+            {t("login.subtitle")}
           </p>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="vous@exemple.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="pl-10"
-                  required
-                />
-              </div>
+          {magicLinkSent ? (
+            <div className="rounded-lg border border-border bg-muted/40 p-5 text-center space-y-2">
+              <Sparkles className="w-8 h-8 mx-auto text-accent" />
+              <p className="font-medium text-foreground">{t("login.linkSent")}</p>
+              <p className="text-sm text-muted-foreground">
+                {t("login.linkSentDescription", { email })}
+              </p>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  setMagicLinkSent(false);
+                  setMode("password");
+                }}
+              >
+                {t("login.back")}
+              </Button>
             </div>
+          ) : (
+            <>
+              <form onSubmit={handleSubmit} className="space-y-5">
+                <div className="space-y-2">
+                  <Label htmlFor="email">{t("login.email")}</Label>
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="vous@exemple.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="pl-10"
+                      required
+                    />
+                  </div>
+                </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="password">Mot de passe</Label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-                <Input
-                  id="password"
-                  type={showPassword ? "text" : "password"}
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="pl-10 pr-10"
-                  required
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                >
-                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                </button>
-              </div>
-            </div>
+                {mode === "password" && (
+                  <div className="space-y-2">
+                    <Label htmlFor="password">{t("login.password")}</Label>
+                    <div className="relative">
+                      <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                      <Input
+                        id="password"
+                        type={showPassword ? "text" : "password"}
+                        placeholder="••••••••"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        className="pl-10 pr-10"
+                        required
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                      >
+                        {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                      </button>
+                    </div>
+                  </div>
+                )}
 
-            <div className="flex items-center justify-between">
-              <Link to="/forgot-password" className="text-sm text-accent hover:underline">
-                Mot de passe oublié ?
-              </Link>
-            </div>
+                {mode === "password" && (
+                  <div className="flex items-center justify-between">
+                    <Link to="/forgot-password" className="text-sm text-accent hover:underline">
+                      {t("login.forgotPassword")}
+                    </Link>
+                  </div>
+                )}
 
-            <Button type="submit" className="w-full gap-2" size="lg" disabled={loading}>
-              {loading ? "Connexion…" : "Se connecter"}
-              {!loading && <ArrowRight className="w-4 h-4" />}
-            </Button>
-          </form>
+                <Button type="submit" className="w-full gap-2" size="lg" disabled={loading}>
+                  {loading
+                    ? t("login.loggingIn")
+                    : mode === "magicLink"
+                      ? t("login.sendLink")
+                      : t("login.submit")}
+                  {!loading && <ArrowRight className="w-4 h-4" />}
+                </Button>
+              </form>
 
-          <p className="text-center text-muted-foreground mt-6">
-            Pas encore de compte ?{" "}
-            <Link to="/signup" className="text-primary font-medium hover:underline">
-              Créer un compte
-            </Link>
-          </p>
+              <button
+                type="button"
+                onClick={() => setMode(mode === "password" ? "magicLink" : "password")}
+                className="w-full text-center text-sm text-muted-foreground hover:text-foreground mt-4 underline underline-offset-2"
+              >
+                {mode === "password"
+                  ? t("login.useMagicLink")
+                  : t("login.usePassword")}
+              </button>
+
+              <p className="text-center text-muted-foreground mt-6">
+                {t("login.noAccount")}{" "}
+                <Link to="/signup" className="text-primary font-medium hover:underline">
+                  {t("login.createAccount")}
+                </Link>
+              </p>
+            </>
+          )}
         </motion.div>
       </div>
 
@@ -143,11 +202,10 @@ const LoginPage = () => {
                 className="w-20 h-20 mx-auto mb-6 rounded-full object-cover ring-2 ring-accent/50"
               />
               <h2 className="font-display text-3xl font-medium mb-4">
-                Éco-luxe aux Comores
+                {t("login.sideTitle")}
               </h2>
               <p className="text-lg text-primary-foreground/85 max-w-md mx-auto">
-                Séjours, coworking et mobilité douce face à l&apos;océan Indien —
-                mesurés, responsables, Amani.
+                {t("login.sideDescription")}
               </p>
             </motion.div>
           </div>

@@ -178,6 +178,16 @@ const AdminModeration = () => {
                             {r.comment}
                           </p>
                         )}
+                        {r.evidence_url && (
+                          <a
+                            href={r.evidence_url}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-xs text-primary underline underline-offset-2 mt-1 inline-block"
+                          >
+                            Voir la preuve jointe
+                          </a>
+                        )}
                       </TableCell>
                       <TableCell>
                         <Badge variant="outline" className={statusColors[r.status]}>

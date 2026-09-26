@@ -1,0 +1,24 @@
+{
+  "eyebrow": "Verified spaces",
+  "title": "Coworking spaces",
+  "description": "Find the ideal workspace for your stay, with fast WiFi and minimal carbon impact.",
+  "searchPlaceholder": "Search for a space...",
+  "resultsFound": "spaces found",
+  "sortBy": "Sort by",
+  "sort": {
+    "popular": "Popular",
+    "priceLow": "Price: low to high",
+    "priceHigh": "Price: high to low",
+    "wifi": "WiFi speed"
+  },
+  "perDay": "/day",
+  "book": "Book",
+  "empty": {
+    "title": "No spaces available",
+    "description": "Coworking spaces will be added soon"
+  },
+  "noResults": {
+    "title": "No space found",
+    "description": "Try another search"
+  }
+}

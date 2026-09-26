@@ -1,0 +1,11 @@
+{
+  "eyebrow": "Événements à venir",
+  "title": "Événements",
+  "description": "Rencontrez la communauté, participez à nos ateliers et retraites pour enrichir votre séjour Amani aux Comores.",
+  "loadError": "Impossible de charger les événements. Appliquez la migration",
+  "upcoming": "Prochains événements",
+  "noUpcoming": "Aucun événement à venir pour le moment.",
+  "past": "Événements passés",
+  "registered": "inscrits",
+  "participants": "participants"
+}

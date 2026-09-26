@@ -1,0 +1,71 @@
+{
+  "eyebrow": "Rejoignez notre réseau",
+  "title": "Devenir partenaire",
+  "description": "Rejoignez une communauté de voyageurs responsables et développez votre activité tout en contribuant à un tourisme plus durable.",
+  "stats": {
+    "travelers": "Voyageurs",
+    "destinations": "Destinations",
+    "coworkings": "Coworkings",
+    "ecoValue": "Éco",
+    "ecoLabel": "Engagement"
+  },
+  "typesTitle": "Types de partenariats",
+  "typesDescription": "Quel que soit votre secteur, nous avons une solution adaptée à vos besoins.",
+  "types": [
+    {
+      "title": "Hébergements",
+      "description": "Hôtels, éco-lodges, coliving, appartements",
+      "benefits": ["Visibilité auprès de voyageurs responsables", "Badge éco-responsable vérifié", "Revenus récurrents"]
+    },
+    {
+      "title": "Espaces de coworking",
+      "description": "Coworkings, cafés travail, hubs créatifs",
+      "benefits": ["Accès à une communauté internationale", "Réservations garanties", "Marketing inclus"]
+    },
+    {
+      "title": "Activités & Expériences",
+      "description": "Tours, ateliers, sports, culture",
+      "benefits": ["Certification éco-tourisme", "Plateforme de réservation", "Avis voyageurs"]
+    }
+  ],
+  "requirementsTitle": "Nos critères de sélection",
+  "requirementsDescription": "Pour garantir une expérience de qualité à notre communauté, nous sélectionnons nos partenaires selon des critères stricts de durabilité.",
+  "requirements": [
+    "Engagement environnemental démontrable",
+    "Certification ou label écologique (recommandé)",
+    "Politique de réduction des déchets",
+    "Utilisation d'énergies renouvelables",
+    "Soutien aux communautés locales",
+    "Transparence sur les pratiques"
+  ],
+  "form": {
+    "title": "Postuler maintenant",
+    "subtitle": "Remplissez ce formulaire et nous vous recontacterons sous 48h.",
+    "firstName": "Prénom",
+    "lastName": "Nom",
+    "email": "Email professionnel",
+    "companyName": "Nom de l'établissement",
+    "website": "Site web",
+    "partnerType": "Type de partenariat",
+    "types": {
+      "accommodation": "Hébergement",
+      "coworking": "Espace de coworking",
+      "activity": "Activité / Expérience",
+      "mobility": "Service de mobilité",
+      "other": "Autre"
+    },
+    "message": "Message",
+    "messagePlaceholder": "Présentez votre établissement et vos engagements environnementaux…",
+    "submit": "Envoyer ma candidature"
+  },
+  "toasts": {
+    "fillRequired": "Remplissez les champs obligatoires",
+    "success": "Candidature envoyée — réponse sous 48h",
+    "error": "Envoi impossible — appliquez la migration partner_applications"
+  },
+  "testimonial": {
+    "quote": "\"Rejoindre Amani Resorts a transformé notre activité. Nous avons vu une augmentation de 40% de nos réservations, avec des clients vraiment alignés avec nos valeurs.\"",
+    "author": "Maria Santos",
+    "role": "Fondatrice, Eco Hub Moroni"
+  }
+}

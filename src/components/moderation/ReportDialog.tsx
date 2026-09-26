@@ -24,6 +24,7 @@ import {
   type ReportReason,
   type ReportTargetType,
 } from "@/hooks/useCatalogQueries";
+import ImageUpload from "@/components/admin/ImageUpload";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
@@ -41,6 +42,7 @@ const ReportDialog = ({ targetType, targetId, compact, className }: ReportButton
   const [open, setOpen] = useState(false);
   const [reason, setReason] = useState<ReportReason | "">("");
   const [comment, setComment] = useState("");
+  const [evidenceUrl, setEvidenceUrl] = useState<string | null>(null);
   const createReport = useCreateReport();
 
   const reasonLabels: Record<ReportReason, string> = {
@@ -69,11 +71,13 @@ const ReportDialog = ({ targetType, targetId, compact, className }: ReportButton
         targetId,
         reason,
         comment: comment.trim() || undefined,
+        evidenceUrl,
       });
       toast.success(t("report.success"));
       setOpen(false);
       setReason("");
       setComment("");
+      setEvidenceUrl(null);
     } catch (e) {
       const message = e instanceof Error ? e.message : "";
       if (message.includes("duplicate key") || message.includes("reports_reporter_user_id")) {
@@ -125,6 +129,10 @@ const ReportDialog = ({ targetType, targetId, compact, className }: ReportButton
               rows={3}
               maxLength={500}
             />
+            <div className="space-y-1.5">
+              <p className="text-xs text-muted-foreground">{t("report.evidenceLabel")}</p>
+              <ImageUpload value={evidenceUrl} onChange={setEvidenceUrl} folder="reports" />
+            </div>
           </div>
           <DialogFooter>
             <Button variant="ghost" onClick={() => setOpen(false)}>

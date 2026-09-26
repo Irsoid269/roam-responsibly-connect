@@ -1,0 +1,45 @@
+{
+  "hero": {
+    "eyebrow": "Notre engagement",
+    "titleLine1": "Notre impact",
+    "titleLine2": "environnemental",
+    "description": "Ensemble, nous construisons un tourisme plus responsable. Découvrez comment votre communauté contribue à un avenir durable.",
+    "calculate": "Calculer mon impact",
+    "learnMore": "En savoir plus"
+  },
+  "stats": [
+    { "label": "CO₂ compensé" },
+    { "label": "Voyageurs engagés" },
+    { "label": "Projets soutenus" },
+    { "label": "Arbres plantés" }
+  ],
+  "breakdown": {
+    "title": "Comprendre les émissions du voyage",
+    "description": "Voici comment se répartissent en moyenne les émissions carbone d'un séjour Amani Resorts.",
+    "cardTitle": "Répartition des émissions"
+  },
+  "emissions": ["Transport aérien", "Hébergement", "Mobilité locale", "Activités"],
+  "reduce": {
+    "title": "Comment réduire ?",
+    "tips": [
+      { "strong": "Privilégiez le train", "rest": "pour les trajets < 1000km - jusqu'à 90% d'émissions en moins" },
+      { "strong": "Restez plus longtemps", "rest": "- un séjour de 3 mois émet 3x moins qu'un aller-retour mensuel" },
+      { "strong": "Choisissez des hébergements éco-certifiés", "rest": "avec énergie renouvelable" },
+      { "strong": "Mobilité douce sur place", "rest": "- vélo, marche, transports en commun" }
+    ]
+  },
+  "projectsTitle": "Projets de compensation",
+  "projectsDescription": "Vos contributions financent des projets environnementaux certifiés à travers le monde.",
+  "projects": [
+    { "name": "Reforestation Amazonie", "location": "Brésil", "target": "10,000 arbres" },
+    { "name": "Protection Mangroves", "location": "Indonésie", "target": "500 hectares" },
+    { "name": "Énergie Solaire Villages", "location": "Kenya", "target": "25 villages" }
+  ],
+  "goal": "Objectif",
+  "viewPartners": "Voir tous nos partenaires",
+  "cta": {
+    "title": "Calculez votre empreinte",
+    "description": "Estimez l'impact de votre prochain voyage et découvrez comment le réduire.",
+    "button": "Accéder au calculateur"
+  }
+}

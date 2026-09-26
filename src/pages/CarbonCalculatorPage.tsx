@@ -1,10 +1,12 @@
 import CarbonCalculator from "@/components/carbon/CarbonCalculator";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { Leaf, Loader2 } from "lucide-react";
 import { useCmsHero, useCmsStats, useCmsInfoCards } from "@/hooks/useCmsContent";
 import { cmsIcon } from "@/lib/cms-icons";
 
 const CarbonCalculatorPage = () => {
+  const { t } = useTranslation("carbonCalculator");
   const { data: hero, isLoading: hLoad } = useCmsHero("carbon");
   const { data: stats = [], isLoading: sLoad } = useCmsStats("carbon");
   const { data: cards = [], isLoading: cLoad } = useCmsInfoCards("carbon");
@@ -28,14 +30,14 @@ const CarbonCalculatorPage = () => {
                 {(hero?.badge_text || true) && (
                   <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-carbon-foreground/10 text-sm font-medium mb-6">
                     <Leaf className="w-4 h-4" />
-                    {hero?.badge_text || "Impact environnemental"}
+                    {hero?.badge_text || t("hero.badge")}
                   </div>
                 )}
                 <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-medium mb-6">
-                  {hero?.title || "Calculez votre"}
+                  {hero?.title || t("hero.titleLine1")}
                   <br />
                   <span className="text-carbon-saved">
-                    {hero?.title_highlight || "empreinte carbone"}
+                    {hero?.title_highlight || t("hero.titleHighlight")}
                   </span>
                 </h1>
                 {hero?.description && (

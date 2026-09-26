@@ -1,9 +1,19 @@
 {
   "nav": {
     "destinations": "Destinations",
+    "activities": "Activities",
     "coworkings": "Coworking spaces",
     "community": "Community",
     "impact": "Our Impact"
+  },
+  "imageUpload": {
+    "clickToAdd": "Click to add an image",
+    "change": "Change image",
+    "uploading": "Uploading...",
+    "selectImage": "Please select an image",
+    "maxSize": "The image must not exceed 5 MB",
+    "success": "Image uploaded successfully",
+    "error": "Error uploading the image"
   },
   "auth": {
     "login": "Log in",
@@ -76,6 +86,7 @@
       "autre": "Other"
     },
     "detailsPlaceholder": "Details (optional)",
+    "evidenceLabel": "Screenshot or evidence (optional)",
     "cancel": "Cancel"
   }
 }

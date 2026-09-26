@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Download, Loader2 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -12,6 +13,7 @@ import {
 import { cmsIcon } from "@/lib/cms-icons";
 
 const ImpactReportPage = () => {
+  const { t, i18n } = useTranslation("impactReport");
   const { data: hero, isLoading: hLoad } = useCmsHero("impact_report");
   const { data: metrics = [], isLoading: mLoad } = useCmsStats("impact_report");
   const { data: breakdown = [], isLoading: bLoad } = useImpactBreakdown();
@@ -35,7 +37,7 @@ const ImpactReportPage = () => {
               </p>
             )}
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
-              {hero?.title || "Rapport d'Impact"}
+              {hero?.title || t("defaultTitle")}
             </h1>
             {hero?.description && (
               <p className="text-lg text-primary-foreground/80 mb-8">{hero.description}</p>
@@ -85,7 +87,7 @@ const ImpactReportPage = () => {
                             <p className="text-sm text-muted-foreground">{metric.label}</p>
                             {metric.change_label && (
                               <p className="text-xs text-success mt-1">
-                                {metric.change_label} vs année précédente
+                                {metric.change_label} {t("vsLastYear")}
                               </p>
                             )}
                           </CardContent>
@@ -101,7 +103,7 @@ const ImpactReportPage = () => {
           {breakdown.length > 0 && (
             <section className="py-12">
               <div className="container mx-auto px-4 max-w-2xl">
-                <h2 className="text-2xl font-bold mb-6">Répartition carbone</h2>
+                <h2 className="text-2xl font-bold mb-6">{t("carbonBreakdown")}</h2>
                 <div className="space-y-4">
                   {breakdown.map((row) => (
                     <div key={row.id}>
@@ -122,7 +124,7 @@ const ImpactReportPage = () => {
           {quarters.length > 0 && (
             <section className="py-12 bg-muted/30">
               <div className="container mx-auto px-4">
-                <h2 className="text-2xl font-bold mb-6">Données trimestrielles</h2>
+                <h2 className="text-2xl font-bold mb-6">{t("quarterlyData")}</h2>
                 <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
                   {quarters.map((q) => (
                     <Card key={q.id}>
@@ -132,7 +134,7 @@ const ImpactReportPage = () => {
                       <CardContent className="text-sm space-y-1 text-muted-foreground">
                         <p>
                           <span className="text-foreground font-medium">{q.travelers}</span>{" "}
-                          voyageurs
+                          {t("travelers")}
                         </p>
                         <p>
                           <span className="text-foreground font-medium">{q.carbon}</span> kg
@@ -140,9 +142,9 @@ const ImpactReportPage = () => {
                         </p>
                         <p>
                           <span className="text-foreground font-medium">
-                            {q.revenue.toLocaleString("fr-FR")}€
+                            {q.revenue.toLocaleString(i18n.language === "en" ? "en-US" : "fr-FR")}€
                           </span>{" "}
-                          revenus
+                          {t("revenue")}
                         </p>
                       </CardContent>
                     </Card>

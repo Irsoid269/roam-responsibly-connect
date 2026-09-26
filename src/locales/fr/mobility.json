@@ -1,0 +1,27 @@
+{
+  "eyebrow": "Mobilité durable",
+  "title": "Mobilité douce",
+  "description": "Déplacez-vous de manière écologique avec nos options de mobilité à faible impact carbone.",
+  "searchPlaceholder": "Rechercher...",
+  "all": "Tous",
+  "types": {
+    "bicycle": "Vélo",
+    "electricBike": "Vélo électrique",
+    "electricScooter": "Trottinette électrique",
+    "publicTransport": "Transport en commun",
+    "walkingTour": "Balade guidée"
+  },
+  "carbon": {
+    "zero": "Zéro émission",
+    "veryLow": "Très faible",
+    "low": "Faible",
+    "moderate": "Modéré"
+  },
+  "perDay": "/jour",
+  "onRequest": "Sur devis",
+  "book": "Réserver",
+  "noResults": {
+    "title": "Aucune option trouvée",
+    "description": "Essayez une autre recherche"
+  }
+}

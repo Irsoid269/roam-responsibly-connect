@@ -1,0 +1,19 @@
+{
+  "eyebrow": "Eco-responsible accommodation",
+  "title": "Accommodation",
+  "description": "Stay in accommodation selected for its comfort and low environmental impact.",
+  "searchPlaceholder": "Search for accommodation...",
+  "type": "Type",
+  "allTypes": "All types",
+  "ecoLodge": "Eco-lodge",
+  "villa": "Villa",
+  "coliving": "Coliving",
+  "accommodationsFound": "accommodations found",
+  "fromCenter": "from the center",
+  "perNight": "/night",
+  "book": "Book",
+  "noResults": {
+    "title": "No accommodation found",
+    "description": "Try another search"
+  }
+}

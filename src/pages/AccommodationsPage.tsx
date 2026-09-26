@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { Search, Star, MapPin, Bed, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,6 +22,7 @@ import {
 } from "@/lib/search-booking-params";
 
 const AccommodationsPage = () => {
+  const { t } = useTranslation("accommodations");
   const [searchParams] = useSearchParams();
   const bookingParams = parseBookingSearchParams(searchParams);
   const destinationId = bookingParams.destination;
@@ -46,20 +48,20 @@ const AccommodationsPage = () => {
             >
               <Badge variant="outline" className="mb-4 bg-secondary/10 border-secondary/20">
                 <Bed className="w-3 h-3 mr-1" />
-                Hébergements éco-responsables
+                {t("eyebrow")}
               </Badge>
               <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
-                Hébergements
+                {t("title")}
               </h1>
               <p className="text-lg text-muted-foreground mb-8">
-                Séjournez dans des hébergements sélectionnés pour leur confort et leur faible impact environnemental.
+                {t("description")}
               </p>
 
               <div className="flex flex-col sm:flex-row gap-3 max-w-2xl mx-auto">
                 <div className="relative flex-1">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                   <Input
-                    placeholder="Rechercher un hébergement..."
+                    placeholder={t("searchPlaceholder")}
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="pl-10 h-12"
@@ -67,13 +69,13 @@ const AccommodationsPage = () => {
                 </div>
                 <Select value={typeFilter} onValueChange={setTypeFilter}>
                   <SelectTrigger className="w-full sm:w-[180px] h-12">
-                    <SelectValue placeholder="Type" />
+                    <SelectValue placeholder={t("type")} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">Tous les types</SelectItem>
-                    <SelectItem value="éco-lodge">Éco-lodge</SelectItem>
-                    <SelectItem value="villa">Villa</SelectItem>
-                    <SelectItem value="coliving">Coliving</SelectItem>
+                    <SelectItem value="all">{t("allTypes")}</SelectItem>
+                    <SelectItem value="éco-lodge">{t("ecoLodge")}</SelectItem>
+                    <SelectItem value="villa">{t("villa")}</SelectItem>
+                    <SelectItem value="coliving">{t("coliving")}</SelectItem>
                     <SelectItem value="b&b">B&B</SelectItem>
                   </SelectContent>
                 </Select>
@@ -93,7 +95,7 @@ const AccommodationsPage = () => {
               <>
             <div className="flex justify-between items-center mb-6">
               <p className="text-muted-foreground">
-                <span className="font-medium text-foreground">{filteredAccommodations.length}</span> hébergements trouvés
+                <span className="font-medium text-foreground">{filteredAccommodations.length}</span> {t("accommodationsFound")}
               </p>
             </div>
 
@@ -141,7 +143,7 @@ const AccommodationsPage = () => {
                           {accommodation.distance_to_center && (
                             <p className="text-sm text-muted-foreground flex items-center gap-1">
                               <MapPin className="w-3 h-3" />
-                              {accommodation.distance_to_center} du centre
+                              {accommodation.distance_to_center} {t("fromCenter")}
                             </p>
                           )}
                         </div>
@@ -166,10 +168,10 @@ const AccommodationsPage = () => {
                           <span className="text-lg font-bold text-foreground">
                             {accommodation.price_per_night}€
                           </span>
-                          <span className="text-sm text-muted-foreground">/nuit</span>
+                          <span className="text-sm text-muted-foreground">{t("perNight")}</span>
                         </div>
                         <Button size="sm" asChild>
-                          <Link to={bookTo}>Réserver</Link>
+                          <Link to={bookTo}>{t("book")}</Link>
                         </Button>
                       </div>
                     </CardContent>
@@ -182,8 +184,8 @@ const AccommodationsPage = () => {
             {filteredAccommodations.length === 0 && (
               <div className="text-center py-16">
                 <Bed className="w-12 h-12 mx-auto mb-4 text-muted-foreground opacity-50" />
-                <h3 className="text-lg font-medium text-foreground">Aucun hébergement trouvé</h3>
-                <p className="text-muted-foreground mt-1">Essayez une autre recherche</p>
+                <h3 className="text-lg font-medium text-foreground">{t("noResults.title")}</h3>
+                <p className="text-muted-foreground mt-1">{t("noResults.description")}</p>
               </div>
             )}
               </>

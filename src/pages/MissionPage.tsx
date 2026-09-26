@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Loader2 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -12,6 +13,7 @@ import {
 import { cmsIcon } from "@/lib/cms-icons";
 
 const MissionPage = () => {
+  const { t } = useTranslation("mission");
   const { data: hero, isLoading: hLoad } = useCmsHero("mission");
   const { data: values = [], isLoading: vLoad } = useMissionValues();
   const { data: milestones = [], isLoading: mLoad } = useMissionMilestones();
@@ -36,7 +38,7 @@ const MissionPage = () => {
             className="text-center max-w-3xl mx-auto"
           >
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-              {hero?.title || "Notre mission"}
+              {hero?.title || t("defaultTitle")}
               {hero?.title_highlight && (
                 <>
                   <br />
@@ -61,7 +63,7 @@ const MissionPage = () => {
       {values.length > 0 && (
         <section className="py-16">
           <div className="container mx-auto px-4">
-            <h2 className="text-3xl font-bold text-center mb-12">Nos valeurs</h2>
+            <h2 className="text-3xl font-bold text-center mb-12">{t("values")}</h2>
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
               {values.map((v, i) => {
                 const Icon = cmsIcon(v.icon_key);
@@ -93,7 +95,7 @@ const MissionPage = () => {
       {milestones.length > 0 && (
         <section className="py-16 bg-muted/30">
           <div className="container mx-auto px-4 max-w-3xl">
-            <h2 className="text-3xl font-bold text-center mb-12">Notre parcours</h2>
+            <h2 className="text-3xl font-bold text-center mb-12">{t("journey")}</h2>
             <div className="space-y-6">
               {milestones.map((m) => (
                 <div key={m.id} className="flex gap-4">
@@ -112,7 +114,7 @@ const MissionPage = () => {
       {team.length > 0 && (
         <section className="py-16">
           <div className="container mx-auto px-4">
-            <h2 className="text-3xl font-bold text-center mb-12">L&apos;équipe</h2>
+            <h2 className="text-3xl font-bold text-center mb-12">{t("team")}</h2>
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {team.map((member) => (
                 <Card key={member.id}>

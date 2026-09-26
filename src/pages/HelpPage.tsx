@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { Search, HelpCircle, BookOpen, MessageCircle, Mail, Phone, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,46 +13,21 @@ import {
 } from "@/components/ui/accordion";
 import { Link } from "react-router-dom";
 
-const categories = [
-  { icon: BookOpen, title: "Réservations", description: "Gérer vos réservations et paiements", count: 12 },
-  { icon: HelpCircle, title: "Compte", description: "Paramètres et profil utilisateur", count: 8 },
-  { icon: MessageCircle, title: "Communauté", description: "Forum, événements et networking", count: 6 },
-];
-
-const popularArticles = [
-  { title: "Comment annuler ma réservation ?", category: "Réservations" },
-  { title: "Comprendre le calcul carbone", category: "Impact" },
-  { title: "Modifier mes informations personnelles", category: "Compte" },
-  { title: "Rejoindre la communauté", category: "Communauté" },
-  { title: "Devenir ambassadeur", category: "Ambassadeurs" },
-  { title: "Obtenir un reçu fiscal", category: "Paiements" },
-];
-
-const faqs = [
-  {
-    question: "Comment fonctionne la compensation carbone ?",
-    answer: "Lorsque vous réservez un séjour, nous calculons automatiquement l'empreinte carbone associée (transport, hébergement, activités). Vous pouvez ensuite choisir de compenser tout ou partie de ces émissions en finançant des projets environnementaux certifiés.",
-  },
-  {
-    question: "Puis-je annuler ma réservation ?",
-    answer: "Oui, vous pouvez annuler votre réservation depuis votre espace personnel. Les conditions d'annulation varient selon les partenaires. Consultez les conditions spécifiques lors de votre réservation pour connaître les délais et éventuels frais.",
-  },
-  {
-    question: "Comment contacter un espace de coworking directement ?",
-    answer: "Une fois votre réservation confirmée, vous recevez les coordonnées complètes de l'établissement par email. Vous pouvez également les retrouver dans votre espace personnel, section 'Mes réservations'.",
-  },
-  {
-    question: "Les dons sont-ils déductibles des impôts ?",
-    answer: "Oui, les contributions aux projets de compensation carbone donnent droit à une réduction d'impôt. Vous recevez automatiquement un reçu fiscal par email après chaque don. Le taux de déduction dépend de votre pays de résidence.",
-  },
-  {
-    question: "Comment devenir partenaire ?",
-    answer: "Si vous gérez un hébergement éco-responsable, un espace de coworking ou une activité durable, vous pouvez postuler depuis notre page 'Devenir partenaire'. Notre équipe examine chaque candidature selon nos critères de durabilité.",
-  },
-];
+type HelpFaqItem = { question: string; answer: string };
+type PopularArticle = { title: string; category: string };
 
 const HelpPage = () => {
+  const { t } = useTranslation("help");
   const [searchQuery, setSearchQuery] = useState("");
+
+  const categories = [
+    { icon: BookOpen, title: t("categories.bookings.title"), description: t("categories.bookings.description"), count: 12 },
+    { icon: HelpCircle, title: t("categories.account.title"), description: t("categories.account.description"), count: 8 },
+    { icon: MessageCircle, title: t("categories.community.title"), description: t("categories.community.description"), count: 6 },
+  ];
+
+  const popularArticles = t("popularArticles", { returnObjects: true }) as PopularArticle[];
+  const faqs = t("faqs", { returnObjects: true }) as HelpFaqItem[];
 
   return (
     <main className="page-main">
@@ -64,16 +40,16 @@ const HelpPage = () => {
               className="text-center max-w-2xl mx-auto"
             >
               <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
-                Centre d'aide
+                {t("title")}
               </h1>
               <p className="text-lg text-muted-foreground mb-8">
-                Comment pouvons-nous vous aider ?
+                {t("subtitle")}
               </p>
-              
+
               <div className="relative max-w-xl mx-auto">
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                 <Input
-                  placeholder="Rechercher dans l'aide..."
+                  placeholder={t("searchPlaceholder")}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="pl-12 h-14 text-lg"
@@ -99,7 +75,7 @@ const HelpPage = () => {
                       <category.icon className="w-10 h-10 text-primary mb-4" />
                       <h3 className="font-semibold text-foreground mb-1">{category.title}</h3>
                       <p className="text-sm text-muted-foreground mb-2">{category.description}</p>
-                      <p className="text-xs text-primary">{category.count} articles</p>
+                      <p className="text-xs text-primary">{t("articlesCount", { count: category.count })}</p>
                     </CardContent>
                   </Card>
                 </motion.div>
@@ -112,7 +88,7 @@ const HelpPage = () => {
         <section className="py-12 bg-muted/30">
           <div className="container mx-auto px-4">
             <h2 className="text-2xl font-bold text-foreground mb-8 text-center">
-              Articles populaires
+              {t("popularArticlesTitle")}
             </h2>
             <div className="grid md:grid-cols-2 gap-4 max-w-3xl mx-auto">
               {popularArticles.map((article, index) => (
@@ -141,7 +117,7 @@ const HelpPage = () => {
         <section className="py-12">
           <div className="container mx-auto px-4">
             <h2 className="text-2xl font-bold text-foreground mb-8 text-center">
-              Questions fréquentes
+              {t("faqTitle")}
             </h2>
             <div className="max-w-3xl mx-auto">
               <Accordion type="single" collapsible className="space-y-4">
@@ -160,7 +136,7 @@ const HelpPage = () => {
             <div className="text-center mt-8">
               <Link to="/faq">
                 <Button variant="outline">
-                  Voir toutes les FAQ
+                  {t("viewAllFaq")}
                 </Button>
               </Link>
             </div>
@@ -177,31 +153,31 @@ const HelpPage = () => {
               className="text-center max-w-2xl mx-auto"
             >
               <h2 className="text-2xl font-bold text-foreground mb-4">
-                Besoin d'aide supplémentaire ?
+                {t("contact.title")}
               </h2>
               <p className="text-muted-foreground mb-8">
-                Notre équipe support est disponible pour répondre à toutes vos questions.
+                {t("contact.subtitle")}
               </p>
-              
+
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Card className="flex-1 max-w-xs">
                   <CardContent className="pt-6 text-center">
                     <Mail className="w-8 h-8 mx-auto mb-3 text-primary" />
-                    <h3 className="font-semibold mb-1">Email</h3>
-                    <p className="text-sm text-muted-foreground mb-3">Réponse sous 24h</p>
+                    <h3 className="font-semibold mb-1">{t("contact.emailTitle")}</h3>
+                    <p className="text-sm text-muted-foreground mb-3">{t("contact.emailResponse")}</p>
                     <a href="mailto:support@amaniresorts.com" className="text-primary hover:underline">
                       support@amaniresorts.com
                     </a>
                   </CardContent>
                 </Card>
-                
+
                 <Card className="flex-1 max-w-xs">
                   <CardContent className="pt-6 text-center">
                     <MessageCircle className="w-8 h-8 mx-auto mb-3 text-primary" />
-                    <h3 className="font-semibold mb-1">Chat</h3>
-                    <p className="text-sm text-muted-foreground mb-3">Lun-Ven, 9h-18h</p>
+                    <h3 className="font-semibold mb-1">{t("contact.chatTitle")}</h3>
+                    <p className="text-sm text-muted-foreground mb-3">{t("contact.chatHours")}</p>
                     <Button size="sm">
-                      Démarrer un chat
+                      {t("contact.startChat")}
                     </Button>
                   </CardContent>
                 </Card>

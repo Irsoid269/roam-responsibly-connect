@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { formatDistanceToNow } from "date-fns";
 import { fr } from "date-fns/locale";
-import { Star, Loader2, PenLine, MapPin } from "lucide-react";
+import { Star, Loader2, PenLine, MapPin, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -147,9 +147,21 @@ const ReviewsPage = () => {
                     <CardContent className="p-5">
                       <div className="flex flex-wrap items-start justify-between gap-3 mb-3">
                         <div>
-                          <Badge variant="secondary" className="mb-2">
-                            {typeLabels[review.target_type] || review.target_type}
-                          </Badge>
+                          <div className="flex items-center gap-1.5 mb-2">
+                            <Badge variant="secondary">
+                              {typeLabels[review.target_type] || review.target_type}
+                            </Badge>
+                            {review.verified && (
+                              <Badge
+                                variant="outline"
+                                className="bg-success/10 text-success border-success/30 gap-1"
+                                title={t("verifiedTooltip")}
+                              >
+                                <ShieldCheck className="w-3 h-3" />
+                                {t("verified")}
+                              </Badge>
+                            )}
+                          </div>
                           <p className="font-medium flex items-center gap-1.5">
                             <MapPin className="w-4 h-4 text-accent" />
                             {review.target_type === "destination"

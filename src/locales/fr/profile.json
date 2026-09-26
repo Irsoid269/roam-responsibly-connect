@@ -1,0 +1,72 @@
+{
+  "defaultName": "Voyageur Amani",
+  "guestFallback": "Voyageur",
+  "logout": "Déconnexion",
+  "stats": {
+    "carbonSaved": "CO₂ compensé",
+    "trips": "Séjours",
+    "preference": "Préférence",
+    "reservations": "Réservations"
+  },
+  "tabs": {
+    "trips": "Mes voyages",
+    "carbon": "Impact carbone",
+    "privacy": "Confidentialité"
+  },
+  "reservations": {
+    "title": "Mes réservations",
+    "empty": "Aucune réservation",
+    "emptySubtitle": "Explorez nos destinations pour planifier votre prochain séjour Amani !",
+    "exploreDestinations": "Explorer les destinations",
+    "reference": "Réf. AMN-{{ref}}",
+    "cancel": "Annuler",
+    "invoice": "Facture",
+    "status": {
+      "pending": "En attente",
+      "confirmed": "Confirmée",
+      "cancelled": "Annulée"
+    }
+  },
+  "carbon": {
+    "title": "Votre impact Amani",
+    "totalOffset": "Total compensé :",
+    "newEstimate": "Calculer une nouvelle estimation"
+  },
+  "privacy": {
+    "title": "Vos données personnelles",
+    "exportTitle": "Exporter mes données",
+    "exportDescription": "Téléchargez un fichier JSON de votre profil, réservations, avis, récits, dons et participations.",
+    "export": "Exporter",
+    "deleteTitle": "Supprimer mon compte",
+    "deleteDescription": "Suppression définitive de votre compte et de vos réservations. Vos factures et paiements sont conservés de façon anonymisée, comme l'exige la réglementation comptable.",
+    "delete": "Supprimer"
+  },
+  "push": {
+    "title": "Notifications push",
+    "receiveTitle": "Recevoir des notifications",
+    "receiveDescription": "Soyez alerté(e) des mises à jour de vos réservations directement sur cet appareil.",
+    "notConfigured": "Les notifications push ne sont pas encore configurées sur cette application.",
+    "notSupported": "Votre navigateur ne prend pas en charge les notifications push."
+  },
+  "deleteDialog": {
+    "title": "Supprimer définitivement votre compte ?",
+    "description": "Cette action est irréversible. Votre profil et vos réservations seront supprimés. Vos factures et paiements resteront conservés, mais dissociés de votre identité.",
+    "cancel": "Annuler",
+    "confirm": "Supprimer définitivement"
+  },
+  "toasts": {
+    "cancelSuccess": "Réservation annulée. Si un paiement était associé, notre équipe traitera le remboursement manuellement en attendant l'intégration Stripe complète.",
+    "cancelError": "Annulation impossible",
+    "exportSuccess": "Vos données ont été téléchargées",
+    "exportError": "Export impossible",
+    "deleteSuccess": "Votre compte a été supprimé",
+    "deleteError": "Suppression impossible",
+    "pushDenied": "Abonnement refusé ou indisponible",
+    "pushEnabled": "Notifications push activées",
+    "pushDisabled": "Notifications push désactivées",
+    "actionError": "Action impossible",
+    "invoiceOpened": "Facture ouverte — Imprimer ou enregistrer en PDF",
+    "invoiceDownloaded": "Facture téléchargée sur votre appareil",
+    "invoiceError": "Impossible de générer la facture"
+  }
+}

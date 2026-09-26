@@ -4,7 +4,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useEvents } from "@/hooks/useCatalogQueries";
 import { format, isPast } from "date-fns";
-import { fr } from "date-fns/locale";
+import { fr, enUS } from "date-fns/locale";
+import { useTranslation } from "react-i18next";
 
 const typeColors: Record<string, string> = {
   "En personne": "bg-primary text-primary-foreground",
@@ -14,6 +15,8 @@ const typeColors: Record<string, string> = {
 };
 
 const EventsPage = () => {
+  const { t, i18n } = useTranslation("events");
+  const dateLocale = i18n.language === "en" ? enUS : fr;
   const { data: events = [], isLoading, isError } = useEvents();
 
   const upcoming = events.filter((e) => !isPast(new Date(e.starts_at)));
@@ -30,14 +33,13 @@ const EventsPage = () => {
           >
             <Badge variant="outline" className="mb-4 bg-accent/10 border-accent/20">
               <Calendar className="w-3 h-3 mr-1" />
-              Événements à venir
+              {t("eyebrow")}
             </Badge>
             <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
-              Événements
+              {t("title")}
             </h1>
             <p className="text-lg text-muted-foreground">
-              Rencontrez la communauté, participez à nos ateliers et retraites pour
-              enrichir votre séjour Amani aux Comores.
+              {t("description")}
             </p>
           </motion.div>
         </div>
@@ -49,7 +51,7 @@ const EventsPage = () => {
         </div>
       ) : isError ? (
         <div className="text-center py-24 text-muted-foreground">
-          Impossible de charger les événements. Appliquez la migration{" "}
+          {t("loadError")}{" "}
           <code className="text-sm">blog_events_cms</code>.
         </div>
       ) : (
@@ -57,11 +59,11 @@ const EventsPage = () => {
           <section className="py-12">
             <div className="container mx-auto px-4">
               <h2 className="text-2xl font-bold text-foreground mb-8">
-                Prochains événements
+                {t("upcoming")}
               </h2>
               {upcoming.length === 0 ? (
                 <p className="text-muted-foreground text-center py-12">
-                  Aucun événement à venir pour le moment.
+                  {t("noUpcoming")}
                 </p>
               ) : (
                 <div className="grid md:grid-cols-2 gap-6">
@@ -102,13 +104,13 @@ const EventsPage = () => {
                             <span className="flex items-center gap-1">
                               <Calendar className="w-4 h-4" />
                               {format(new Date(event.starts_at), "d MMMM yyyy", {
-                                locale: fr,
+                                locale: dateLocale,
                               })}
                             </span>
                             <span className="flex items-center gap-1">
                               <Clock className="w-4 h-4" />
                               {format(new Date(event.starts_at), "HH:mm", {
-                                locale: fr,
+                                locale: dateLocale,
                               })}
                             </span>
                             {event.location && (
@@ -119,7 +121,7 @@ const EventsPage = () => {
                             )}
                             <span className="flex items-center gap-1">
                               <Users className="w-4 h-4" />
-                              {event.attendees_count} inscrits
+                              {event.attendees_count} {t("registered")}
                             </span>
                           </div>
                         </CardContent>
@@ -135,7 +137,7 @@ const EventsPage = () => {
             <section className="pb-16">
               <div className="container mx-auto px-4">
                 <h2 className="text-2xl font-bold text-foreground mb-8">
-                  Événements passés
+                  {t("past")}
                 </h2>
                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {past.map((event) => (
@@ -154,9 +156,9 @@ const EventsPage = () => {
                         <h3 className="font-medium">{event.title}</h3>
                         <p className="text-sm text-muted-foreground mt-1">
                           {format(new Date(event.starts_at), "MMMM yyyy", {
-                            locale: fr,
+                            locale: dateLocale,
                           })}{" "}
-                          · {event.attendees_count} participants
+                          · {event.attendees_count} {t("participants")}
                         </p>
                       </CardContent>
                     </Card>

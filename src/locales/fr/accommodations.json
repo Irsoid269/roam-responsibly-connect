@@ -1,0 +1,19 @@
+{
+  "eyebrow": "Hébergements éco-responsables",
+  "title": "Hébergements",
+  "description": "Séjournez dans des hébergements sélectionnés pour leur confort et leur faible impact environnemental.",
+  "searchPlaceholder": "Rechercher un hébergement...",
+  "type": "Type",
+  "allTypes": "Tous les types",
+  "ecoLodge": "Éco-lodge",
+  "villa": "Villa",
+  "coliving": "Coliving",
+  "accommodationsFound": "hébergements trouvés",
+  "fromCenter": "du centre",
+  "perNight": "/nuit",
+  "book": "Réserver",
+  "noResults": {
+    "title": "Aucun hébergement trouvé",
+    "description": "Essayez une autre recherche"
+  }
+}

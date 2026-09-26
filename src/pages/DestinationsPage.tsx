@@ -2,9 +2,9 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Link, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { 
-  Search, Filter, Star, Wifi, Leaf, MapPin, 
-  SlidersHorizontal, Grid, List, Loader2
+import {
+  Search, Star, Wifi, Leaf, MapPin,
+  SlidersHorizontal, Grid, List, Loader2, Map as MapIcon
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,6 +20,7 @@ import {
 import { ecoScoreBadge } from "@/lib/eco-score";
 import { useDestinations } from "@/hooks/useCatalogQueries";
 import PageHero from "@/components/layout/PageHero";
+import DestinationsMap from "@/components/destinations/DestinationsMap";
 
 const defaultImage = "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800";
 
@@ -33,7 +34,7 @@ const DestinationsPage = () => {
   const { data: destinations = [], isLoading: loading } = useDestinations();
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("popular");
-  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [viewMode, setViewMode] = useState<"grid" | "list" | "map">("grid");
 
   const detailQuery = (() => {
     const qs = new URLSearchParams();
@@ -63,8 +64,8 @@ const DestinationsPage = () => {
           title={t("hero.title")}
           description={t("hero.description")}
         >
-          <div className="flex flex-col sm:flex-row gap-3 max-w-2xl mx-auto">
-            <div className="relative flex-1">
+          <div className="max-w-2xl mx-auto">
+            <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
               <Input
                 placeholder={t("searchPlaceholder")}
@@ -73,10 +74,6 @@ const DestinationsPage = () => {
                 className="pl-10 h-12 bg-background/80 backdrop-blur-sm"
               />
             </div>
-            <Button size="lg" variant="outline" className="h-12">
-              <Filter className="w-4 h-4 mr-2" />
-              {t("filters")}
-            </Button>
           </div>
         </PageHero>
 
@@ -132,13 +129,33 @@ const DestinationsPage = () => {
                   >
                     <List className="w-4 h-4" />
                   </Button>
+                  <Button
+                    variant={viewMode === "map" ? "secondary" : "ghost"}
+                    size="icon"
+                    onClick={() => setViewMode("map")}
+                  >
+                    <MapIcon className="w-4 h-4" />
+                  </Button>
                 </div>
               </div>
             </div>
 
+            {viewMode === "map" && (
+              <DestinationsMap
+                destinations={filteredDestinations.map((d) => ({
+                  id: d.id,
+                  name: d.name,
+                  latitude: d.latitude,
+                  longitude: d.longitude,
+                }))}
+              />
+            )}
+
             {/* Destinations Grid */}
             <div className={
-              viewMode === "grid"
+              viewMode === "map"
+                ? "hidden"
+                : viewMode === "grid"
                 ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
                 : "flex flex-col gap-4"
             }>

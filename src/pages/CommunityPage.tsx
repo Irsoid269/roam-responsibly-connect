@@ -175,6 +175,15 @@ const CommunityPage = () => {
                           <p className="text-sm leading-relaxed line-clamp-4">
                             {story.content}
                           </p>
+                          {story.tags && story.tags.length > 0 && (
+                            <div className="flex flex-wrap gap-1 mt-2">
+                              {story.tags.map((tag) => (
+                                <Badge key={tag} variant="outline" className="text-[10px] px-1.5 py-0">
+                                  {tag}
+                                </Badge>
+                              ))}
+                            </div>
+                          )}
                           <div className="mt-4 pt-3 border-t space-y-2">
                             <p className="text-sm font-medium">{story.author_name}</p>
                             <StoryEngagement

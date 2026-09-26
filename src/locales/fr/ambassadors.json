@@ -1,0 +1,19 @@
+{
+  "eyebrow": "Programme Ambassadeurs",
+  "title": "Nos Ambassadeurs",
+  "description": "Rencontrez les voyageurs passionnés qui incarnent les valeurs d'Amani Resorts et inspirent notre communauté au quotidien.",
+  "becomeAmbassador": "Devenir ambassadeur",
+  "loadError": "Impossible de charger les ambassadeurs. Appliquez la migration",
+  "empty": "Aucun ambassadeur publié pour le moment.",
+  "ambassador": "Ambassadeur",
+  "kgCO2Saved": "kg CO₂ économisé",
+  "countriesVisited": "pays visités",
+  "followers": "followers",
+  "benefitsTitle": "Avantages du programme",
+  "benefitsDescription": "En devenant ambassadeur, vous bénéficiez d'avantages exclusifs tout en contribuant à promouvoir le voyage responsable.",
+  "cta": {
+    "title": "Rejoignez le programme",
+    "description": "Vous êtes un voyageur engagé avec une communauté active ? Postulez pour devenir ambassadeur Amani Resorts.",
+    "button": "Postuler maintenant"
+  }
+}

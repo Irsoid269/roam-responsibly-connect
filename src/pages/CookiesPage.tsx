@@ -3,39 +3,22 @@ import { Cookie, Shield, Settings, BarChart3 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
+import { useTranslation } from "react-i18next";
 
-const cookieTypes = [
-  {
-    icon: Shield,
-    title: "Cookies essentiels",
-    description: "Nécessaires au fonctionnement du site. Ils ne peuvent pas être désactivés.",
-    required: true,
-    examples: ["Session utilisateur", "Panier de réservation", "Préférences de langue"],
-  },
-  {
-    icon: BarChart3,
-    title: "Cookies analytiques",
-    description: "Nous aident à comprendre comment vous utilisez le site pour l'améliorer.",
-    required: false,
-    examples: ["Google Analytics", "Hotjar", "Statistiques de navigation"],
-  },
-  {
-    icon: Settings,
-    title: "Cookies fonctionnels",
-    description: "Permettent des fonctionnalités avancées et une personnalisation.",
-    required: false,
-    examples: ["Préférences de recherche", "Historique récent", "Recommandations"],
-  },
-  {
-    icon: Cookie,
-    title: "Cookies marketing",
-    description: "Utilisés pour vous montrer des publicités pertinentes.",
-    required: false,
-    examples: ["Facebook Pixel", "Google Ads", "Retargeting"],
-  },
-];
+const cookieTypeIcons = [Shield, BarChart3, Settings, Cookie];
+const cookieTypeRequired = [true, false, false, false];
 
 const CookiesPage = () => {
+  const { t } = useTranslation("cookies");
+
+  const cookieTypes = cookieTypeIcons.map((icon, i) => ({
+    icon,
+    required: cookieTypeRequired[i],
+    title: t(`types.${i}.title`),
+    description: t(`types.${i}.description`),
+    examples: t(`types.${i}.examples`, { returnObjects: true }) as string[],
+  }));
+
   return (
     <main className="page-main">
         <section className="py-12">
@@ -45,24 +28,22 @@ const CookiesPage = () => {
               animate={{ opacity: 1, y: 0 }}
             >
               <h1 className="text-4xl font-bold text-foreground mb-4">
-                Politique des cookies
+                {t("title")}
               </h1>
               <p className="text-muted-foreground mb-8">
-                Dernière mise à jour : 20 janvier 2026
+                {t("lastUpdate")}
               </p>
 
               <div className="space-y-8">
                 <section>
-                  <h2 className="text-2xl font-semibold text-foreground mb-4">Qu'est-ce qu'un cookie ?</h2>
+                  <h2 className="text-2xl font-semibold text-foreground mb-4">{t("whatIs.title")}</h2>
                   <p className="text-muted-foreground mb-4">
-                    Un cookie est un petit fichier texte déposé sur votre appareil (ordinateur, smartphone, 
-                    tablette) lors de la visite d'un site web. Il permet de stocker des informations relatives 
-                    à votre navigation et de vous reconnaître lors de vos prochaines visites.
+                    {t("whatIs.description")}
                   </p>
                 </section>
 
                 <section>
-                  <h2 className="text-2xl font-semibold text-foreground mb-4">Types de cookies utilisés</h2>
+                  <h2 className="text-2xl font-semibold text-foreground mb-4">{t("typesTitle")}</h2>
                   <div className="space-y-4">
                     {cookieTypes.map((type, index) => (
                       <Card key={index}>
@@ -101,38 +82,37 @@ const CookiesPage = () => {
                 </section>
 
                 <section>
-                  <h2 className="text-2xl font-semibold text-foreground mb-4">Durée de conservation</h2>
+                  <h2 className="text-2xl font-semibold text-foreground mb-4">{t("retention.title")}</h2>
                   <p className="text-muted-foreground mb-4">
-                    La durée de conservation des cookies varie selon leur type :
+                    {t("retention.description")}
                   </p>
                   <ul className="list-disc list-inside text-muted-foreground space-y-2 ml-4">
-                    <li><strong>Cookies de session :</strong> supprimés à la fermeture du navigateur</li>
-                    <li><strong>Cookies persistants :</strong> conservés jusqu'à 13 mois maximum</li>
-                    <li><strong>Cookies tiers :</strong> durée définie par le tiers concerné</li>
+                    <li><strong>{t("retention.session.label")}</strong> {t("retention.session.value")}</li>
+                    <li><strong>{t("retention.persistent.label")}</strong> {t("retention.persistent.value")}</li>
+                    <li><strong>{t("retention.thirdParty.label")}</strong> {t("retention.thirdParty.value")}</li>
                   </ul>
                 </section>
 
                 <section>
-                  <h2 className="text-2xl font-semibold text-foreground mb-4">Gérer vos préférences</h2>
+                  <h2 className="text-2xl font-semibold text-foreground mb-4">{t("preferences.title")}</h2>
                   <p className="text-muted-foreground mb-4">
-                    Vous pouvez à tout moment modifier vos préférences en matière de cookies :
+                    {t("preferences.description")}
                   </p>
                   <ul className="list-disc list-inside text-muted-foreground space-y-2 ml-4 mb-4">
-                    <li>Via le bandeau cookies lors de votre première visite</li>
-                    <li>Via les paramètres de votre navigateur</li>
-                    <li>En cliquant sur le bouton ci-dessous</li>
+                    <li>{t("preferences.options.0")}</li>
+                    <li>{t("preferences.options.1")}</li>
+                    <li>{t("preferences.options.2")}</li>
                   </ul>
                   <Button>
                     <Settings className="w-4 h-4 mr-2" />
-                    Gérer mes préférences cookies
+                    {t("preferences.button")}
                   </Button>
                 </section>
 
                 <section>
-                  <h2 className="text-2xl font-semibold text-foreground mb-4">Configuration du navigateur</h2>
+                  <h2 className="text-2xl font-semibold text-foreground mb-4">{t("browserConfig.title")}</h2>
                   <p className="text-muted-foreground mb-4">
-                    Vous pouvez configurer votre navigateur pour accepter ou refuser les cookies. 
-                    Voici les liens vers les instructions des principaux navigateurs :
+                    {t("browserConfig.description")}
                   </p>
                   <ul className="list-disc list-inside text-muted-foreground space-y-2 ml-4">
                     <li><a href="#" className="text-primary hover:underline">Google Chrome</a></li>
@@ -141,14 +121,14 @@ const CookiesPage = () => {
                     <li><a href="#" className="text-primary hover:underline">Microsoft Edge</a></li>
                   </ul>
                   <p className="text-muted-foreground mt-4">
-                    Note : la désactivation de certains cookies peut affecter le fonctionnement du site.
+                    {t("browserConfig.note")}
                   </p>
                 </section>
 
                 <section>
-                  <h2 className="text-2xl font-semibold text-foreground mb-4">Contact</h2>
+                  <h2 className="text-2xl font-semibold text-foreground mb-4">{t("contact.title")}</h2>
                   <p className="text-muted-foreground">
-                    Pour toute question concernant notre utilisation des cookies :<br />
+                    {t("contact.description")}<br />
                     Email : privacy@amaniresorts.com
                   </p>
                 </section>

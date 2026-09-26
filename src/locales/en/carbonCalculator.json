@@ -1,0 +1,145 @@
+{
+  "hero": {
+    "badge": "Environmental impact",
+    "titleLine1": "Calculate your",
+    "titleHighlight": "carbon footprint"
+  },
+  "title": "Footprint calculator",
+  "subtitle": "Estimate the carbon impact of your stay",
+  "previous": "Previous",
+  "next": "Next",
+  "estimatedImpact": "Estimated impact:",
+  "seeResults": "See results",
+  "steps": {
+    "transport": "Transport",
+    "accommodation": "Accommodation",
+    "mobility": "Mobility",
+    "activities": "Activities"
+  },
+  "units": {
+    "km": "km",
+    "night": "night",
+    "meals": "meals",
+    "visits": "visits",
+    "outings": "outings",
+    "sessions": "sessions"
+  },
+  "transportModes": {
+    "plane": "Plane",
+    "train": "Train",
+    "car": "Car",
+    "bus": "Bus"
+  },
+  "transportStep": {
+    "title": "How do you travel?",
+    "subtitle": "Select your main mode of transport",
+    "distance": "Distance",
+    "roundTrip": "Round trip"
+  },
+  "accommodationTypes": {
+    "hotel": "Hotel",
+    "apartment": "Apartment",
+    "hostel": "Hostel",
+    "ecoLodge": "Eco-lodge"
+  },
+  "accommodationStep": {
+    "title": "Where do you sleep?",
+    "subtitle": "Accommodation type and length of stay",
+    "nights": "Number of nights",
+    "oneNight": "1 night",
+    "thirtyNights": "30 nights"
+  },
+  "mobilityTypes": {
+    "scooter": "Electric scooter",
+    "bike": "Electric bike",
+    "public": "Public transport",
+    "walking": "Walking"
+  },
+  "mobilityStep": {
+    "title": "How do you get around locally?",
+    "subtitle": "Daily mode of transport during your stay",
+    "dailyDistance": "Daily distance"
+  },
+  "activityTypes": {
+    "restaurants": "Restaurant meals",
+    "museums": "Museums & culture",
+    "outdoor": "Outdoor activities",
+    "watersports": "Water sports"
+  },
+  "activitiesStep": {
+    "title": "What activities are you planning?",
+    "subtitle": "Estimate the number of activities during your stay",
+    "perUnit": "{{factor}} per {{unit}}"
+  },
+  "toasts": {
+    "loginRequired": "Log in to save your estimate",
+    "saved": "Estimate saved to your Amani history",
+    "saveError": "Save failed"
+  },
+  "results": {
+    "title": "Your carbon footprint",
+    "subtitle": "Result of your stay estimate · Amani Resorts",
+    "totalEmissions": "Estimated total emissions",
+    "belowAverage": "{{percent}}% below average",
+    "aboveAverage": "{{percent}}% above average",
+    "average": "Right at average",
+    "breakdown": "Breakdown by category",
+    "visualBreakdown": "Visual breakdown",
+    "newEstimate": "New estimate",
+    "savedLabel": "Saved",
+    "saving": "Saving…",
+    "saveToProfile": "Save to my profile",
+    "share": "Share"
+  },
+  "equivalents": {
+    "title": "That's equivalent to...",
+    "subtitle": "To help you picture what {{total}} kgCO₂e represents",
+    "car": { "unit": "km", "label": "by car" },
+    "phone": { "unit": "charges", "label": "of smartphone" },
+    "trees": { "unit": "trees", "label": "to plant for 1 year" },
+    "beef": { "unit": "kg", "label": "of beef" },
+    "streaming": { "unit": "hours", "label": "of streaming" },
+    "shower": { "unit": "showers", "label": "of 10 minutes" },
+    "bulb": { "unit": "hours", "label": "of LED lighting" },
+    "tshirt": { "unit": "t-shirts", "label": "manufactured" },
+    "funFactTitle": "Did you know?",
+    "funFactBody": "A French person emits on average",
+    "funFactAverage": "9.9 tonnes of CO₂ per year",
+    "funFactMiddle": "Your stay represents",
+    "funFactEnd": "of that annual footprint."
+  },
+  "compensation": {
+    "title": "Offset your impact",
+    "subtitle": "Choose how you'd like to offset · Amani Resorts",
+    "estimatedFootprint": "Estimated footprint: {{total}} kgCO₂e · Score {{grade}}",
+    "donationTab": "Donate to an association",
+    "actionTab": "On-the-ground action",
+    "suggestedTitle": "Suggested offset",
+    "suggestedBody": "To offset {{total}} kgCO₂e, we suggest a donation of",
+    "donationAmount": "Donation amount",
+    "customAmount": "Custom amount",
+    "donationThanks": "Donation recorded, thank you!",
+    "donationThanksBody": "We'll contact you to finalize payment and send your receipt. Track it in your traveler account.",
+    "chooseAssociation": "Choose an association",
+    "noNgos": "No association available yet.",
+    "donateButton": "Donate {{amount}}€",
+    "donationNote": "Donation recorded and confirmed manually for now · Tax receipt sent by email.",
+    "actOnGroundTitle": "Take real action",
+    "actOnGroundBody": "Join an on-the-ground action near your destination and earn badges!",
+    "registrationConfirmedTitle": "Registration confirmed!",
+    "registrationConfirmedBody": "Show this QR code to the organizer on the day of the action to confirm your participation. Single use.",
+    "noSessions": "No session scheduled yet.",
+    "full": "Full",
+    "participants": "{{count}}/{{capacity}} participants",
+    "registerButton": "Register for the action",
+    "loginRequiredDonation": "Log in to save your donation",
+    "donationSaved": "Donation recorded — we'll be in touch to confirm payment",
+    "donationError": "Error saving the donation",
+    "loginRequiredAction": "Log in to register",
+    "registrationConfirmed": "Registration confirmed!",
+    "alreadyRegistered": "You're already registered for this session",
+    "sessionFull": "This session is full",
+    "sessionNotFound": "Session not found",
+    "registrationError": "Error registering"
+  }
+}

@@ -1,0 +1,81 @@
+{
+  "title": "Terms of Service",
+  "lastUpdate": "Last updated: January 20, 2026",
+  "sections": {
+    "purpose": {
+      "title": "1. Purpose",
+      "body": "These Terms of Service govern the use of the Amani Resorts platform, available at amaniresorts.com, which offers booking services for accommodation, coworking spaces and activities for digital nomads and remote workers in the Comoros."
+    },
+    "definitions": {
+      "title": "2. Definitions",
+      "items": [
+        { "label": "Platform:", "text": "the Amani Resorts website and application" },
+        { "label": "User:", "text": "any person using the Platform" },
+        { "label": "Member:", "text": "a User with an account" },
+        { "label": "Partner:", "text": "accommodation, coworking space, or activity provider" },
+        { "label": "Services:", "text": "all offerings provided through the Platform" }
+      ]
+    },
+    "access": {
+      "title": "3. Access and registration",
+      "body1": "Access to the Platform is free. Some features require creating an account. The User agrees to provide accurate information and to keep their credentials confidential.",
+      "body2": "Registration is reserved for adults. Amani Resorts reserves the right to suspend or delete any account in the event of a breach of these Terms."
+    },
+    "services": {
+      "title": "4. Services offered",
+      "intro": "Amani Resorts acts as an intermediary between Users and Partners. Our services include:",
+      "items": [
+        "Booking eco-responsible accommodation",
+        "Booking coworking spaces",
+        "Booking activities and experiences",
+        "Carbon footprint calculation",
+        "Carbon offsetting through certified projects",
+        "Connecting with the community"
+      ]
+    },
+    "bookings": {
+      "title": "5. Bookings",
+      "body1": "Any booking made through the Platform constitutes a contract between the User and the relevant Partner. Amani Resorts is not a party to this contract.",
+      "body2": "Displayed prices include all applicable taxes. Payment is made in full at the time of booking, unless an installment payment option is available.",
+      "body3": "Cancellation and modification terms are specific to each Partner and are indicated during booking."
+    },
+    "carbon": {
+      "title": "6. Carbon offsetting",
+      "body1": "Carbon offset contributions are donations intended to fund certified environmental projects. These contributions are voluntary and are eligible for a tax receipt under applicable law.",
+      "body2": "Amani Resorts commits to passing on 100% of contributions to partner projects, net of processing fees."
+    },
+    "liability": {
+      "title": "7. Liability",
+      "intro": "Amani Resorts commits to using all reasonable means to ensure the proper functioning of the Platform. However, we cannot guarantee:",
+      "items": [
+        "The absence of service interruptions or errors",
+        "The quality of services provided by Partners",
+        "The accuracy of information provided by Partners"
+      ],
+      "outro": "The User remains solely responsible for their use of the Platform and any information they post there."
+    },
+    "ip": {
+      "title": "8. Intellectual property",
+      "body": "All elements of the Platform (text, images, logos, source code, etc.) are protected by intellectual property law. Any unauthorized reproduction or use is prohibited."
+    },
+    "personalData": {
+      "title": "9. Personal data",
+      "body1": "The processing of personal data is governed by our",
+      "link": "Privacy Policy",
+      "body2": "which forms an integral part of these Terms."
+    },
+    "changes": {
+      "title": "10. Changes to these Terms",
+      "body": "Amani Resorts reserves the right to modify these Terms at any time. Changes take effect as soon as they are published. Continued use of the Platform constitutes acceptance of the modified Terms."
+    },
+    "law": {
+      "title": "11. Governing law",
+      "body": "These Terms are governed by Comorian law and, secondarily, French law. Any dispute will be subject to the exclusive jurisdiction of the courts of Moroni, unless otherwise required by consumer protection law."
+    },
+    "contact": {
+      "title": "12. Contact",
+      "intro": "For any question regarding these Terms:",
+      "address": "Address: Avenue de la Corniche, Moroni, Comoros"
+    }
+  }
+}

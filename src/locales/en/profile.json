@@ -1,0 +1,72 @@
+{
+  "defaultName": "Amani Traveler",
+  "guestFallback": "Traveler",
+  "logout": "Log out",
+  "stats": {
+    "carbonSaved": "CO₂ offset",
+    "trips": "Trips",
+    "preference": "Preference",
+    "reservations": "Reservations"
+  },
+  "tabs": {
+    "trips": "My trips",
+    "carbon": "Carbon impact",
+    "privacy": "Privacy"
+  },
+  "reservations": {
+    "title": "My reservations",
+    "empty": "No reservation",
+    "emptySubtitle": "Explore our destinations to plan your next Amani stay!",
+    "exploreDestinations": "Explore destinations",
+    "reference": "Ref. AMN-{{ref}}",
+    "cancel": "Cancel",
+    "invoice": "Invoice",
+    "status": {
+      "pending": "Pending",
+      "confirmed": "Confirmed",
+      "cancelled": "Cancelled"
+    }
+  },
+  "carbon": {
+    "title": "Your Amani impact",
+    "totalOffset": "Total offset:",
+    "newEstimate": "Calculate a new estimate"
+  },
+  "privacy": {
+    "title": "Your personal data",
+    "exportTitle": "Export my data",
+    "exportDescription": "Download a JSON file of your profile, reservations, reviews, stories, donations and participations.",
+    "export": "Export",
+    "deleteTitle": "Delete my account",
+    "deleteDescription": "Permanent deletion of your account and reservations. Your invoices and payments are kept anonymized, as required by accounting regulations.",
+    "delete": "Delete"
+  },
+  "push": {
+    "title": "Push notifications",
+    "receiveTitle": "Receive notifications",
+    "receiveDescription": "Get alerted about updates to your reservations directly on this device.",
+    "notConfigured": "Push notifications aren't configured on this application yet.",
+    "notSupported": "Your browser doesn't support push notifications."
+  },
+  "deleteDialog": {
+    "title": "Permanently delete your account?",
+    "description": "This action is irreversible. Your profile and reservations will be deleted. Your invoices and payments will be kept, but disassociated from your identity.",
+    "cancel": "Cancel",
+    "confirm": "Delete permanently"
+  },
+  "toasts": {
+    "cancelSuccess": "Reservation cancelled. If a payment was associated, our team will process the refund manually until full Stripe integration is live.",
+    "cancelError": "Cancellation failed",
+    "exportSuccess": "Your data has been downloaded",
+    "exportError": "Export failed",
+    "deleteSuccess": "Your account has been deleted",
+    "deleteError": "Deletion failed",
+    "pushDenied": "Subscription denied or unavailable",
+    "pushEnabled": "Push notifications enabled",
+    "pushDisabled": "Push notifications disabled",
+    "actionError": "Action failed",
+    "invoiceOpened": "Invoice opened — Print or save as PDF",
+    "invoiceDownloaded": "Invoice downloaded to your device",
+    "invoiceError": "Unable to generate the invoice"
+  }
+}

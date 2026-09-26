@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { 
+import { useTranslation } from "react-i18next";
+import {
   Plane, 
   Train, 
   Car, 
@@ -99,6 +100,7 @@ interface CalculatorData {
 }
 
 const CarbonCalculator = () => {
+  const { t } = useTranslation("carbonCalculator");
   const [step, setStep] = useState(1);
   const [showResults, setShowResults] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -186,7 +188,7 @@ const CarbonCalculator = () => {
 
   const handleSaveEstimate = async () => {
     if (!user) {
-      toast.error("Connectez-vous pour enregistrer votre estimation");
+      toast.error(t("toasts.loginRequired"));
       navigate("/login");
       return;
     }
@@ -202,17 +204,17 @@ const CarbonCalculator = () => {
         emissionFactorSetId: liveFactors?.setId ?? null,
       });
       setSaved(true);
-      toast.success("Estimation enregistrée dans votre historique Amani");
+      toast.success(t("toasts.saved"));
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Erreur d'enregistrement");
+      toast.error(e instanceof Error ? e.message : t("toasts.saveError"));
     }
   };
 
   const steps = [
-    { id: 1, title: "Transport", icon: Plane },
-    { id: 2, title: "Hébergement", icon: Home },
-    { id: 3, title: "Mobilité", icon: Bike },
-    { id: 4, title: "Activités", icon: Mountain },
+    { id: 1, title: t("steps.transport"), icon: Plane },
+    { id: 2, title: t("steps.accommodation"), icon: Home },
+    { id: 3, title: t("steps.mobility"), icon: Bike },
+    { id: 4, title: t("steps.activities"), icon: Mountain },
   ];
 
   if (showResults) {
@@ -240,8 +242,8 @@ const CarbonCalculator = () => {
             <Calculator className="w-6 h-6" />
           </div>
           <div>
-            <h2 className="text-2xl font-bold">Calculateur d'empreinte</h2>
-            <p className="text-carbon-foreground/70">Estimez l'impact carbone de votre séjour</p>
+            <h2 className="text-2xl font-bold">{t("title")}</h2>
+            <p className="text-carbon-foreground/70">{t("subtitle")}</p>
           </div>
         </div>
         
@@ -326,22 +328,22 @@ const CarbonCalculator = () => {
             className="gap-2"
           >
             <ArrowLeft className="w-4 h-4" />
-            Précédent
+            {t("previous")}
           </Button>
-          
+
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <Leaf className="w-4 h-4 text-carbon-saved" />
-            <span>Impact estimé : <strong className="text-foreground">{carbonResults.total} kgCO₂e</strong></span>
+            <span>{t("estimatedImpact")} <strong className="text-foreground">{carbonResults.total} kgCO₂e</strong></span>
           </div>
 
           {step < 4 ? (
             <Button onClick={() => setStep(step + 1)} className="gap-2">
-              Suivant
+              {t("next")}
               <ArrowRight className="w-4 h-4" />
             </Button>
           ) : (
             <Button onClick={() => setShowResults(true)} variant="carbon" className="gap-2">
-              Voir les résultats
+              {t("seeResults")}
               <Zap className="w-4 h-4" />
             </Button>
           )}
@@ -361,11 +363,12 @@ const TransportStep = ({
   factors: EmissionFactors["transport"];
   onChange: (data: CalculatorData["transport"]) => void;
 }) => {
+  const { t } = useTranslation("carbonCalculator");
   const transportModes = [
-    { id: "plane" as const, label: "Avion", icon: Plane, description: `${formatFactor(factors.plane, "km")}` },
-    { id: "train" as const, label: "Train", icon: Train, description: `${formatFactor(factors.train, "km")}` },
-    { id: "car" as const, label: "Voiture", icon: Car, description: `${formatFactor(factors.car, "km")}` },
-    { id: "bus" as const, label: "Bus", icon: Building2, description: `${formatFactor(factors.bus, "km")}` },
+    { id: "plane" as const, label: t("transportModes.plane"), icon: Plane, description: `${formatFactor(factors.plane, "km")}` },
+    { id: "train" as const, label: t("transportModes.train"), icon: Train, description: `${formatFactor(factors.train, "km")}` },
+    { id: "car" as const, label: t("transportModes.car"), icon: Car, description: `${formatFactor(factors.car, "km")}` },
+    { id: "bus" as const, label: t("transportModes.bus"), icon: Building2, description: `${formatFactor(factors.bus, "km")}` },
   ];
 
   return (
@@ -377,8 +380,8 @@ const TransportStep = ({
       className="space-y-6"
     >
       <div>
-        <h3 className="text-xl font-semibold mb-2">Comment voyagez-vous ?</h3>
-        <p className="text-muted-foreground">Sélectionnez votre mode de transport principal</p>
+        <h3 className="text-xl font-semibold mb-2">{t("transportStep.title")}</h3>
+        <p className="text-muted-foreground">{t("transportStep.subtitle")}</p>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -411,7 +414,7 @@ const TransportStep = ({
       <div className="space-y-4">
         <div>
           <label className="text-sm font-medium mb-2 block">
-            Distance : {data.distance} km
+            {t("transportStep.distance")} : {data.distance} km
           </label>
           <Slider
             value={[data.distance]}
@@ -434,7 +437,7 @@ const TransportStep = ({
             onChange={(e) => onChange({ ...data, roundTrip: e.target.checked })}
             className="w-5 h-5 rounded border-border text-primary focus:ring-primary"
           />
-          <span>Aller-retour</span>
+          <span>{t("transportStep.roundTrip")}</span>
         </label>
       </div>
     </motion.div>
@@ -451,11 +454,13 @@ const AccommodationStep = ({
   factors: EmissionFactors["accommodation"];
   onChange: (data: CalculatorData["accommodation"]) => void;
 }) => {
+  const { t } = useTranslation("carbonCalculator");
+  const nightUnit = t("units.night");
   const accommodationTypes = [
-    { id: "hotel" as const, label: "Hôtel", icon: Building2, description: formatFactor(factors.hotel, "nuit") },
-    { id: "apartment" as const, label: "Appartement", icon: Home, description: formatFactor(factors.apartment, "nuit") },
-    { id: "hostel" as const, label: "Auberge", icon: Home, description: formatFactor(factors.hostel, "nuit") },
-    { id: "eco_lodge" as const, label: "Éco-lodge", icon: TreePine, description: formatFactor(factors.eco_lodge, "nuit") },
+    { id: "hotel" as const, label: t("accommodationTypes.hotel"), icon: Building2, description: formatFactor(factors.hotel, nightUnit) },
+    { id: "apartment" as const, label: t("accommodationTypes.apartment"), icon: Home, description: formatFactor(factors.apartment, nightUnit) },
+    { id: "hostel" as const, label: t("accommodationTypes.hostel"), icon: Home, description: formatFactor(factors.hostel, nightUnit) },
+    { id: "eco_lodge" as const, label: t("accommodationTypes.ecoLodge"), icon: TreePine, description: formatFactor(factors.eco_lodge, nightUnit) },
   ];
 
   return (
@@ -467,8 +472,8 @@ const AccommodationStep = ({
       className="space-y-6"
     >
       <div>
-        <h3 className="text-xl font-semibold mb-2">Où dormez-vous ?</h3>
-        <p className="text-muted-foreground">Type d'hébergement et durée du séjour</p>
+        <h3 className="text-xl font-semibold mb-2">{t("accommodationStep.title")}</h3>
+        <p className="text-muted-foreground">{t("accommodationStep.subtitle")}</p>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -500,7 +505,7 @@ const AccommodationStep = ({
 
       <div>
         <label className="text-sm font-medium mb-2 block">
-          Nombre de nuits : {data.nights}
+          {t("accommodationStep.nights")} : {data.nights}
         </label>
         <Slider
           value={[data.nights]}
@@ -511,8 +516,8 @@ const AccommodationStep = ({
           className="py-4"
         />
         <div className="flex justify-between text-xs text-muted-foreground">
-          <span>1 nuit</span>
-          <span>30 nuits</span>
+          <span>{t("accommodationStep.oneNight")}</span>
+          <span>{t("accommodationStep.thirtyNights")}</span>
         </div>
       </div>
     </motion.div>
@@ -529,11 +534,12 @@ const MobilityStep = ({
   factors: EmissionFactors["mobility"];
   onChange: (data: CalculatorData["mobility"]) => void;
 }) => {
+  const { t } = useTranslation("carbonCalculator");
   const mobilityTypes = [
-    { id: "scooter" as const, label: "Scooter élec.", icon: Zap, description: formatFactor(factors.scooter, "km") },
-    { id: "bike" as const, label: "Vélo élec.", icon: Bike, description: formatFactor(factors.bike, "km") },
-    { id: "public" as const, label: "Transports", icon: Train, description: formatFactor(factors.public, "km") },
-    { id: "walking" as const, label: "À pied", icon: Mountain, description: formatFactor(factors.walking, "km") },
+    { id: "scooter" as const, label: t("mobilityTypes.scooter"), icon: Zap, description: formatFactor(factors.scooter, "km") },
+    { id: "bike" as const, label: t("mobilityTypes.bike"), icon: Bike, description: formatFactor(factors.bike, "km") },
+    { id: "public" as const, label: t("mobilityTypes.public"), icon: Train, description: formatFactor(factors.public, "km") },
+    { id: "walking" as const, label: t("mobilityTypes.walking"), icon: Mountain, description: formatFactor(factors.walking, "km") },
   ];
 
   return (
@@ -545,8 +551,8 @@ const MobilityStep = ({
       className="space-y-6"
     >
       <div>
-        <h3 className="text-xl font-semibold mb-2">Comment vous déplacez-vous sur place ?</h3>
-        <p className="text-muted-foreground">Mode de transport quotidien pendant votre séjour</p>
+        <h3 className="text-xl font-semibold mb-2">{t("mobilityStep.title")}</h3>
+        <p className="text-muted-foreground">{t("mobilityStep.subtitle")}</p>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -578,7 +584,7 @@ const MobilityStep = ({
 
       <div>
         <label className="text-sm font-medium mb-2 block">
-          Distance quotidienne : {data.dailyKm} km
+          {t("mobilityStep.dailyDistance")} : {data.dailyKm} km
         </label>
         <Slider
           value={[data.dailyKm]}
@@ -607,11 +613,12 @@ const ActivitiesStep = ({
   factors: EmissionFactors["activities"];
   onChange: (data: CalculatorData["activities"]) => void;
 }) => {
+  const { t } = useTranslation("carbonCalculator");
   const activities = [
-    { key: "restaurants" as const, label: "Repas au restaurant", icon: Utensils, unit: "repas", factor: formatFactor(factors.restaurant) },
-    { key: "museums" as const, label: "Musées & culture", icon: Building2, unit: "visites", factor: formatFactor(factors.museum) },
-    { key: "outdoorActivities" as const, label: "Activités plein air", icon: Mountain, unit: "sorties", factor: formatFactor(factors.hiking) },
-    { key: "watersports" as const, label: "Sports nautiques", icon: Waves, unit: "sessions", factor: formatFactor(factors.watersports) },
+    { key: "restaurants" as const, label: t("activityTypes.restaurants"), icon: Utensils, unit: t("units.meals"), factor: formatFactor(factors.restaurant) },
+    { key: "museums" as const, label: t("activityTypes.museums"), icon: Building2, unit: t("units.visits"), factor: formatFactor(factors.museum) },
+    { key: "outdoorActivities" as const, label: t("activityTypes.outdoor"), icon: Mountain, unit: t("units.outings"), factor: formatFactor(factors.hiking) },
+    { key: "watersports" as const, label: t("activityTypes.watersports"), icon: Waves, unit: t("units.sessions"), factor: formatFactor(factors.watersports) },
   ];
 
   return (
@@ -623,8 +630,8 @@ const ActivitiesStep = ({
       className="space-y-6"
     >
       <div>
-        <h3 className="text-xl font-semibold mb-2">Quelles activités prévoyez-vous ?</h3>
-        <p className="text-muted-foreground">Estimez le nombre d'activités pendant votre séjour</p>
+        <h3 className="text-xl font-semibold mb-2">{t("activitiesStep.title")}</h3>
+        <p className="text-muted-foreground">{t("activitiesStep.subtitle")}</p>
       </div>
 
       <div className="space-y-6">
@@ -641,7 +648,7 @@ const ActivitiesStep = ({
                   </div>
                   <div>
                     <p className="font-medium">{activity.label}</p>
-                    <p className="text-xs text-muted-foreground">{activity.factor} par {activity.unit.slice(0, -1)}</p>
+                    <p className="text-xs text-muted-foreground">{t("activitiesStep.perUnit", { factor: activity.factor, unit: activity.unit.slice(0, -1) })}</p>
                   </div>
                 </div>
                 <span className="font-semibold text-lg">{value} {activity.unit}</span>

@@ -1,43 +1,48 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Link, useSearchParams } from "react-router-dom";
-import { 
+import { useTranslation } from "react-i18next";
+import {
   Search, Leaf, Clock,
-  Camera, Mountain, Palette, Utensils, Music, Waves, Loader2
+  Camera, Mountain, Utensils, Waves, Compass, Loader2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { useActivities } from "@/hooks/useCatalogQueries";
+import { useActivities, useUniverses } from "@/hooks/useCatalogQueries";
 import {
   parseBookingSearchParams,
   withBookingDates,
 } from "@/lib/search-booking-params";
 
-const categoryIcons: Record<string, typeof Camera> = {
-  "Photo": Camera,
-  "Aventure": Mountain,
-  "Art": Palette,
-  "Gastronomie": Utensils,
-  "Musique": Music,
-  "Sports nautiques": Waves,
+// Les 4 "univers" du cahier des charges (table `universes`) — icônes assignées
+// localement car la donnée source n'en fournit pas.
+const universeIcons: Record<string, typeof Camera> = {
+  "gastronomie-savoir-faire": Utensils,
+  "decouverte-terrestre": Mountain,
+  "mer-faune-marine": Waves,
+  "evasion-immersion": Compass,
 };
 
 const ActivitiesPage = () => {
+  const { t } = useTranslation("activities");
   const [searchParams] = useSearchParams();
   const bookingParams = parseBookingSearchParams(searchParams);
   const destinationId = bookingParams.destination;
   const { data: activities = [], isLoading: loading } = useActivities(destinationId);
+  const { data: universes = [] } = useUniverses();
   const [searchQuery, setSearchQuery] = useState("");
-  const [categoryFilter, setCategoryFilter] = useState<string | null>(null);
+  const [universeFilter, setUniverseFilter] = useState<string | null>(
+    searchParams.get("universe")
+  );
 
-  const categories = [...new Set(activities.map(a => a.category).filter(Boolean))];
+  const universesById = Object.fromEntries(universes.map((u) => [u.id, u]));
 
   const filteredActivities = activities.filter((activity) => {
     const matchesSearch = activity.name.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory = !categoryFilter || activity.category === categoryFilter;
-    return matchesSearch && matchesCategory;
+    const matchesUniverse = !universeFilter || activity.universe_id === universeFilter;
+    return matchesSearch && matchesUniverse;
   });
 
   return (
@@ -52,20 +57,19 @@ const ActivitiesPage = () => {
             >
               <Badge variant="outline" className="mb-4 bg-accent/10 border-accent/20">
                 <Leaf className="w-3 h-3 mr-1" />
-                Expériences responsables
+                {t("eyebrow")}
               </Badge>
               <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
-                Activités
+                {t("title")}
               </h1>
               <p className="text-lg text-muted-foreground mb-8">
-                Vivez des expériences uniques et authentiques qui respectent l'environnement 
-                et soutiennent les communautés locales.
+                {t("description")}
               </p>
 
               <div className="relative max-w-xl mx-auto">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                 <Input
-                  placeholder="Rechercher une activité..."
+                  placeholder={t("searchPlaceholder")}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="pl-10 h-12"
@@ -80,23 +84,23 @@ const ActivitiesPage = () => {
           <div className="container mx-auto px-4">
             <div className="flex flex-wrap gap-2 justify-center">
               <Button
-                variant={categoryFilter === null ? "default" : "outline"}
+                variant={universeFilter === null ? "default" : "outline"}
                 size="sm"
-                onClick={() => setCategoryFilter(null)}
+                onClick={() => setUniverseFilter(null)}
               >
-                Toutes
+                {t("all")}
               </Button>
-              {categories.map((category) => {
-                const Icon = categoryIcons[category as string] || Camera;
+              {universes.map((universe) => {
+                const Icon = universeIcons[universe.id] || Camera;
                 return (
                   <Button
-                    key={category}
-                    variant={categoryFilter === category ? "default" : "outline"}
+                    key={universe.id}
+                    variant={universeFilter === universe.id ? "default" : "outline"}
                     size="sm"
-                    onClick={() => setCategoryFilter(category as string)}
+                    onClick={() => setUniverseFilter(universe.id)}
                   >
                     <Icon className="w-4 h-4 mr-1" />
-                    {category}
+                    {universe.name}
                   </Button>
                 );
               })}
@@ -109,13 +113,14 @@ const ActivitiesPage = () => {
           <div className="container mx-auto px-4">
             <div className="flex justify-between items-center mb-6">
               <p className="text-muted-foreground">
-                <span className="font-medium text-foreground">{filteredActivities.length}</span> activités disponibles
+                <span className="font-medium text-foreground">{filteredActivities.length}</span> {t("availableActivities")}
               </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredActivities.map((activity, index) => {
-                const CategoryIcon = categoryIcons[activity.category as string] || Camera;
+                const universe = activity.universe_id ? universesById[activity.universe_id] : undefined;
+                const CategoryIcon = universe ? universeIcons[universe.id] || Camera : Camera;
                 return (
                   <motion.div
                     key={activity.id}
@@ -135,14 +140,16 @@ const ActivitiesPage = () => {
                         {activity.eco_certified && (
                           <Badge className="absolute top-3 right-3 bg-success text-success-foreground">
                             <Leaf className="w-3 h-3 mr-1" />
-                            Éco-certifié
+                            {t("ecoCertified")}
                           </Badge>
                         )}
 
-                        <Badge className="absolute top-3 left-3 bg-background/90 text-foreground">
-                          <CategoryIcon className="w-3 h-3 mr-1" />
-                          {activity.category}
-                        </Badge>
+                        {universe && (
+                          <Badge className="absolute top-3 left-3 bg-background/90 text-foreground">
+                            <CategoryIcon className="w-3 h-3 mr-1" />
+                            {universe.name}
+                          </Badge>
+                        )}
                       </div>
 
                       <CardContent className="p-4">
@@ -154,17 +161,17 @@ const ActivitiesPage = () => {
                         <div className="flex items-center justify-between text-sm text-muted-foreground mb-4">
                           <div className="flex items-center gap-1">
                             <Clock className="w-4 h-4" />
-                            {activity.duration_hours != null ? `${activity.duration_hours}h` : "Durée à venir"}
+                            {activity.duration_hours != null ? `${activity.duration_hours}h` : t("durationPending")}
                           </div>
                           <div className="flex items-center gap-1 text-carbon">
                             <Leaf className="w-4 h-4" />
-                            {activity.carbon_impact === 0 ? "Neutre" : `${activity.carbon_impact} kg CO₂`}
+                            {activity.carbon_impact === 0 ? t("neutral") : `${activity.carbon_impact} kg CO₂`}
                           </div>
                         </div>
 
                         <div className="flex items-center justify-between pt-3 border-t border-border">
                           <span className="text-lg font-bold text-foreground">
-                            {activity.price != null ? `${activity.price}€` : "Prix à venir"}
+                            {activity.price != null ? `${activity.price}€` : t("onRequest")}
                           </span>
                           <Button size="sm" asChild>
                             <Link
@@ -177,7 +184,7 @@ const ActivitiesPage = () => {
                                   : "/destinations"
                               }
                             >
-                              Réserver
+                              {t("book")}
                             </Link>
                           </Button>
                         </div>
@@ -191,8 +198,8 @@ const ActivitiesPage = () => {
             {filteredActivities.length === 0 && (
               <div className="text-center py-16">
                 <Camera className="w-12 h-12 mx-auto mb-4 text-muted-foreground opacity-50" />
-                <h3 className="text-lg font-medium text-foreground">Aucune activité trouvée</h3>
-                <p className="text-muted-foreground mt-1">Essayez une autre recherche</p>
+                <h3 className="text-lg font-medium text-foreground">{t("noResults.title")}</h3>
+                <p className="text-muted-foreground mt-1">{t("noResults.description")}</p>
               </div>
             )}
           </div>

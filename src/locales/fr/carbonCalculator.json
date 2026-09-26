@@ -1,0 +1,145 @@
+{
+  "hero": {
+    "badge": "Impact environnemental",
+    "titleLine1": "Calculez votre",
+    "titleHighlight": "empreinte carbone"
+  },
+  "title": "Calculateur d'empreinte",
+  "subtitle": "Estimez l'impact carbone de votre séjour",
+  "previous": "Précédent",
+  "next": "Suivant",
+  "estimatedImpact": "Impact estimé :",
+  "seeResults": "Voir les résultats",
+  "steps": {
+    "transport": "Transport",
+    "accommodation": "Hébergement",
+    "mobility": "Mobilité",
+    "activities": "Activités"
+  },
+  "units": {
+    "km": "km",
+    "night": "nuit",
+    "meals": "repas",
+    "visits": "visites",
+    "outings": "sorties",
+    "sessions": "sessions"
+  },
+  "transportModes": {
+    "plane": "Avion",
+    "train": "Train",
+    "car": "Voiture",
+    "bus": "Bus"
+  },
+  "transportStep": {
+    "title": "Comment voyagez-vous ?",
+    "subtitle": "Sélectionnez votre mode de transport principal",
+    "distance": "Distance",
+    "roundTrip": "Aller-retour"
+  },
+  "accommodationTypes": {
+    "hotel": "Hôtel",
+    "apartment": "Appartement",
+    "hostel": "Auberge",
+    "ecoLodge": "Éco-lodge"
+  },
+  "accommodationStep": {
+    "title": "Où dormez-vous ?",
+    "subtitle": "Type d'hébergement et durée du séjour",
+    "nights": "Nombre de nuits",
+    "oneNight": "1 nuit",
+    "thirtyNights": "30 nuits"
+  },
+  "mobilityTypes": {
+    "scooter": "Scooter élec.",
+    "bike": "Vélo élec.",
+    "public": "Transports",
+    "walking": "À pied"
+  },
+  "mobilityStep": {
+    "title": "Comment vous déplacez-vous sur place ?",
+    "subtitle": "Mode de transport quotidien pendant votre séjour",
+    "dailyDistance": "Distance quotidienne"
+  },
+  "activityTypes": {
+    "restaurants": "Repas au restaurant",
+    "museums": "Musées & culture",
+    "outdoor": "Activités plein air",
+    "watersports": "Sports nautiques"
+  },
+  "activitiesStep": {
+    "title": "Quelles activités prévoyez-vous ?",
+    "subtitle": "Estimez le nombre d'activités pendant votre séjour",
+    "perUnit": "{{factor}} par {{unit}}"
+  },
+  "toasts": {
+    "loginRequired": "Connectez-vous pour enregistrer votre estimation",
+    "saved": "Estimation enregistrée dans votre historique Amani",
+    "saveError": "Erreur d'enregistrement"
+  },
+  "results": {
+    "title": "Votre empreinte carbone",
+    "subtitle": "Résultat de votre estimation de séjour · Amani Resorts",
+    "totalEmissions": "Émissions totales estimées",
+    "belowAverage": "{{percent}}% en dessous de la moyenne",
+    "aboveAverage": "{{percent}}% au-dessus de la moyenne",
+    "average": "Dans la moyenne",
+    "breakdown": "Détail par poste",
+    "visualBreakdown": "Répartition visuelle",
+    "newEstimate": "Nouvelle estimation",
+    "savedLabel": "Enregistré",
+    "saving": "Enregistrement…",
+    "saveToProfile": "Sauver dans mon profil",
+    "share": "Partager"
+  },
+  "equivalents": {
+    "title": "C'est équivalent à...",
+    "subtitle": "Pour mieux comprendre ce que représente {{total}} kgCO₂e",
+    "car": { "unit": "km", "label": "en voiture" },
+    "phone": { "unit": "recharges", "label": "de smartphone" },
+    "trees": { "unit": "arbres", "label": "à planter pour 1 an" },
+    "beef": { "unit": "kg", "label": "de bœuf" },
+    "streaming": { "unit": "heures", "label": "de streaming" },
+    "shower": { "unit": "douches", "label": "de 10 minutes" },
+    "bulb": { "unit": "heures", "label": "d'éclairage LED" },
+    "tshirt": { "unit": "t-shirts", "label": "fabriqués" },
+    "funFactTitle": "Le saviez-vous ?",
+    "funFactBody": "Un Français émet en moyenne",
+    "funFactAverage": "9,9 tonnes de CO₂ par an",
+    "funFactMiddle": "Votre séjour représente",
+    "funFactEnd": "de cette empreinte annuelle."
+  },
+  "compensation": {
+    "title": "Compensez votre impact",
+    "subtitle": "Choisissez votre mode de compensation · Amani Resorts",
+    "estimatedFootprint": "Empreinte estimée : {{total}} kgCO₂e · Score {{grade}}",
+    "donationTab": "Don à une association",
+    "actionTab": "Action terrain",
+    "suggestedTitle": "Compensation suggérée",
+    "suggestedBody": "Pour compenser {{total}} kgCO₂e, nous vous suggérons un don de",
+    "donationAmount": "Montant du don",
+    "customAmount": "Montant personnalisé",
+    "donationThanks": "Don enregistré, merci !",
+    "donationThanksBody": "Nous vous contacterons pour finaliser le paiement et vous envoyer votre reçu. Retrouvez le suivi dans votre espace voyageur.",
+    "chooseAssociation": "Choisir une association",
+    "noNgos": "Aucune association disponible pour le moment.",
+    "donateButton": "Faire un don de {{amount}}€",
+    "donationNote": "Don enregistré et confirmé manuellement pour l'instant · Reçu fiscal envoyé par email.",
+    "actOnGroundTitle": "Agir concrètement",
+    "actOnGroundBody": "Participez à une action terrain près de votre destination et gagnez des badges !",
+    "registrationConfirmedTitle": "Inscription confirmée !",
+    "registrationConfirmedBody": "Présentez ce QR à l'organisateur le jour de l'action pour valider votre participation. Usage unique.",
+    "noSessions": "Aucune session programmée pour le moment.",
+    "full": "Complet",
+    "participants": "{{count}}/{{capacity}} participants",
+    "registerButton": "S'inscrire à l'action",
+    "loginRequiredDonation": "Connectez-vous pour enregistrer votre don",
+    "donationSaved": "Don enregistré — nous revenons vers vous pour la confirmation du paiement",
+    "donationError": "Erreur lors de l'enregistrement du don",
+    "loginRequiredAction": "Connectez-vous pour vous inscrire",
+    "registrationConfirmed": "Inscription confirmée !",
+    "alreadyRegistered": "Vous êtes déjà inscrit à cette session",
+    "sessionFull": "Cette session est complète",
+    "sessionNotFound": "Session introuvable",
+    "registrationError": "Erreur lors de l'inscription"
+  }
+}

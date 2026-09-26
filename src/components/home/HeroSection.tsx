@@ -2,14 +2,17 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
-import { Search, MapPin, Calendar, Users, ChevronDown, Leaf, Loader2 } from "lucide-react";
+import {
+  Search, MapPin, Calendar, Users, ChevronDown, Leaf, Loader2,
+  Utensils, Mountain, Waves, Compass, Sparkles, Laptop,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import heroImage from "@/assets/hero-coworking.jpg";
-import { useHeroDestinations, useCatalogCounts } from "@/hooks/useCatalogQueries";
+import { useHeroDestinations, useCatalogCounts, useUniverses, useCoworkings } from "@/hooks/useCatalogQueries";
 
 type HeroDestination = {
   id: string;
@@ -18,14 +21,40 @@ type HeroDestination = {
   country: string;
 };
 
+type Universe = {
+  id: string;
+  name: string;
+  color: string | null;
+};
+
+type HeroCoworkingSpace = {
+  id: string;
+  name: string;
+  address: string | null;
+  destination_id: string | null;
+};
+
+// Mêmes 4 "univers" que la page Activités (table `universes`) — icônes
+// assignées localement, la donnée source n'en fournit pas.
+const universeIcons: Record<string, typeof Sparkles> = {
+  "gastronomie-savoir-faire": Utensils,
+  "decouverte-terrestre": Mountain,
+  "mer-faune-marine": Waves,
+  "evasion-immersion": Compass,
+};
+
 const HeroSection = () => {
   const { t } = useTranslation("home");
   const navigate = useNavigate();
   const { data: destinations = [], isLoading: destLoading } = useHeroDestinations();
   const { data: counts } = useCatalogCounts();
+  const { data: universes = [], isLoading: universesLoading } = useUniverses();
+  const { data: coworkingSpaces = [], isLoading: coworkingsLoading } = useCoworkings();
 
   const [activeTab, setActiveTab] = useState<"sejour" | "coworking" | "experience">("sejour");
   const [selectedDestination, setSelectedDestination] = useState<HeroDestination | null>(null);
+  const [selectedUniverse, setSelectedUniverse] = useState<Universe | null>(null);
+  const [selectedCoworkingSpace, setSelectedCoworkingSpace] = useState<HeroCoworkingSpace | null>(null);
   const [dateRange, setDateRange] = useState<{ from: Date | undefined; to: Date | undefined }>({
     from: undefined,
     to: undefined,
@@ -40,6 +69,9 @@ const HeroSection = () => {
     if (selectedDestination) {
       params.set("destination", selectedDestination.id);
     }
+    if (activeTab === "experience" && selectedUniverse) {
+      params.set("universe", selectedUniverse.id);
+    }
     if (dateRange.from) {
       params.set("from", dateRange.from.toISOString());
     }
@@ -52,6 +84,12 @@ const HeroSection = () => {
     // Séjour + destination choisie → composer directement le panier avec les dates
     if (activeTab === "sejour" && selectedDestination) {
       navigate(`/booking/${selectedDestination.id}?${params.toString()}`);
+      return;
+    }
+
+    // Coworking + espace choisi → composer directement le panier de sa destination
+    if (activeTab === "coworking" && selectedCoworkingSpace?.destination_id) {
+      navigate(`/booking/${selectedCoworkingSpace.destination_id}?${params.toString()}`);
       return;
     }
 
@@ -147,65 +185,183 @@ const HeroSection = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-2 p-2">
-              <Popover open={destinationOpen} onOpenChange={setDestinationOpen}>
-                <PopoverTrigger asChild>
-                  <div className="flex items-center gap-3 p-4 rounded-xl bg-muted/50 hover:bg-muted transition-colors cursor-pointer group">
-                    <MapPin className="w-5 h-5 text-primary shrink-0" />
-                    <div className="flex-1 min-w-0">
-                      <p className="text-xs text-muted-foreground">{t("hero.destinationLabel")}</p>
-                      <p className="text-sm font-medium text-foreground truncate">
-                        {selectedDestination
-                          ? `${selectedDestination.name}, ${selectedDestination.country}`
-                          : t("hero.destinationPlaceholder")}
-                      </p>
+              {activeTab === "experience" ? (
+                <Popover open={destinationOpen} onOpenChange={setDestinationOpen}>
+                  <PopoverTrigger asChild>
+                    <div className="flex items-center gap-3 p-4 rounded-xl bg-muted/50 hover:bg-muted transition-colors cursor-pointer group">
+                      <Sparkles className="w-5 h-5 text-primary shrink-0" />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs text-muted-foreground">{t("hero.universeLabel")}</p>
+                        <p className="text-sm font-medium text-foreground truncate">
+                          {selectedUniverse ? selectedUniverse.name : t("hero.universePlaceholder")}
+                        </p>
+                      </div>
+                      <ChevronDown className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors" />
                     </div>
-                    <ChevronDown className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors" />
-                  </div>
-                </PopoverTrigger>
-                <PopoverContent className="w-72 p-2" align="start">
-                  {destLoading ? (
-                    <div className="flex justify-center py-6">
-                      <Loader2 className="w-5 h-5 animate-spin text-primary" />
-                    </div>
-                  ) : destinations.length === 0 ? (
-                    <p className="p-3 text-sm text-muted-foreground text-center">
-                      {t("hero.noDestinations")}
-                    </p>
-                  ) : (
-                    <div className="space-y-1 max-h-64 overflow-y-auto">
-                      {destinations.map((dest) => (
+                  </PopoverTrigger>
+                  <PopoverContent className="w-72 p-2" align="start">
+                    {universesLoading ? (
+                      <div className="flex justify-center py-6">
+                        <Loader2 className="w-5 h-5 animate-spin text-primary" />
+                      </div>
+                    ) : (
+                      <div className="space-y-1 max-h-64 overflow-y-auto">
                         <button
-                          key={dest.id}
                           onClick={() => {
-                            setSelectedDestination(dest);
+                            setSelectedUniverse(null);
                             setDestinationOpen(false);
                           }}
                           className={`w-full flex items-center gap-3 p-3 rounded-lg text-left transition-colors ${
-                            selectedDestination?.id === dest.id
-                              ? "bg-primary text-primary-foreground"
-                              : "hover:bg-muted"
+                            selectedUniverse === null ? "bg-primary text-primary-foreground" : "hover:bg-muted"
                           }`}
                         >
-                          <MapPin className="w-4 h-4 shrink-0" />
-                          <div>
-                            <p className="font-medium">{dest.name}</p>
-                            <p
-                              className={`text-xs ${
-                                selectedDestination?.id === dest.id
-                                  ? "text-primary-foreground/80"
-                                  : "text-muted-foreground"
+                          <Sparkles className="w-4 h-4 shrink-0" />
+                          <p className="font-medium">{t("hero.allUniverses")}</p>
+                        </button>
+                        {universes.map((universe) => {
+                          const Icon = universeIcons[universe.id] || Sparkles;
+                          return (
+                            <button
+                              key={universe.id}
+                              onClick={() => {
+                                setSelectedUniverse(universe);
+                                setDestinationOpen(false);
+                              }}
+                              className={`w-full flex items-center gap-3 p-3 rounded-lg text-left transition-colors ${
+                                selectedUniverse?.id === universe.id
+                                  ? "bg-primary text-primary-foreground"
+                                  : "hover:bg-muted"
                               }`}
                             >
-                              {dest.city ? `${dest.city} · ` : ""}
-                              {dest.country}
-                            </p>
-                          </div>
-                        </button>
-                      ))}
+                              <Icon className="w-4 h-4 shrink-0" />
+                              <p className="font-medium">{universe.name}</p>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </PopoverContent>
+                </Popover>
+              ) : activeTab === "coworking" ? (
+                <Popover open={destinationOpen} onOpenChange={setDestinationOpen}>
+                  <PopoverTrigger asChild>
+                    <div className="flex items-center gap-3 p-4 rounded-xl bg-muted/50 hover:bg-muted transition-colors cursor-pointer group">
+                      <Laptop className="w-5 h-5 text-primary shrink-0" />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs text-muted-foreground">{t("hero.coworkingLabel")}</p>
+                        <p className="text-sm font-medium text-foreground truncate">
+                          {selectedCoworkingSpace ? selectedCoworkingSpace.name : t("hero.coworkingPlaceholder")}
+                        </p>
+                      </div>
+                      <ChevronDown className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors" />
                     </div>
-                  )}
-                </PopoverContent>
-              </Popover>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-72 p-2" align="start">
+                    {coworkingsLoading ? (
+                      <div className="flex justify-center py-6">
+                        <Loader2 className="w-5 h-5 animate-spin text-primary" />
+                      </div>
+                    ) : coworkingSpaces.length === 0 ? (
+                      <p className="p-3 text-sm text-muted-foreground text-center">
+                        {t("hero.noCoworkings")}
+                      </p>
+                    ) : (
+                      <div className="space-y-1 max-h-64 overflow-y-auto">
+                        {coworkingSpaces.map((space) => (
+                          <button
+                            key={space.id}
+                            onClick={() => {
+                              setSelectedCoworkingSpace(space);
+                              setDestinationOpen(false);
+                            }}
+                            className={`w-full flex items-center gap-3 p-3 rounded-lg text-left transition-colors ${
+                              selectedCoworkingSpace?.id === space.id
+                                ? "bg-primary text-primary-foreground"
+                                : "hover:bg-muted"
+                            }`}
+                          >
+                            <Laptop className="w-4 h-4 shrink-0" />
+                            <div>
+                              <p className="font-medium">{space.name}</p>
+                              {space.address && (
+                                <p
+                                  className={`text-xs ${
+                                    selectedCoworkingSpace?.id === space.id
+                                      ? "text-primary-foreground/80"
+                                      : "text-muted-foreground"
+                                  }`}
+                                >
+                                  {space.address}
+                                </p>
+                              )}
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </PopoverContent>
+                </Popover>
+              ) : (
+                <Popover open={destinationOpen} onOpenChange={setDestinationOpen}>
+                  <PopoverTrigger asChild>
+                    <div className="flex items-center gap-3 p-4 rounded-xl bg-muted/50 hover:bg-muted transition-colors cursor-pointer group">
+                      <MapPin className="w-5 h-5 text-primary shrink-0" />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs text-muted-foreground">{t("hero.destinationLabel")}</p>
+                        <p className="text-sm font-medium text-foreground truncate">
+                          {selectedDestination
+                            ? `${selectedDestination.name}, ${selectedDestination.country}`
+                            : t("hero.destinationPlaceholder")}
+                        </p>
+                      </div>
+                      <ChevronDown className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors" />
+                    </div>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-72 p-2" align="start">
+                    {destLoading ? (
+                      <div className="flex justify-center py-6">
+                        <Loader2 className="w-5 h-5 animate-spin text-primary" />
+                      </div>
+                    ) : destinations.length === 0 ? (
+                      <p className="p-3 text-sm text-muted-foreground text-center">
+                        {t("hero.noDestinations")}
+                      </p>
+                    ) : (
+                      <div className="space-y-1 max-h-64 overflow-y-auto">
+                        {destinations.map((dest) => (
+                          <button
+                            key={dest.id}
+                            onClick={() => {
+                              setSelectedDestination(dest);
+                              setDestinationOpen(false);
+                            }}
+                            className={`w-full flex items-center gap-3 p-3 rounded-lg text-left transition-colors ${
+                              selectedDestination?.id === dest.id
+                                ? "bg-primary text-primary-foreground"
+                                : "hover:bg-muted"
+                            }`}
+                          >
+                            <MapPin className="w-4 h-4 shrink-0" />
+                            <div>
+                              <p className="font-medium">{dest.name}</p>
+                              <p
+                                className={`text-xs ${
+                                  selectedDestination?.id === dest.id
+                                    ? "text-primary-foreground/80"
+                                    : "text-muted-foreground"
+                                }`}
+                              >
+                                {dest.city ? `${dest.city} · ` : ""}
+                                {dest.country}
+                              </p>
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </PopoverContent>
+                </Popover>
+              )}
 
               <Popover>
                 <PopoverTrigger asChild>
@@ -237,9 +393,13 @@ const HeroSection = () => {
                   <div className="flex items-center gap-3 p-4 rounded-xl bg-muted/50 hover:bg-muted transition-colors cursor-pointer group">
                     <Users className="w-5 h-5 text-primary shrink-0" />
                     <div className="flex-1 min-w-0">
-                      <p className="text-xs text-muted-foreground">{t("hero.travelersLabel")}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {activeTab === "coworking" ? t("hero.positionsLabel") : t("hero.travelersLabel")}
+                      </p>
                       <p className="text-sm font-medium text-foreground truncate">
-                        {t("hero.traveler", { count: travelers })}
+                        {activeTab === "coworking"
+                          ? t("hero.position", { count: travelers })
+                          : t("hero.traveler", { count: travelers })}
                       </p>
                     </div>
                     <ChevronDown className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors" />
@@ -247,7 +407,9 @@ const HeroSection = () => {
                 </PopoverTrigger>
                 <PopoverContent className="w-48 p-3" align="start">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium">{t("hero.travelersLabel")}</span>
+                    <span className="text-sm font-medium">
+                      {activeTab === "coworking" ? t("hero.positionsLabel") : t("hero.travelersLabel")}
+                    </span>
                     <div className="flex items-center gap-3">
                       <button
                         onClick={() => setTravelers(Math.max(1, travelers - 1))}
@@ -276,7 +438,7 @@ const HeroSection = () => {
                 onClick={handleSearch}
               >
                 <Search className="w-5 h-5" />
-                <span>{t("hero.search")}</span>
+                <span>{activeTab === "experience" ? t("hero.explore") : t("hero.search")}</span>
               </Button>
             </div>
           </div>

@@ -1,0 +1,11 @@
+{
+  "eyebrow": "Upcoming events",
+  "title": "Events",
+  "description": "Meet the community and join our workshops and retreats to enrich your Amani stay in the Comoros.",
+  "loadError": "Unable to load events. Please apply the migration",
+  "upcoming": "Upcoming events",
+  "noUpcoming": "No upcoming events at the moment.",
+  "past": "Past events",
+  "registered": "registered",
+  "participants": "participants"
+}

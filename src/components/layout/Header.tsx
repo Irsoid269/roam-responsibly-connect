@@ -22,6 +22,7 @@ const Header = () => {
 
   const navLinks = [
     { label: t("nav.destinations"), href: "/destinations" },
+    { label: t("nav.activities"), href: "/activities" },
     { label: t("nav.coworkings"), href: "/coworkings" },
     { label: t("nav.community"), href: "/community" },
     { label: t("nav.impact"), href: "/impact" },

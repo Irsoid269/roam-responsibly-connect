@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
@@ -15,18 +15,9 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import ImageUpload from "@/components/admin/ImageUpload";
 import { useAuth } from "@/hooks/useAuth";
-import { useSubmitCommunityStory } from "@/hooks/useCatalogQueries";
+import { useSubmitCommunityStory, useDestinations } from "@/hooks/useCatalogQueries";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
-
-const DESTINATIONS = [
-  "Moroni, Comores",
-  "Itsandra, Grande Comore",
-  "Mutsamudu, Anjouan",
-  "Fomboni, Mohéli",
-  "Domoni, Anjouan",
-  "Iconi, Grande Comore",
-];
 
 interface SubmitStoryDialogProps {
   open: boolean;
@@ -38,13 +29,21 @@ const SubmitStoryDialog = ({ open, onOpenChange }: SubmitStoryDialogProps) => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const submit = useSubmitCommunityStory();
+  const { data: destinations = [] } = useDestinations();
   const [authorName, setAuthorName] = useState(
     () => user?.user_metadata?.full_name || "",
   );
   const [authorLocation, setAuthorLocation] = useState("");
-  const [destination, setDestination] = useState(DESTINATIONS[0]);
+  const [destination, setDestination] = useState("");
   const [content, setContent] = useState("");
   const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [tagsInput, setTagsInput] = useState("");
+
+  useEffect(() => {
+    if (!destination && destinations.length > 0) {
+      setDestination(destinations[0].name);
+    }
+  }, [destination, destinations]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -58,6 +57,14 @@ const SubmitStoryDialog = ({ open, onOpenChange }: SubmitStoryDialogProps) => {
       toast.error(t("submitStory.tooShort"));
       return;
     }
+    const tags = [
+      ...new Set(
+        tagsInput
+          .split(",")
+          .map((tag) => tag.trim().toLowerCase())
+          .filter(Boolean)
+      ),
+    ].slice(0, 5);
     try {
       await submit.mutateAsync({
         userId: user.id,
@@ -66,10 +73,12 @@ const SubmitStoryDialog = ({ open, onOpenChange }: SubmitStoryDialogProps) => {
         destination,
         content: content.trim(),
         imageUrl,
+        tags,
       });
       toast.success(t("submitStory.success"));
       setContent("");
       setImageUrl(null);
+      setTagsInput("");
       onOpenChange(false);
     } catch (err) {
       toast.error(err instanceof Error ? err.message : t("submitStory.sendError"));
@@ -116,9 +125,10 @@ const SubmitStoryDialog = ({ open, onOpenChange }: SubmitStoryDialogProps) => {
               onChange={(e) => setDestination(e.target.value)}
               className="flex h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
             >
-              {DESTINATIONS.map((d) => (
-                <option key={d} value={d}>
-                  {d}
+              {destinations.map((d) => (
+                <option key={d.id} value={d.name}>
+                  {d.name}
+                  {d.city ? ` (${d.city})` : ""}
                 </option>
               ))}
             </select>
@@ -138,6 +148,15 @@ const SubmitStoryDialog = ({ open, onOpenChange }: SubmitStoryDialogProps) => {
             <p className="text-xs text-muted-foreground">
               {t("submitStory.charCount", { count: content.length })}
             </p>
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="tags">{t("submitStory.tags")}</Label>
+            <Input
+              id="tags"
+              value={tagsInput}
+              onChange={(e) => setTagsInput(e.target.value)}
+              placeholder={t("submitStory.tagsPlaceholder")}
+            />
           </div>
           <div className="space-y-2">
             <Label>{t("submitStory.photo")}</Label>

@@ -1,0 +1,17 @@
+{
+  "eyebrow": "Expériences responsables",
+  "title": "Activités",
+  "description": "Vivez des expériences uniques et authentiques qui respectent l'environnement et soutiennent les communautés locales.",
+  "searchPlaceholder": "Rechercher une activité...",
+  "all": "Toutes",
+  "availableActivities": "activités disponibles",
+  "ecoCertified": "Éco-certifié",
+  "durationPending": "Durée à venir",
+  "neutral": "Neutre",
+  "onRequest": "Sur devis",
+  "book": "Réserver",
+  "noResults": {
+    "title": "Aucune activité trouvée",
+    "description": "Essayez une autre recherche"
+  }
+}

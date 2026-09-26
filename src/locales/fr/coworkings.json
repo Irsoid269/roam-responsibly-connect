@@ -1,0 +1,24 @@
+{
+  "eyebrow": "Espaces vérifiés",
+  "title": "Espaces de coworking",
+  "description": "Trouvez l'espace de travail idéal pour votre séjour, avec WiFi rapide et impact carbone minimal.",
+  "searchPlaceholder": "Rechercher un espace...",
+  "resultsFound": "espaces trouvés",
+  "sortBy": "Trier par",
+  "sort": {
+    "popular": "Populaire",
+    "priceLow": "Prix croissant",
+    "priceHigh": "Prix décroissant",
+    "wifi": "Vitesse WiFi"
+  },
+  "perDay": "/jour",
+  "book": "Réserver",
+  "empty": {
+    "title": "Aucun espace disponible",
+    "description": "Les espaces de coworking seront ajoutés prochainement"
+  },
+  "noResults": {
+    "title": "Aucun espace trouvé",
+    "description": "Essayez une autre recherche"
+  }
+}

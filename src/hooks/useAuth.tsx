@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { User, Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
+import i18n, { SUPPORTED_LANGUAGES, type SupportedLanguage } from "@/i18n";
 
 interface AuthContextType {
   user: User | null;
@@ -8,6 +9,7 @@ interface AuthContextType {
   loading: boolean;
   signUp: (email: string, password: string, fullName: string) => Promise<{ error: Error | null }>;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
+  signInWithMagicLink: (email: string) => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
   resetPassword: (email: string) => Promise<{ error: Error | null }>;
   updatePassword: (password: string) => Promise<{ error: Error | null }>;
@@ -38,6 +40,31 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return () => subscription.unsubscribe();
   }, []);
 
+  // Cahier §7.11 : la langue doit être persistée dans le profil, pas
+  // seulement dans le localStorage — sinon elle se perd en changeant
+  // d'appareil. La base fait foi dès qu'un profil existe.
+  useEffect(() => {
+    if (!user) return;
+    let cancelled = false;
+    supabase
+      .from("profiles")
+      .select("language")
+      .eq("user_id", user.id)
+      .maybeSingle()
+      .then(({ data }) => {
+        if (cancelled || !data?.language) return;
+        if (
+          SUPPORTED_LANGUAGES.includes(data.language as SupportedLanguage) &&
+          data.language !== i18n.language
+        ) {
+          i18n.changeLanguage(data.language);
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [user]);
+
   const signUp = async (email: string, password: string, fullName: string) => {
     const { error } = await supabase.auth.signUp({
       email,
@@ -55,6 +82,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const { error } = await supabase.auth.signInWithPassword({
       email,
       password,
+    });
+    return { error };
+  };
+
+  const signInWithMagicLink = async (email: string) => {
+    const { error } = await supabase.auth.signInWithOtp({
+      email,
+      options: {
+        emailRedirectTo: `${window.location.origin}/`,
+      },
     });
     return { error };
   };
@@ -78,7 +115,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, session, loading, signUp, signIn, signOut, resetPassword, updatePassword }}
+      value={{
+        user,
+        session,
+        loading,
+        signUp,
+        signIn,
+        signInWithMagicLink,
+        signOut,
+        resetPassword,
+        updatePassword,
+      }}
     >
       {children}
     </AuthContext.Provider>

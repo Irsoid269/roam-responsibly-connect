@@ -1,0 +1,117 @@
+{
+  "title": "Frequently asked questions",
+  "subtitle": "Quickly find answers to your questions.",
+  "searchPlaceholder": "Search a question...",
+  "categories": {
+    "general": "General",
+    "carbon": "Carbon",
+    "booking": "Bookings",
+    "payment": "Payments",
+    "community": "Community",
+    "security": "Security"
+  },
+  "items": {
+    "general": [
+      {
+        "question": "What is Amani Resorts?",
+        "answer": "Amani Resorts is an all-in-one platform for digital nomads and remote workers in the Comoros. We offer stays combining accommodation, coworking space and activities, with a strong focus on environmental impact and carbon transparency."
+      },
+      {
+        "question": "How does the platform work?",
+        "answer": "You choose a destination in the Comoros, select your accommodation, coworking space and desired activities. Our system automatically calculates the carbon footprint of your stay and offers offsetting options. You book and pay in a single step."
+      },
+      {
+        "question": "Which destinations are available?",
+        "answer": "We offer destinations across the Comoros archipelago: Grande Comore, Anjouan and Mohéli. Each island is selected for its quality of life, digital infrastructure and environmental commitment. Discover our full catalog on the Destinations page."
+      }
+    ],
+    "carbon": [
+      {
+        "question": "How is my carbon footprint calculated?",
+        "answer": "Our calculation is based on the ADEME methodology and takes into account: transport (distance, mode), accommodation (type, certification), activities and local mobility. Each emission factor is regularly updated based on the latest scientific data."
+      },
+      {
+        "question": "What is carbon offsetting?",
+        "answer": "Carbon offsetting means funding projects that absorb or avoid CO₂ emissions (reforestation, renewable energy, etc.) to 'neutralize' emissions you can't avoid. It's a complement, not a substitute, to reducing your emissions."
+      },
+      {
+        "question": "How do you choose your offset projects?",
+        "answer": "All our projects are certified by recognized bodies (Gold Standard, VCS, etc.). We favor projects with social and environmental co-benefits. You can track the impact of your contributions in real time on your dashboard."
+      },
+      {
+        "question": "Is carbon offsetting really effective?",
+        "answer": "Offsetting is one tool among others. We first encourage reduction (train instead of plane, longer stays, etc.). Offsetting covers residual emissions. Our projects are audited and you receive quarterly impact reports."
+      }
+    ],
+    "booking": [
+      {
+        "question": "How do I book a stay?",
+        "answer": "1) Choose your destination, 2) Select your dates and services (accommodation, coworking, activities), 3) Check the carbon impact and choose your offset level, 4) Confirm and pay. You'll immediately receive your confirmations by email."
+      },
+      {
+        "question": "Can I modify my reservation?",
+        "answer": "Yes, you can modify your reservation from your account up to 7 days before the stay begins (except for specific partner conditions). Fees may apply depending on the changes."
+      },
+      {
+        "question": "What is the cancellation policy?",
+        "answer": "Cancellation terms vary by partner. Generally: free cancellation up to 14 days before, 50% up to 7 days before, and no refund after that. Exact details are shown at the time of booking."
+      },
+      {
+        "question": "Can I book for a group?",
+        "answer": "Yes! We offer special rates and services for groups (team building, corporate retreats). Contact us directly for a custom quote."
+      }
+    ],
+    "payment": [
+      {
+        "question": "What payment methods do you accept?",
+        "answer": "We accept credit cards (Visa, Mastercard, American Express), PayPal and bank transfers for amounts over €1000. All payments are secured via Stripe."
+      },
+      {
+        "question": "Can I pay in installments?",
+        "answer": "Yes, for reservations over €500, you can choose to pay in 3 interest-free installments. A 30% deposit is required at booking, with the balance charged automatically."
+      },
+      {
+        "question": "Are carbon donations tax-deductible?",
+        "answer": "Yes, your contributions to offset projects qualify for a tax reduction (66% in France). A tax receipt is automatically generated and emailed after each donation."
+      },
+      {
+        "question": "How do I get an invoice?",
+        "answer": "All invoices are available in your account, under 'My payments'. You can download them as a PDF at any time. Businesses can enter their billing information."
+      }
+    ],
+    "community": [
+      {
+        "question": "How do I join the community?",
+        "answer": "The community is open to all registered users. Create your profile, complete your information, and you'll get access to the forum, events and the traveler network."
+      },
+      {
+        "question": "What are the benefits of the community?",
+        "answer": "Access to the forum and discussion groups, invitations to events and meetups, the ability to share your experiences, badges and recognition for your engagement, and networking with other digital nomads."
+      },
+      {
+        "question": "How do I become an ambassador?",
+        "answer": "The ambassador program is open to active community members. Criteria: at least 3 trips with Amani Resorts, regular contribution to the community, and alignment with our values. Apply via the Ambassadors page."
+      }
+    ],
+    "security": [
+      {
+        "question": "Is my data secure?",
+        "answer": "Absolutely. We use SSL encryption for all transactions, store your data on secure servers in Europe, and comply with GDPR. We never sell your data to third parties."
+      },
+      {
+        "question": "How do I delete my account?",
+        "answer": "You can request account deletion from your profile settings or by contacting us. All your data will be erased within 30 days, in accordance with GDPR."
+      },
+      {
+        "question": "Are partners verified?",
+        "answer": "Yes, all our partners go through a rigorous verification process. We check their legal existence, environmental certifications and collect user reviews. We also conduct regular mystery visits."
+      }
+    ]
+  },
+  "notFound": {
+    "title": "Didn't find your answer?",
+    "subtitle": "Our support team is here to help.",
+    "contactUs": "Contact us",
+    "helpCenter": "Help center"
+  }
+}
