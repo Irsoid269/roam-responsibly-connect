@@ -1,0 +1,53 @@
+{
+  "title": "Centre d'aide",
+  "subtitle": "Comment pouvons-nous vous aider ?",
+  "searchPlaceholder": "Rechercher dans l'aide...",
+  "categories": {
+    "bookings": { "title": "Réservations", "description": "Gérer vos réservations et paiements" },
+    "account": { "title": "Compte", "description": "Paramètres et profil utilisateur" },
+    "community": { "title": "Communauté", "description": "Forum, événements et networking" }
+  },
+  "articlesCount": "{{count}} articles",
+  "popularArticlesTitle": "Articles populaires",
+  "popularArticles": [
+    { "title": "Comment annuler ma réservation ?", "category": "Réservations" },
+    { "title": "Comprendre le calcul carbone", "category": "Impact" },
+    { "title": "Modifier mes informations personnelles", "category": "Compte" },
+    { "title": "Rejoindre la communauté", "category": "Communauté" },
+    { "title": "Devenir ambassadeur", "category": "Ambassadeurs" },
+    { "title": "Obtenir un reçu fiscal", "category": "Paiements" }
+  ],
+  "faqTitle": "Questions fréquentes",
+  "faqs": [
+    {
+      "question": "Comment fonctionne la compensation carbone ?",
+      "answer": "Lorsque vous réservez un séjour, nous calculons automatiquement l'empreinte carbone associée (transport, hébergement, activités). Vous pouvez ensuite choisir de compenser tout ou partie de ces émissions en finançant des projets environnementaux certifiés."
+    },
+    {
+      "question": "Puis-je annuler ma réservation ?",
+      "answer": "Oui, vous pouvez annuler votre réservation depuis votre espace personnel. Les conditions d'annulation varient selon les partenaires. Consultez les conditions spécifiques lors de votre réservation pour connaître les délais et éventuels frais."
+    },
+    {
+      "question": "Comment contacter un espace de coworking directement ?",
+      "answer": "Une fois votre réservation confirmée, vous recevez les coordonnées complètes de l'établissement par email. Vous pouvez également les retrouver dans votre espace personnel, section 'Mes réservations'."
+    },
+    {
+      "question": "Les dons sont-ils déductibles des impôts ?",
+      "answer": "Oui, les contributions aux projets de compensation carbone donnent droit à une réduction d'impôt. Vous recevez automatiquement un reçu fiscal par email après chaque don. Le taux de déduction dépend de votre pays de résidence."
+    },
+    {
+      "question": "Comment devenir partenaire ?",
+      "answer": "Si vous gérez un hébergement éco-responsable, un espace de coworking ou une activité durable, vous pouvez postuler depuis notre page 'Devenir partenaire'. Notre équipe examine chaque candidature selon nos critères de durabilité."
+    }
+  ],
+  "viewAllFaq": "Voir toutes les FAQ",
+  "contact": {
+    "title": "Besoin d'aide supplémentaire ?",
+    "subtitle": "Notre équipe support est disponible pour répondre à toutes vos questions.",
+    "emailTitle": "Email",
+    "emailResponse": "Réponse sous 24h",
+    "chatTitle": "Chat",
+    "chatHours": "Lun-Ven, 9h-18h",
+    "startChat": "Démarrer un chat"
+  }
+}

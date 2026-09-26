@@ -11,6 +11,8 @@
     "title": "Traveler reviews",
     "description": "Experience feedback reviewed by the Amani team to help you plan your stay in the Comoros."
   },
+  "verified": "Verified",
+  "verifiedTooltip": "This review is from a traveler who actually stayed with Amani",
   "avgRating": "Average rating",
   "reviewsPublished": "Reviews published",
   "leaveReview": "Leave a review",

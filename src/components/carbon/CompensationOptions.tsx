@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { 
+import { useTranslation } from "react-i18next";
+import {
   Heart, 
   TreePine, 
   HandHeart, 
@@ -28,13 +29,15 @@ import {
 import { toast } from "sonner";
 import { QRCodeSVG } from "qrcode.react";
 import { format } from "date-fns";
-import { fr } from "date-fns/locale";
+import { fr, enUS } from "date-fns/locale";
 
 interface CompensationOptionsProps {
   totalCO2: number;
 }
 
 const CompensationOptions = ({ totalCO2 }: CompensationOptionsProps) => {
+  const { t, i18n } = useTranslation("carbonCalculator");
+  const dateLocale = i18n.language === "en" ? enUS : fr;
   const { user } = useAuth();
   const navigate = useNavigate();
   const { data: ngos = [] } = useActiveNgos();
@@ -52,7 +55,7 @@ const CompensationOptions = ({ totalCO2 }: CompensationOptionsProps) => {
 
   const handleDonate = async () => {
     if (!user) {
-      toast.error("Connectez-vous pour enregistrer votre don");
+      toast.error(t("compensation.loginRequiredDonation"));
       navigate("/login");
       return;
     }
@@ -66,9 +69,9 @@ const CompensationOptions = ({ totalCO2 }: CompensationOptionsProps) => {
         co2OffsetKg: totalCO2,
       });
       setDonated(true);
-      toast.success("Don enregistré — nous revenons vers vous pour la confirmation du paiement");
+      toast.success(t("compensation.donationSaved"));
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Erreur lors de l'enregistrement du don");
+      toast.error(error instanceof Error ? error.message : t("compensation.donationError"));
     }
   };
 
@@ -84,7 +87,7 @@ const CompensationOptions = ({ totalCO2 }: CompensationOptionsProps) => {
 
   const handleRegister = async () => {
     if (!user) {
-      toast.error("Connectez-vous pour vous inscrire");
+      toast.error(t("compensation.loginRequiredAction"));
       navigate("/login");
       return;
     }
@@ -92,15 +95,15 @@ const CompensationOptions = ({ totalCO2 }: CompensationOptionsProps) => {
     try {
       const participation = await registerForAction.mutateAsync(selectedAction);
       setRegisteredQr((participation as { qr_code: string }).qr_code);
-      toast.success("Inscription confirmée !");
+      toast.success(t("compensation.registrationConfirmed"));
     } catch (error) {
       const code = error instanceof Error ? error.message : "";
       const messages: Record<string, string> = {
-        already_registered: "Vous êtes déjà inscrit à cette session",
-        session_full: "Cette session est complète",
-        session_not_found: "Session introuvable",
+        already_registered: t("compensation.alreadyRegistered"),
+        session_full: t("compensation.sessionFull"),
+        session_not_found: t("compensation.sessionNotFound"),
       };
-      toast.error(messages[code] || "Erreur lors de l'inscription");
+      toast.error(messages[code] || t("compensation.registrationError"));
     }
   };
 
@@ -120,15 +123,15 @@ const CompensationOptions = ({ totalCO2 }: CompensationOptionsProps) => {
             <Leaf className="w-6 h-6 text-carbon-saved" />
           </div>
           <div>
-            <h3 className="font-display text-2xl font-medium">Compensez votre impact</h3>
-            <p className="text-muted-foreground">Choisissez votre mode de compensation · Amani Resorts</p>
+            <h3 className="font-display text-2xl font-medium">{t("compensation.title")}</h3>
+            <p className="text-muted-foreground">{t("compensation.subtitle")}</p>
           </div>
         </div>
 
         <div className="mb-4">
           <EcoScoreLegend />
           <p className="mt-2 text-xs text-muted-foreground">
-            Empreinte estimée : {totalCO2} kgCO₂e · Score {ecoScoreFromKg(totalCO2).grade}
+            {t("compensation.estimatedFootprint", { total: totalCO2, grade: ecoScoreFromKg(totalCO2).grade })}
           </p>
         </div>
 
@@ -138,25 +141,25 @@ const CompensationOptions = ({ totalCO2 }: CompensationOptionsProps) => {
             onClick={() => setSelectedTab("donation")}
             className={cn(
               "flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-lg font-medium transition-all",
-              selectedTab === "donation" 
-                ? "bg-card shadow-sm text-foreground" 
+              selectedTab === "donation"
+                ? "bg-card shadow-sm text-foreground"
                 : "text-muted-foreground hover:text-foreground"
             )}
           >
             <Heart className="w-4 h-4" />
-            Don à une association
+            {t("compensation.donationTab")}
           </button>
           <button
             onClick={() => setSelectedTab("action")}
             className={cn(
               "flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-lg font-medium transition-all",
-              selectedTab === "action" 
-                ? "bg-card shadow-sm text-foreground" 
+              selectedTab === "action"
+                ? "bg-card shadow-sm text-foreground"
                 : "text-muted-foreground hover:text-foreground"
             )}
           >
             <HandHeart className="w-4 h-4" />
-            Action terrain
+            {t("compensation.actionTab")}
           </button>
         </div>
       </div>
@@ -175,17 +178,17 @@ const CompensationOptions = ({ totalCO2 }: CompensationOptionsProps) => {
               <div className="bg-carbon-saved/10 rounded-xl p-4 border border-carbon-saved/20">
                 <div className="flex items-center gap-2 mb-2">
                   <TreePine className="w-5 h-5 text-carbon-saved" />
-                  <span className="font-medium">Compensation suggérée</span>
+                  <span className="font-medium">{t("compensation.suggestedTitle")}</span>
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  Pour compenser {totalCO2} kgCO₂e, nous vous suggérons un don de 
+                  {t("compensation.suggestedBody", { total: totalCO2 })}
                   <strong className="text-foreground"> {defaultAmount}€</strong>
                 </p>
               </div>
 
               {/* Amount Selection */}
               <div>
-                <label className="text-sm font-medium mb-3 block">Montant du don</label>
+                <label className="text-sm font-medium mb-3 block">{t("compensation.donationAmount")}</label>
                 <div className="grid grid-cols-4 gap-2 mb-3">
                   {donationAmounts.map((amount) => (
                     <button
@@ -207,7 +210,7 @@ const CompensationOptions = ({ totalCO2 }: CompensationOptionsProps) => {
                     type="number"
                     value={customAmount || ""}
                     onChange={(e) => setCustomAmount(Number(e.target.value))}
-                    placeholder="Montant personnalisé"
+                    placeholder={t("compensation.customAmount")}
                     className="w-full px-4 py-3 rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-carbon-saved/50"
                   />
                   <span className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground">€</span>
@@ -218,19 +221,18 @@ const CompensationOptions = ({ totalCO2 }: CompensationOptionsProps) => {
               {donated ? (
                 <div className="text-center py-8 space-y-3">
                   <CheckCircle2 className="w-12 h-12 text-carbon-saved mx-auto" />
-                  <p className="font-medium">Don enregistré, merci !</p>
+                  <p className="font-medium">{t("compensation.donationThanks")}</p>
                   <p className="text-sm text-muted-foreground max-w-sm mx-auto">
-                    Nous vous contacterons pour finaliser le paiement et vous envoyer votre reçu.
-                    Retrouvez le suivi dans votre espace voyageur.
+                    {t("compensation.donationThanksBody")}
                   </p>
                 </div>
               ) : (
                 <>
                   <div>
-                    <label className="text-sm font-medium mb-3 block">Choisir une association</label>
+                    <label className="text-sm font-medium mb-3 block">{t("compensation.chooseAssociation")}</label>
                     {ngos.length === 0 ? (
                       <p className="text-sm text-muted-foreground">
-                        Aucune association disponible pour le moment.
+                        {t("compensation.noNgos")}
                       </p>
                     ) : (
                       <div className="grid md:grid-cols-2 gap-3">
@@ -273,12 +275,12 @@ const CompensationOptions = ({ totalCO2 }: CompensationOptionsProps) => {
                     onClick={handleDonate}
                   >
                     <Heart className="w-5 h-5" />
-                    Faire un don de {customAmount || defaultAmount}€
+                    {t("compensation.donateButton", { amount: customAmount || defaultAmount })}
                     <ArrowRight className="w-4 h-4" />
                   </Button>
 
                   <p className="text-xs text-center text-muted-foreground">
-                    Don enregistré et confirmé manuellement pour l'instant · Reçu fiscal envoyé par email.
+                    {t("compensation.donationNote")}
                   </p>
                 </>
               )}
@@ -295,20 +297,19 @@ const CompensationOptions = ({ totalCO2 }: CompensationOptionsProps) => {
               <div className="bg-carbon-offset/10 rounded-xl p-4 border border-carbon-offset/20">
                 <div className="flex items-center gap-2 mb-2">
                   <HandHeart className="w-5 h-5 text-carbon-offset" />
-                  <span className="font-medium">Agir concrètement</span>
+                  <span className="font-medium">{t("compensation.actOnGroundTitle")}</span>
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  Participez à une action terrain près de votre destination et gagnez des badges !
+                  {t("compensation.actOnGroundBody")}
                 </p>
               </div>
 
               {registeredQr ? (
                 <div className="text-center py-6 space-y-4">
                   <CheckCircle2 className="w-12 h-12 text-carbon-offset mx-auto" />
-                  <p className="font-medium">Inscription confirmée !</p>
+                  <p className="font-medium">{t("compensation.registrationConfirmedTitle")}</p>
                   <p className="text-sm text-muted-foreground max-w-sm mx-auto">
-                    Présentez ce QR à l'organisateur le jour de l'action pour valider votre participation.
-                    Usage unique.
+                    {t("compensation.registrationConfirmedBody")}
                   </p>
                   <div className="flex justify-center">
                     <div className="p-4 bg-white rounded-xl border border-border">
@@ -322,7 +323,7 @@ const CompensationOptions = ({ totalCO2 }: CompensationOptionsProps) => {
                   <div className="space-y-4">
                     {actionSessions.length === 0 ? (
                       <p className="text-sm text-muted-foreground">
-                        Aucune session programmée pour le moment.
+                        {t("compensation.noSessions")}
                       </p>
                     ) : (
                       actionSessions.map((session) => {
@@ -358,13 +359,13 @@ const CompensationOptions = ({ totalCO2 }: CompensationOptionsProps) => {
                                   )}
                                   <span className="flex items-center gap-1">
                                     <Calendar className="w-3 h-3" />
-                                    {format(new Date(session.starts_at), "d MMMM yyyy", { locale: fr })}
+                                    {format(new Date(session.starts_at), "d MMMM yyyy", { locale: dateLocale })}
                                   </span>
                                   <span className="flex items-center gap-1">
                                     <Users className="w-3 h-3" />
                                     {full
-                                      ? "Complet"
-                                      : `${session.registered_count}/${session.capacity} participants`}
+                                      ? t("compensation.full")
+                                      : t("compensation.participants", { count: session.registered_count, capacity: session.capacity })}
                                   </span>
                                 </div>
                                 <div className="mt-3 h-1.5 bg-muted rounded-full overflow-hidden">
@@ -392,7 +393,7 @@ const CompensationOptions = ({ totalCO2 }: CompensationOptionsProps) => {
                     onClick={handleRegister}
                   >
                     <HandHeart className="w-5 h-5" />
-                    S'inscrire à l'action
+                    {t("compensation.registerButton")}
                     <ArrowRight className="w-4 h-4" />
                   </Button>
                 </>

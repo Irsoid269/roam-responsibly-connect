@@ -1,21 +1,37 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { defaultHomepageCta, useHomepageCta } from "@/hooks/useCatalogQueries";
+import { useHomepageCta } from "@/hooks/useCatalogQueries";
 
 const CTASection = () => {
+  const { t } = useTranslation("home");
   const { data } = useHomepageCta();
-  const cta = data ?? defaultHomepageCta;
 
   // Hide only when a real DB row exists and is deactivated
   if (data && !data.missing && !data.is_active) {
     return null;
   }
 
-  const titleLines = (cta.title || defaultHomepageCta.title).split("\n");
-  const trustItems =
-    cta.trust_items?.length > 0 ? cta.trust_items : defaultHomepageCta.trust_items;
+  // No admin-authored row yet → fall back to the translated default so the
+  // section follows the active language instead of always showing French.
+  const cta =
+    data && !data.missing
+      ? data
+      : {
+          badge_text: t("cta.badge"),
+          title: `${t("cta.titleLine1")}\n${t("cta.titleLine2")}`,
+          description: t("cta.description"),
+          primary_label: t("cta.primaryLabel"),
+          primary_url: "/signup",
+          secondary_label: t("cta.secondaryLabel"),
+          secondary_url: "/destinations",
+          trust_items: t("cta.trustItems", { returnObjects: true }) as string[],
+        };
+
+  const titleLines = cta.title.split("\n");
+  const trustItems = cta.trust_items?.length > 0 ? cta.trust_items : [];
 
   return (
     <section className="py-16 md:py-24 bg-muted/30">

@@ -11,6 +11,8 @@
     "title": "Avis voyageurs",
     "description": "Retours d'expérience validés par l'équipe Amani pour préparer votre séjour aux Comores."
   },
+  "verified": "Vérifié",
+  "verifiedTooltip": "Cet avis provient d'un voyageur ayant réellement séjourné avec Amani",
   "avgRating": "Note moyenne",
   "reviewsPublished": "Avis publiés",
   "leaveReview": "Laisser un avis",

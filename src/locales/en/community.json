@@ -65,6 +65,8 @@
     "yourStory": "Your story",
     "storyPlaceholder": "Tell us about your Amani stay in the Comoros…",
     "charCount": "{{count}}/1000 · min. 20 characters",
+    "tags": "Tags (optional)",
+    "tagsPlaceholder": "coworking, beach, immersion (comma-separated)",
     "photo": "Photo (optional)",
     "cancel": "Cancel",
     "sending": "Sending…",

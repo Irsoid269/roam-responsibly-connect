@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import {
   Award,
   MapPin,
@@ -20,6 +21,7 @@ import {
 } from "@/hooks/useCatalogQueries";
 
 const AmbassadorsPage = () => {
+  const { t } = useTranslation("ambassadors");
   const { data: ambassadors = [], isLoading, isError } = useAmbassadors();
   const { data: benefits = [] } = useAmbassadorBenefits();
 
@@ -34,17 +36,16 @@ const AmbassadorsPage = () => {
           >
             <Badge variant="outline" className="mb-4 bg-primary/10 border-primary/20">
               <Award className="w-3 h-3 mr-1" />
-              Programme Ambassadeurs
+              {t("eyebrow")}
             </Badge>
             <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
-              Nos Ambassadeurs
+              {t("title")}
             </h1>
             <p className="text-lg text-muted-foreground mb-8">
-              Rencontrez les voyageurs passionnés qui incarnent les valeurs
-              d&apos;Amani Resorts et inspirent notre communauté au quotidien.
+              {t("description")}
             </p>
             <Button size="lg" asChild>
-              <Link to="/become-partner">Devenir ambassadeur</Link>
+              <Link to="/become-partner">{t("becomeAmbassador")}</Link>
             </Button>
           </motion.div>
         </div>
@@ -58,12 +59,12 @@ const AmbassadorsPage = () => {
             </div>
           ) : isError ? (
             <p className="text-center text-muted-foreground py-16">
-              Impossible de charger les ambassadeurs. Appliquez la migration{" "}
+              {t("loadError")}{" "}
               <code className="text-sm">ambassadors_admin_cms</code>.
             </p>
           ) : ambassadors.length === 0 ? (
             <p className="text-center text-muted-foreground py-16">
-              Aucun ambassadeur publié pour le moment.
+              {t("empty")}
             </p>
           ) : (
             <div className="grid md:grid-cols-2 gap-8">
@@ -94,7 +95,7 @@ const AmbassadorsPage = () => {
                             </h3>
                             <Badge className="bg-primary/10 text-primary border-0">
                               <Award className="w-3 h-3 mr-1" />
-                              Ambassadeur
+                              {t("ambassador")}
                             </Badge>
                           </div>
                           {ambassador.title && (
@@ -129,19 +130,19 @@ const AmbassadorsPage = () => {
                             <Leaf className="w-4 h-4" />
                             {ambassador.carbon_saved}
                           </p>
-                          <p className="text-xs text-muted-foreground">kg CO₂ économisé</p>
+                          <p className="text-xs text-muted-foreground">{t("kgCO2Saved")}</p>
                         </div>
                         <div className="text-center">
                           <p className="text-xl font-bold text-foreground">
                             {ambassador.countries_visited}
                           </p>
-                          <p className="text-xs text-muted-foreground">pays visités</p>
+                          <p className="text-xs text-muted-foreground">{t("countriesVisited")}</p>
                         </div>
                         <div className="text-center">
                           <p className="text-xl font-bold text-foreground">
                             {ambassador.followers_label}
                           </p>
-                          <p className="text-xs text-muted-foreground">followers</p>
+                          <p className="text-xs text-muted-foreground">{t("followers")}</p>
                         </div>
                       </div>
 
@@ -196,11 +197,10 @@ const AmbassadorsPage = () => {
               className="max-w-4xl mx-auto"
             >
               <h2 className="text-3xl font-bold text-center text-foreground mb-4">
-                Avantages du programme
+                {t("benefitsTitle")}
               </h2>
               <p className="text-center text-muted-foreground mb-12 max-w-xl mx-auto">
-                En devenant ambassadeur, vous bénéficiez d&apos;avantages exclusifs
-                tout en contribuant à promouvoir le voyage responsable.
+                {t("benefitsDescription")}
               </p>
               <div className="grid md:grid-cols-2 gap-4">
                 {benefits.map((benefit, index) => (
@@ -233,13 +233,12 @@ const AmbassadorsPage = () => {
             className="bg-gradient-to-r from-primary to-accent rounded-3xl p-8 md:p-12 text-center text-primary-foreground"
           >
             <Award className="w-12 h-12 mx-auto mb-4 opacity-80" />
-            <h2 className="text-3xl font-bold mb-4">Rejoignez le programme</h2>
+            <h2 className="text-3xl font-bold mb-4">{t("cta.title")}</h2>
             <p className="text-lg opacity-80 mb-8 max-w-xl mx-auto">
-              Vous êtes un voyageur engagé avec une communauté active ? Postulez
-              pour devenir ambassadeur Amani Resorts.
+              {t("cta.description")}
             </p>
             <Button size="lg" variant="secondary" asChild>
-              <Link to="/contact">Postuler maintenant</Link>
+              <Link to="/contact">{t("cta.button")}</Link>
             </Button>
           </motion.div>
         </div>

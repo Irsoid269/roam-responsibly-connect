@@ -1,0 +1,29 @@
+{
+  "title": "Contact us",
+  "description": "A question, a suggestion or a partnership? The Amani team is here.",
+  "methods": {
+    "email": { "title": "Email", "description": "Reply within 24 business hours" },
+    "phone": { "title": "Phone", "description": "Mon-Fri, 9am-6pm (EAT)" },
+    "address": { "title": "Headquarters", "description": "Grande Comore" }
+  },
+  "form": {
+    "title": "Send us a message",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "email": "Email",
+    "subject": "Subject",
+    "subjects": {
+      "general": "General question",
+      "booking": "Reservation",
+      "partnership": "Partnership",
+      "press": "Press",
+      "support": "Support",
+      "other": "Other"
+    },
+    "message": "Message",
+    "send": "Send",
+    "fillRequired": "Please fill in all required fields",
+    "success": "Message sent — we'll reply within 24h",
+    "sendError": "Unable to send — apply the contact_messages migration"
+  }
+}

@@ -45,6 +45,8 @@
     "noActivity": "No activity for this destination.",
     "perNight": "/night",
     "book": "Book",
+    "priceOnRequest": "On request",
+    "durationUpcoming": "Duration coming soon",
     "ecoCertified": "Eco-certified",
     "planStay": "Plan my stay",
     "dates": "Dates",

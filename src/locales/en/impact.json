@@ -1,0 +1,45 @@
+{
+  "hero": {
+    "eyebrow": "Our commitment",
+    "titleLine1": "Our",
+    "titleLine2": "environmental impact",
+    "description": "Together, we're building more responsible tourism. Discover how your community contributes to a sustainable future.",
+    "calculate": "Calculate my impact",
+    "learnMore": "Learn more"
+  },
+  "stats": [
+    { "label": "CO₂ offset" },
+    { "label": "Engaged travelers" },
+    { "label": "Projects supported" },
+    { "label": "Trees planted" }
+  ],
+  "breakdown": {
+    "title": "Understanding travel emissions",
+    "description": "Here's how the carbon emissions of an average Amani Resorts stay break down.",
+    "cardTitle": "Emissions breakdown"
+  },
+  "emissions": ["Air travel", "Accommodation", "Local mobility", "Activities"],
+  "reduce": {
+    "title": "How to reduce it?",
+    "tips": [
+      { "strong": "Favor the train", "rest": "for trips under 1000km - up to 90% fewer emissions" },
+      { "strong": "Stay longer", "rest": "- a 3-month stay emits 3x less than a monthly round trip" },
+      { "strong": "Choose eco-certified accommodation", "rest": "with renewable energy" },
+      { "strong": "Soft mobility on site", "rest": "- bike, walking, public transport" }
+    ]
+  },
+  "projectsTitle": "Compensation projects",
+  "projectsDescription": "Your contributions fund certified environmental projects around the world.",
+  "projects": [
+    { "name": "Amazon Reforestation", "location": "Brazil", "target": "10,000 trees" },
+    { "name": "Mangrove Protection", "location": "Indonesia", "target": "500 hectares" },
+    { "name": "Solar Power Villages", "location": "Kenya", "target": "25 villages" }
+  ],
+  "goal": "Goal",
+  "viewPartners": "View all our partners",
+  "cta": {
+    "title": "Calculate your footprint",
+    "description": "Estimate the impact of your next trip and discover how to reduce it.",
+    "button": "Go to calculator"
+  }
+}

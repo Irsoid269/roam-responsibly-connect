@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
-import { 
+import { useTranslation } from "react-i18next";
+import {
   Car, 
   Smartphone, 
   TreePine, 
@@ -15,62 +16,63 @@ interface CarbonEquivalentsProps {
 }
 
 const CarbonEquivalents = ({ totalCO2 }: CarbonEquivalentsProps) => {
+  const { t } = useTranslation("carbonCalculator");
   // Conversion factors (approximate)
   const equivalents = [
     {
       icon: Car,
       value: Math.round(totalCO2 / 0.21), // ~0.21 kg CO2 per km average car
-      unit: "km",
-      label: "en voiture",
+      unit: t("equivalents.car.unit"),
+      label: t("equivalents.car.label"),
       color: "bg-secondary/10 text-secondary"
     },
     {
       icon: Smartphone,
       value: Math.round(totalCO2 / 0.08), // ~0.08 kg CO2 per full charge
-      unit: "recharges",
-      label: "de smartphone",
+      unit: t("equivalents.phone.unit"),
+      label: t("equivalents.phone.label"),
       color: "bg-primary/10 text-primary"
     },
     {
       icon: TreePine,
       value: Math.round(totalCO2 / 22), // A tree absorbs ~22 kg CO2/year
-      unit: "arbres",
-      label: "à planter pour 1 an",
+      unit: t("equivalents.trees.unit"),
+      label: t("equivalents.trees.label"),
       color: "bg-carbon-saved/10 text-carbon-saved"
     },
     {
       icon: Beef,
       value: Math.round(totalCO2 / 27), // ~27 kg CO2 per kg of beef
-      unit: "kg",
-      label: "de bœuf",
+      unit: t("equivalents.beef.unit"),
+      label: t("equivalents.beef.label"),
       color: "bg-secondary/10 text-secondary"
     },
     {
       icon: Tv,
       value: Math.round(totalCO2 / 0.097), // ~0.097 kg CO2 per hour of streaming
-      unit: "heures",
-      label: "de streaming",
+      unit: t("equivalents.streaming.unit"),
+      label: t("equivalents.streaming.label"),
       color: "bg-accent/10 text-accent"
     },
     {
       icon: ShowerHead,
       value: Math.round(totalCO2 / 0.42), // ~0.42 kg CO2 per 10 min shower
-      unit: "douches",
-      label: "de 10 minutes",
+      unit: t("equivalents.shower.unit"),
+      label: t("equivalents.shower.label"),
       color: "bg-primary-glow/10 text-primary-glow"
     },
     {
       icon: Lightbulb,
       value: Math.round(totalCO2 / 0.0045), // ~0.0045 kg CO2 per hour LED bulb
-      unit: "heures",
-      label: "d'éclairage LED",
+      unit: t("equivalents.bulb.unit"),
+      label: t("equivalents.bulb.label"),
       color: "bg-warning/15 text-warning"
     },
     {
       icon: Shirt,
       value: Math.round(totalCO2 / 5.5), // ~5.5 kg CO2 per t-shirt
-      unit: "t-shirts",
-      label: "fabriqués",
+      unit: t("equivalents.tshirt.unit"),
+      label: t("equivalents.tshirt.label"),
       color: "bg-carbon-offset/10 text-carbon-offset"
     }
   ];
@@ -83,9 +85,9 @@ const CarbonEquivalents = ({ totalCO2 }: CarbonEquivalentsProps) => {
       className="bg-card rounded-3xl shadow-xl border border-border p-6 md:p-8"
     >
       <div className="mb-6">
-        <h3 className="text-xl font-semibold mb-2">C'est équivalent à...</h3>
+        <h3 className="text-xl font-semibold mb-2">{t("equivalents.title")}</h3>
         <p className="text-muted-foreground">
-          Pour mieux comprendre ce que représente {totalCO2} kgCO₂e
+          {t("equivalents.subtitle", { total: totalCO2 })}
         </p>
       </div>
 
@@ -121,9 +123,9 @@ const CarbonEquivalents = ({ totalCO2 }: CarbonEquivalentsProps) => {
         className="mt-6 p-4 bg-carbon/10 rounded-xl border border-carbon/20"
       >
         <p className="text-sm text-center">
-          💡 <span className="font-medium">Le saviez-vous ?</span> Un Français émet en moyenne 
-          <strong> 9,9 tonnes de CO₂ par an</strong>. Votre séjour représente 
-          <strong> {((totalCO2 / 9900) * 100).toFixed(1)}%</strong> de cette empreinte annuelle.
+          💡 <span className="font-medium">{t("equivalents.funFactTitle")}</span> {t("equivalents.funFactBody")}
+          <strong> {t("equivalents.funFactAverage")}</strong>. {t("equivalents.funFactMiddle")}
+          <strong> {((totalCO2 / 9900) * 100).toFixed(1)}%</strong> {t("equivalents.funFactEnd")}
         </p>
       </motion.div>
     </motion.div>

@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,6 +13,7 @@ interface ImageUploadProps {
 }
 
 const ImageUpload = ({ value, onChange, folder = "general" }: ImageUploadProps) => {
+  const { t } = useTranslation("common");
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -21,13 +23,13 @@ const ImageUpload = ({ value, onChange, folder = "general" }: ImageUploadProps) 
 
     // Validate file type
     if (!file.type.startsWith("image/")) {
-      toast.error("Veuillez sélectionner une image");
+      toast.error(t("imageUpload.selectImage"));
       return;
     }
 
     // Validate file size (max 5MB)
     if (file.size > 5 * 1024 * 1024) {
-      toast.error("L'image ne doit pas dépasser 5 Mo");
+      toast.error(t("imageUpload.maxSize"));
       return;
     }
 
@@ -54,10 +56,10 @@ const ImageUpload = ({ value, onChange, folder = "general" }: ImageUploadProps) 
         .getPublicUrl(data.path);
 
       onChange(urlData.publicUrl);
-      toast.success("Image uploadée avec succès");
+      toast.success(t("imageUpload.success"));
     } catch (error) {
       console.error("Error uploading image:", error);
-      toast.error("Erreur lors de l'upload de l'image");
+      toast.error(t("imageUpload.error"));
     } finally {
       setUploading(false);
       // Reset input
@@ -95,8 +97,14 @@ const ImageUpload = ({ value, onChange, folder = "general" }: ImageUploadProps) 
           className="w-full h-40 border-2 border-dashed rounded-lg flex flex-col items-center justify-center gap-2 text-muted-foreground hover:border-primary hover:text-primary transition-colors cursor-pointer"
           onClick={() => fileInputRef.current?.click()}
         >
-          <ImageIcon className="h-10 w-10" />
-          <span className="text-sm">Cliquez pour ajouter une image</span>
+          {uploading ? (
+            <Loader2 className="h-8 w-8 animate-spin" />
+          ) : (
+            <>
+              <ImageIcon className="h-10 w-10" />
+              <span className="text-sm">{t("imageUpload.clickToAdd")}</span>
+            </>
+          )}
         </div>
       )}
 
@@ -108,28 +116,33 @@ const ImageUpload = ({ value, onChange, folder = "general" }: ImageUploadProps) 
         className="hidden"
       />
 
-      <div className="flex gap-2">
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          onClick={() => fileInputRef.current?.click()}
-          disabled={uploading}
-          className="flex-1"
-        >
-          {uploading ? (
-            <>
-              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-              Upload en cours...
-            </>
-          ) : (
-            <>
-              <Upload className="h-4 w-4 mr-2" />
-              {value ? "Changer l'image" : "Uploader une image"}
-            </>
-          )}
-        </Button>
-      </div>
+      {/* Une fois une image choisie, le bouton permet d'en reprendre une autre
+          — sans lui, la zone en pointillés (cachée derrière l'aperçu) n'est
+          plus accessible pour changer d'image. */}
+      {value && (
+        <div className="flex gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => fileInputRef.current?.click()}
+            disabled={uploading}
+            className="flex-1"
+          >
+            {uploading ? (
+              <>
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                {t("imageUpload.uploading")}
+              </>
+            ) : (
+              <>
+                <Upload className="h-4 w-4 mr-2" />
+                {t("imageUpload.change")}
+              </>
+            )}
+          </Button>
+        </div>
+      )}
     </div>
   );
 };

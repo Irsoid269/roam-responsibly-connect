@@ -12,12 +12,22 @@
     "destinationLabel": "Destination",
     "destinationPlaceholder": "Où allez-vous ?",
     "noDestinations": "Aucune destination disponible. Ajoutez-en depuis l'admin.",
+    "universeLabel": "Type d'expérience",
+    "universePlaceholder": "Que voulez-vous vivre ?",
+    "allUniverses": "Toutes les expériences",
+    "coworkingLabel": "Espace de coworking",
+    "coworkingPlaceholder": "Quel espace ?",
+    "noCoworkings": "Aucun espace disponible. Ajoutez-en depuis l'admin.",
     "datesLabel": "Dates",
     "datesPlaceholder": "Choisir les dates",
     "travelersLabel": "Voyageurs",
     "traveler_one": "{{count}} personne",
     "traveler_other": "{{count}} personnes",
+    "positionsLabel": "Positions",
+    "position_one": "{{count}} position",
+    "position_other": "{{count}} positions",
     "search": "Rechercher",
+    "explore": "Explorer",
     "stats": {
       "destinations": "Destinations",
       "coworkings": "Espaces coworking",
@@ -88,5 +98,24 @@
     "spaces": "espaces",
     "perDay": "/jour",
     "ecoFriendly": "Éco-friendly"
+  },
+  "activities": {
+    "eyebrow": "À vivre sur place",
+    "title": "Des expériences à réserver dès aujourd'hui",
+    "viewAll": "Voir toutes les activités",
+    "empty": "Aucune activité mise en avant pour le moment.",
+    "ecoCertified": "Éco-certifié",
+    "durationSoon": "Durée à venir",
+    "priceOnRequest": "Sur devis",
+    "book": "Réserver →"
+  },
+  "cta": {
+    "badge": "Prêt pour l'aventure ?",
+    "titleLine1": "Planifiez votre premier",
+    "titleLine2": "séjour Amani aux Comores",
+    "description": "Rejoignez une communauté grandissante de professionnels qui ont choisi de travailler autrement, en harmonie avec la planète.",
+    "primaryLabel": "Commencer gratuitement",
+    "secondaryLabel": "Voir une démo",
+    "trustItems": ["Inscription gratuite", "Annulation flexible", "Support 24/7"]
   }
 }

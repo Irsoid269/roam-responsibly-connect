@@ -1,0 +1,19 @@
+{
+  "eyebrow": "Ambassador Program",
+  "title": "Our Ambassadors",
+  "description": "Meet the passionate travelers who embody Amani Resorts' values and inspire our community every day.",
+  "becomeAmbassador": "Become an ambassador",
+  "loadError": "Unable to load ambassadors. Please apply the migration",
+  "empty": "No ambassador published yet.",
+  "ambassador": "Ambassador",
+  "kgCO2Saved": "kg CO₂ saved",
+  "countriesVisited": "countries visited",
+  "followers": "followers",
+  "benefitsTitle": "Program benefits",
+  "benefitsDescription": "By becoming an ambassador, you get exclusive benefits while helping promote responsible travel.",
+  "cta": {
+    "title": "Join the program",
+    "description": "Are you an engaged traveler with an active community? Apply to become an Amani Resorts ambassador.",
+    "button": "Apply now"
+  }
+}

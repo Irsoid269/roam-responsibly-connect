@@ -1,0 +1,90 @@
+{
+  "title": "Privacy Policy",
+  "lastUpdate": "Last updated: January 20, 2026",
+  "sections": {
+    "intro": {
+      "title": "1. Introduction",
+      "body": "Amani Resorts (\"we\", \"our\", \"us\") is committed to protecting the privacy of our platform's users. This privacy policy explains how we collect, use, share and protect your personal information."
+    },
+    "dataCollected": {
+      "title": "2. Data we collect",
+      "intro": "We collect the following categories of data:",
+      "items": [
+        { "label": "Identification data:", "text": "first name, last name, email address, phone number" },
+        { "label": "Booking data:", "text": "booking history, travel preferences" },
+        { "label": "Payment data:", "text": "banking information (processed by Stripe)" },
+        { "label": "Usage data:", "text": "login logs, pages visited, interactions" },
+        { "label": "Environmental data:", "text": "calculated carbon footprint, offsets made" }
+      ]
+    },
+    "dataUse": {
+      "title": "3. How we use data",
+      "intro": "Your data is used to:",
+      "items": [
+        "Provide and improve our booking services",
+        "Calculate your carbon footprint and offer offsets",
+        "Communicate with you about your bookings",
+        "Personalize your user experience",
+        "Comply with our legal obligations",
+        "Prevent fraud and ensure security"
+      ]
+    },
+    "dataSharing": {
+      "title": "4. Data sharing",
+      "intro": "We only share your data with:",
+      "items": [
+        { "label": "Our partners:", "text": "accommodations, coworking spaces and activities you book" },
+        { "label": "Service providers:", "text": "payment (Stripe), emailing, cloud hosting" },
+        { "label": "Authorities:", "text": "if required by law" }
+      ],
+      "noSale": "We never sell your personal data to third parties."
+    },
+    "retention": {
+      "title": "5. Data retention",
+      "intro": "We keep your personal data for as long as necessary to provide our services and comply with our legal obligations:",
+      "items": [
+        "Account data: until account deletion + 3 years",
+        "Booking data: 10 years (accounting obligations)",
+        "Browsing data: 13 months maximum"
+      ]
+    },
+    "rights": {
+      "title": "6. Your rights",
+      "intro": "In accordance with the GDPR, you have the following rights:",
+      "items": [
+        { "label": "Access:", "text": "obtain a copy of your data" },
+        { "label": "Rectification:", "text": "correct your inaccurate data" },
+        { "label": "Erasure:", "text": "request deletion of your data" },
+        { "label": "Portability:", "text": "receive your data in a structured format" },
+        { "label": "Objection:", "text": "object to the processing of your data" },
+        { "label": "Restriction:", "text": "restrict the processing of your data" }
+      ],
+      "contactNote": "To exercise these rights, contact us at privacy@amaniresorts.com."
+    },
+    "security": {
+      "title": "7. Security",
+      "intro": "We implement appropriate technical and organizational security measures to protect your data:",
+      "items": [
+        "SSL/TLS encryption for all transmissions",
+        "Secure storage on servers in Europe (EU)",
+        "Restricted access to personal data",
+        "Regular security audits"
+      ]
+    },
+    "cookies": {
+      "title": "8. Cookies",
+      "body": "We use cookies to improve your experience.",
+      "link": "Cookie Policy",
+      "forMoreDetails": "for more details."
+    },
+    "contact": {
+      "title": "9. Contact",
+      "intro": "For any question about this policy or your personal data:",
+      "address": "Address: Avenue de la Corniche, Moroni, Comoros"
+    },
+    "changes": {
+      "title": "10. Changes",
+      "body": "We may update this policy from time to time. Any change will be posted on this page with a new update date. We will notify you by email of significant changes."
+    }
+  }
+}

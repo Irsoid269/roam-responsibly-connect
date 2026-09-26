@@ -1,0 +1,53 @@
+{
+  "title": "Help center",
+  "subtitle": "How can we help you?",
+  "searchPlaceholder": "Search help articles...",
+  "categories": {
+    "bookings": { "title": "Reservations", "description": "Manage your bookings and payments" },
+    "account": { "title": "Account", "description": "Settings and user profile" },
+    "community": { "title": "Community", "description": "Forum, events and networking" }
+  },
+  "articlesCount": "{{count}} articles",
+  "popularArticlesTitle": "Popular articles",
+  "popularArticles": [
+    { "title": "How do I cancel my reservation?", "category": "Reservations" },
+    { "title": "Understanding the carbon calculation", "category": "Impact" },
+    { "title": "Edit my personal information", "category": "Account" },
+    { "title": "Join the community", "category": "Community" },
+    { "title": "Become an ambassador", "category": "Ambassadors" },
+    { "title": "Get a tax receipt", "category": "Payments" }
+  ],
+  "faqTitle": "Frequently asked questions",
+  "faqs": [
+    {
+      "question": "How does carbon offsetting work?",
+      "answer": "When you book a stay, we automatically calculate the associated carbon footprint (transport, accommodation, activities). You can then choose to offset all or part of these emissions by funding certified environmental projects."
+    },
+    {
+      "question": "Can I cancel my reservation?",
+      "answer": "Yes, you can cancel your reservation from your account. Cancellation terms vary by partner. Check the specific conditions at the time of booking for deadlines and any fees."
+    },
+    {
+      "question": "How do I contact a coworking space directly?",
+      "answer": "Once your reservation is confirmed, you'll receive the establishment's full contact details by email. You can also find them in your account, under 'My reservations'."
+    },
+    {
+      "question": "Are donations tax-deductible?",
+      "answer": "Yes, contributions to carbon offset projects qualify for a tax reduction. You automatically receive a tax receipt by email after each donation. The deduction rate depends on your country of residence."
+    },
+    {
+      "question": "How do I become a partner?",
+      "answer": "If you manage an eco-responsible accommodation, coworking space or sustainable activity, you can apply from our 'Become a partner' page. Our team reviews each application against our sustainability criteria."
+    }
+  ],
+  "viewAllFaq": "View all FAQ",
+  "contact": {
+    "title": "Need more help?",
+    "subtitle": "Our support team is available to answer all your questions.",
+    "emailTitle": "Email",
+    "emailResponse": "Reply within 24h",
+    "chatTitle": "Chat",
+    "chatHours": "Mon-Fri, 9am-6pm",
+    "startChat": "Start a chat"
+  }
+}

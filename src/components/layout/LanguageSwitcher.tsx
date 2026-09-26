@@ -9,10 +9,20 @@ import {
 import { Button } from "@/components/ui/button";
 import { SUPPORTED_LANGUAGES, type SupportedLanguage } from "@/i18n";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
 
 const LanguageSwitcher = () => {
   const { i18n, t } = useTranslation();
+  const { user } = useAuth();
   const current = i18n.language as SupportedLanguage;
+
+  const handleChange = async (lng: SupportedLanguage) => {
+    i18n.changeLanguage(lng);
+    if (user) {
+      await supabase.from("profiles").update({ language: lng }).eq("user_id", user.id);
+    }
+  };
 
   return (
     <DropdownMenu>
@@ -30,7 +40,7 @@ const LanguageSwitcher = () => {
         {SUPPORTED_LANGUAGES.map((lng) => (
           <DropdownMenuItem
             key={lng}
-            onClick={() => i18n.changeLanguage(lng)}
+            onClick={() => handleChange(lng)}
             className={cn(lng === current && "font-semibold text-primary")}
           >
             {t(`language.${lng}`)}

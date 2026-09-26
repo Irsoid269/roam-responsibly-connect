@@ -1,0 +1,71 @@
+{
+  "eyebrow": "Join our network",
+  "title": "Become a partner",
+  "description": "Join a community of responsible travelers and grow your business while contributing to more sustainable tourism.",
+  "stats": {
+    "travelers": "Travelers",
+    "destinations": "Destinations",
+    "coworkings": "Coworking spaces",
+    "ecoValue": "Eco",
+    "ecoLabel": "Commitment"
+  },
+  "typesTitle": "Partnership types",
+  "typesDescription": "Whatever your sector, we have a solution suited to your needs.",
+  "types": [
+    {
+      "title": "Accommodation",
+      "description": "Hotels, eco-lodges, coliving, apartments",
+      "benefits": ["Visibility with responsible travelers", "Verified eco-responsible badge", "Recurring revenue"]
+    },
+    {
+      "title": "Coworking spaces",
+      "description": "Coworking spaces, work cafés, creative hubs",
+      "benefits": ["Access to an international community", "Guaranteed bookings", "Marketing included"]
+    },
+    {
+      "title": "Activities & Experiences",
+      "description": "Tours, workshops, sports, culture",
+      "benefits": ["Eco-tourism certification", "Booking platform", "Traveler reviews"]
+    }
+  ],
+  "requirementsTitle": "Our selection criteria",
+  "requirementsDescription": "To guarantee a quality experience for our community, we select our partners according to strict sustainability criteria.",
+  "requirements": [
+    "Demonstrable environmental commitment",
+    "Ecological certification or label (recommended)",
+    "Waste reduction policy",
+    "Use of renewable energy",
+    "Support for local communities",
+    "Transparency on practices"
+  ],
+  "form": {
+    "title": "Apply now",
+    "subtitle": "Fill out this form and we'll get back to you within 48h.",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "email": "Professional email",
+    "companyName": "Business name",
+    "website": "Website",
+    "partnerType": "Partnership type",
+    "types": {
+      "accommodation": "Accommodation",
+      "coworking": "Coworking space",
+      "activity": "Activity / Experience",
+      "mobility": "Mobility service",
+      "other": "Other"
+    },
+    "message": "Message",
+    "messagePlaceholder": "Tell us about your business and your environmental commitments…",
+    "submit": "Send my application"
+  },
+  "toasts": {
+    "fillRequired": "Fill in the required fields",
+    "success": "Application sent — response within 48h",
+    "error": "Unable to send — please apply the partner_applications migration"
+  },
+  "testimonial": {
+    "quote": "\"Joining Amani Resorts transformed our business. We saw a 40% increase in bookings, with customers truly aligned with our values.\"",
+    "author": "Maria Santos",
+    "role": "Founder, Eco Hub Moroni"
+  }
+}

@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { Heart, Award, ExternalLink, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,6 +9,7 @@ import { Progress } from "@/components/ui/progress";
 import { useCmsHero, usePartnerOrgs } from "@/hooks/useCmsContent";
 
 const PartnersPage = () => {
+  const { t } = useTranslation("partners");
   const { data: hero, isLoading: hLoad } = useCmsHero("partners");
   const { data: orgs = [], isLoading: oLoad } = usePartnerOrgs();
   const loading = hLoad || oLoad;
@@ -30,10 +32,10 @@ const PartnersPage = () => {
               className="mb-4 bg-carbon-foreground/10 border-carbon-foreground/20 text-carbon-foreground"
             >
               <Heart className="w-3 h-3 mr-1" />
-              {hero?.badge_text || "Partenariats vérifiés"}
+              {hero?.badge_text || t("eyebrow")}
             </Badge>
             <h1 className="text-4xl md:text-5xl font-bold mb-6">
-              {hero?.title || "Nos partenaires"}
+              {hero?.title || t("title")}
             </h1>
             {hero?.description && (
               <p className="text-lg text-carbon-foreground/80">{hero.description}</p>
@@ -56,7 +58,7 @@ const PartnersPage = () => {
           {carbon.length > 0 && (
             <section className="py-12">
               <div className="container mx-auto px-4">
-                <h2 className="text-2xl font-bold mb-8">Projets carbone</h2>
+                <h2 className="text-2xl font-bold mb-8">{t("carbonProjects")}</h2>
                 <div className="grid md:grid-cols-3 gap-6">
                   {carbon.map((p, i) => (
                     <motion.div
@@ -81,7 +83,7 @@ const PartnersPage = () => {
                             {p.certified && (
                               <Badge className="bg-success/15 text-success border-0">
                                 <Award className="w-3 h-3 mr-1" />
-                                Certifié
+                                {t("certified")}
                               </Badge>
                             )}
                           </div>
@@ -107,7 +109,7 @@ const PartnersPage = () => {
                               rel="noreferrer"
                               className="inline-flex items-center text-sm text-primary gap-1"
                             >
-                              Site <ExternalLink className="w-3 h-3" />
+                              {t("website")} <ExternalLink className="w-3 h-3" />
                             </a>
                           )}
                         </CardContent>
@@ -122,7 +124,7 @@ const PartnersPage = () => {
           {accommodations.length > 0 && (
             <section className="py-12 bg-muted/30">
               <div className="container mx-auto px-4">
-                <h2 className="text-2xl font-bold mb-6">Hébergements partenaires</h2>
+                <h2 className="text-2xl font-bold mb-6">{t("partnerAccommodations")}</h2>
                 <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
                   {accommodations.map((p) => (
                     <Card key={p.id}>
@@ -147,7 +149,7 @@ const PartnersPage = () => {
           {coworkings.length > 0 && (
             <section className="py-12">
               <div className="container mx-auto px-4">
-                <h2 className="text-2xl font-bold mb-6">Coworkings partenaires</h2>
+                <h2 className="text-2xl font-bold mb-6">{t("partnerCoworkings")}</h2>
                 <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
                   {coworkings.map((p) => (
                     <Card key={p.id}>

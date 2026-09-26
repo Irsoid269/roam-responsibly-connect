@@ -1,0 +1,81 @@
+{
+  "title": "Conditions Générales d'Utilisation",
+  "lastUpdate": "Dernière mise à jour : 20 janvier 2026",
+  "sections": {
+    "purpose": {
+      "title": "1. Objet",
+      "body": "Les présentes Conditions Générales d'Utilisation (CGU) régissent l'utilisation de la plateforme Amani Resorts, accessible à l'adresse amaniresorts.com, qui propose des services de réservation d'hébergements, d'espaces de coworking et d'activités pour les nomades digitaux et télétravailleurs aux Comores."
+    },
+    "definitions": {
+      "title": "2. Définitions",
+      "items": [
+        { "label": "Plateforme :", "text": "le site web et l'application Amani Resorts" },
+        { "label": "Utilisateur :", "text": "toute personne utilisant la Plateforme" },
+        { "label": "Membre :", "text": "Utilisateur disposant d'un compte" },
+        { "label": "Partenaire :", "text": "hébergement, coworking ou prestataire d'activités" },
+        { "label": "Services :", "text": "l'ensemble des prestations proposées via la Plateforme" }
+      ]
+    },
+    "access": {
+      "title": "3. Accès et inscription",
+      "body1": "L'accès à la Plateforme est gratuit. Certaines fonctionnalités nécessitent la création d'un compte. L'Utilisateur s'engage à fournir des informations exactes et à maintenir la confidentialité de ses identifiants.",
+      "body2": "L'inscription est réservée aux personnes majeures. Amani Resorts se réserve le droit de suspendre ou supprimer tout compte en cas de violation des présentes CGU."
+    },
+    "services": {
+      "title": "4. Services proposés",
+      "intro": "Amani Resorts agit en qualité d'intermédiaire entre les Utilisateurs et les Partenaires. Nos services comprennent :",
+      "items": [
+        "Réservation d'hébergements éco-responsables",
+        "Réservation d'espaces de coworking",
+        "Réservation d'activités et expériences",
+        "Calcul d'empreinte carbone",
+        "Compensation carbone via des projets certifiés",
+        "Mise en relation avec la communauté"
+      ]
+    },
+    "bookings": {
+      "title": "5. Réservations",
+      "body1": "Toute réservation effectuée via la Plateforme constitue un contrat entre l'Utilisateur et le Partenaire concerné. Amani Resorts n'est pas partie à ce contrat.",
+      "body2": "Les prix affichés incluent toutes les taxes applicables. Le paiement s'effectue intégralement au moment de la réservation, sauf option de paiement en plusieurs fois.",
+      "body3": "Les conditions d'annulation et de modification sont propres à chaque Partenaire et indiquées lors de la réservation."
+    },
+    "carbon": {
+      "title": "6. Compensation carbone",
+      "body1": "Les contributions à la compensation carbone sont des dons destinés à financer des projets environnementaux certifiés. Ces contributions sont volontaires et donnent droit à un reçu fiscal selon la législation applicable.",
+      "body2": "Amani Resorts s'engage à reverser 100% des contributions aux projets partenaires, déduction faite des frais de traitement."
+    },
+    "liability": {
+      "title": "7. Responsabilités",
+      "intro": "Amani Resorts s'engage à mettre en œuvre tous les moyens raisonnables pour assurer le bon fonctionnement de la Plateforme. Cependant, nous ne pouvons garantir :",
+      "items": [
+        "L'absence d'interruption ou d'erreur du service",
+        "La qualité des prestations fournies par les Partenaires",
+        "L'exactitude des informations fournies par les Partenaires"
+      ],
+      "outro": "L'Utilisateur reste seul responsable de l'utilisation qu'il fait de la Plateforme et des informations qu'il y publie."
+    },
+    "ip": {
+      "title": "8. Propriété intellectuelle",
+      "body": "L'ensemble des éléments de la Plateforme (textes, images, logos, code source, etc.) sont protégés par le droit de la propriété intellectuelle. Toute reproduction ou utilisation non autorisée est interdite."
+    },
+    "personalData": {
+      "title": "9. Données personnelles",
+      "body1": "Le traitement des données personnelles est régi par notre",
+      "link": "Politique de confidentialité",
+      "body2": "qui fait partie intégrante des présentes CGU."
+    },
+    "changes": {
+      "title": "10. Modification des CGU",
+      "body": "Amani Resorts se réserve le droit de modifier les présentes CGU à tout moment. Les modifications entrent en vigueur dès leur publication. L'utilisation continue de la Plateforme vaut acceptation des CGU modifiées."
+    },
+    "law": {
+      "title": "11. Droit applicable",
+      "body": "Les présentes CGU sont régies par le droit comorien et, à titre subsidiaire, par le droit français. Tout litige sera soumis à la compétence exclusive des tribunaux de Moroni, sauf disposition légale contraire applicable aux consommateurs."
+    },
+    "contact": {
+      "title": "12. Contact",
+      "intro": "Pour toute question relative aux présentes CGU :",
+      "address": "Adresse : Avenue de la Corniche, Moroni, Comores"
+    }
+  }
+}

@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
-import { 
+import { useTranslation } from "react-i18next";
+import {
   Search, Leaf,
-  Bike, Car, Train, Ship, Footprints, Zap, Loader2
+  Bike, Train, Footprints, Zap, Loader2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,21 +17,29 @@ import {
 } from "@/lib/search-booking-params";
 
 const typeIcons: Record<string, typeof Bike> = {
-  "Vélo": Bike,
-  "Vélo électrique": Zap,
-  "Trottinette": Footprints,
-  "Voiture électrique": Car,
-  "Train": Train,
-  "Ferry": Ship,
+  "bicycle": Bike,
+  "electric-bike": Zap,
+  "electric-scooter": Zap,
+  "public-transport": Train,
+  "walking-tour": Footprints,
 };
 
 const MobilityPage = () => {
+  const { t } = useTranslation("mobility");
   const [searchParams] = useSearchParams();
   const bookingParams = parseBookingSearchParams(searchParams);
   const destinationId = bookingParams.destination;
   const { data: mobilityOptions = [], isLoading: loading } = useMobility(destinationId);
   const [searchQuery, setSearchQuery] = useState("");
   const [typeFilter, setTypeFilter] = useState<string | null>(null);
+
+  const typeLabels: Record<string, string> = {
+    "bicycle": t("types.bicycle"),
+    "electric-bike": t("types.electricBike"),
+    "electric-scooter": t("types.electricScooter"),
+    "public-transport": t("types.publicTransport"),
+    "walking-tour": t("types.walkingTour"),
+  };
 
   const types = [...new Set(mobilityOptions.map(m => m.type).filter(Boolean))];
 
@@ -42,10 +51,10 @@ const MobilityPage = () => {
 
   const getCarbonLabel = (carbonPerKm: number | null) => {
     if (carbonPerKm === null) return "N/A";
-    if (carbonPerKm === 0) return "Zéro émission";
-    if (carbonPerKm < 0.01) return "Très faible";
-    if (carbonPerKm < 0.05) return "Faible";
-    return "Modéré";
+    if (carbonPerKm === 0) return t("carbon.zero");
+    if (carbonPerKm < 0.01) return t("carbon.veryLow");
+    if (carbonPerKm < 0.05) return t("carbon.low");
+    return t("carbon.moderate");
   };
 
   const getCarbonColor = (carbonPerKm: number | null) => {
@@ -68,20 +77,19 @@ const MobilityPage = () => {
             >
               <Badge variant="outline" className="mb-4 bg-carbon/10 border-carbon/20">
                 <Leaf className="w-3 h-3 mr-1" />
-                Mobilité durable
+                {t("eyebrow")}
               </Badge>
               <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
-                Mobilité douce
+                {t("title")}
               </h1>
               <p className="text-lg text-muted-foreground mb-8">
-                Déplacez-vous de manière écologique avec nos options de mobilité 
-                à faible impact carbone.
+                {t("description")}
               </p>
 
               <div className="relative max-w-xl mx-auto">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                 <Input
-                  placeholder="Rechercher..."
+                  placeholder={t("searchPlaceholder")}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="pl-10 h-12"
@@ -100,7 +108,7 @@ const MobilityPage = () => {
                 size="sm"
                 onClick={() => setTypeFilter(null)}
               >
-                Tous
+                {t("all")}
               </Button>
               {types.map((type) => {
                 const Icon = typeIcons[type as string] || Bike;
@@ -112,7 +120,7 @@ const MobilityPage = () => {
                     onClick={() => setTypeFilter(type as string)}
                   >
                     <Icon className="w-4 h-4 mr-1" />
-                    {type}
+                    {typeLabels[type as string] || type}
                   </Button>
                 );
               })}
@@ -126,7 +134,7 @@ const MobilityPage = () => {
             <div className="flex items-center justify-center gap-6 text-sm text-muted-foreground">
               <div className="flex items-center gap-2">
                 <span className="w-3 h-3 rounded-full bg-success"></span>
-                Zéro émission
+                {t("carbon.zero")}
               </div>
               <div className="flex items-center gap-2">
                 <span className="w-3 h-3 rounded-full bg-primary"></span>
@@ -173,7 +181,7 @@ const MobilityPage = () => {
 
                         <div className="absolute bottom-3 left-3 flex items-center gap-2 text-background">
                           <TypeIcon className="w-5 h-5" />
-                          <span className="font-medium">{option.type}</span>
+                          <span className="font-medium">{typeLabels[option.type as string] || option.type}</span>
                         </div>
                       </div>
 
@@ -185,15 +193,25 @@ const MobilityPage = () => {
 
                         <div className="flex items-center justify-between pt-3 border-t border-border">
                           <div className="text-right">
-                            {option.price_per_hour && (
-                              <span className="text-sm text-muted-foreground mr-2">
-                                {option.price_per_hour}€/h
+                            {option.price_per_day != null ? (
+                              <>
+                                {option.price_per_hour != null && (
+                                  <span className="text-sm text-muted-foreground mr-2">
+                                    {option.price_per_hour}€/h
+                                  </span>
+                                )}
+                                <span className="text-lg font-bold text-foreground">
+                                  {option.price_per_day}€
+                                </span>
+                                <span className="text-sm text-muted-foreground">{t("perDay")}</span>
+                              </>
+                            ) : option.price_per_hour != null ? (
+                              <span className="text-lg font-bold text-foreground">
+                                {option.price_per_hour}€<span className="text-sm text-muted-foreground font-normal">/h</span>
                               </span>
+                            ) : (
+                              <span className="text-sm text-muted-foreground">{t("onRequest")}</span>
                             )}
-                            <span className="text-lg font-bold text-foreground">
-                              {option.price_per_day}€
-                            </span>
-                            <span className="text-sm text-muted-foreground">/jour</span>
                           </div>
                           <Button size="sm" asChild>
                             <Link
@@ -206,7 +224,7 @@ const MobilityPage = () => {
                                   : "/destinations"
                               }
                             >
-                              Réserver
+                              {t("book")}
                             </Link>
                           </Button>
                         </div>
@@ -220,8 +238,8 @@ const MobilityPage = () => {
             {filteredOptions.length === 0 && (
               <div className="text-center py-16">
                 <Bike className="w-12 h-12 mx-auto mb-4 text-muted-foreground opacity-50" />
-                <h3 className="text-lg font-medium text-foreground">Aucune option trouvée</h3>
-                <p className="text-muted-foreground mt-1">Essayez une autre recherche</p>
+                <h3 className="text-lg font-medium text-foreground">{t("noResults.title")}</h3>
+                <p className="text-muted-foreground mt-1">{t("noResults.description")}</p>
               </div>
             )}
           </div>

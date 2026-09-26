@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { Lock, Eye, EyeOff, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,6 +12,7 @@ import { toast } from "sonner";
 import amaniSymbol from "@/assets/amani-symbol-gold.jpg";
 
 const ResetPasswordPage = () => {
+  const { t } = useTranslation("authPages");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [show, setShow] = useState(false);
@@ -21,21 +23,21 @@ const ResetPasswordPage = () => {
 
   useEffect(() => {
     // Recovery link sets session via hash; wait briefly for auth state
-    const t = setTimeout(() => setReady(true), 400);
+    const timer = setTimeout(() => setReady(true), 400);
     supabase.auth.getSession().then(({ data }) => {
       if (data.session) setReady(true);
     });
-    return () => clearTimeout(t);
+    return () => clearTimeout(timer);
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (password.length < 8) {
-      toast.error("Mot de passe : 8 caractères minimum");
+      toast.error(t("resetPassword.minLength"));
       return;
     }
     if (password !== confirm) {
-      toast.error("Les mots de passe ne correspondent pas");
+      toast.error(t("resetPassword.mismatch"));
       return;
     }
     setLoading(true);
@@ -45,7 +47,7 @@ const ResetPasswordPage = () => {
       toast.error(error.message);
       return;
     }
-    toast.success("Mot de passe mis à jour");
+    toast.success(t("resetPassword.updated"));
     navigate("/login");
   };
 
@@ -63,26 +65,26 @@ const ResetPasswordPage = () => {
           </span>
         </Link>
 
-        <h1 className="font-display text-3xl font-medium mb-2">Nouveau mot de passe</h1>
+        <h1 className="font-display text-3xl font-medium mb-2">{t("resetPassword.title")}</h1>
         <p className="text-muted-foreground mb-8">
-          Choisissez un mot de passe sécurisé pour votre compte Amani.
+          {t("resetPassword.subtitle")}
         </p>
 
         {!ready ? (
-          <p className="text-sm text-muted-foreground">Vérification du lien…</p>
+          <p className="text-sm text-muted-foreground">{t("resetPassword.checkingLink")}</p>
         ) : !session ? (
           <div className="space-y-4">
             <p className="text-sm text-muted-foreground">
-              Lien invalide ou expiré. Demandez un nouveau lien de réinitialisation.
+              {t("resetPassword.invalidLink")}
             </p>
             <Button asChild>
-              <Link to="/forgot-password">Demander un lien</Link>
+              <Link to="/forgot-password">{t("resetPassword.requestLink")}</Link>
             </Button>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-5">
             <div className="space-y-2">
-              <Label htmlFor="password">Nouveau mot de passe</Label>
+              <Label htmlFor="password">{t("resetPassword.newPassword")}</Label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                 <Input
@@ -104,7 +106,7 @@ const ResetPasswordPage = () => {
               </div>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="confirm">Confirmer</Label>
+              <Label htmlFor="confirm">{t("resetPassword.confirm")}</Label>
               <Input
                 id="confirm"
                 type={show ? "text" : "password"}
@@ -115,7 +117,7 @@ const ResetPasswordPage = () => {
               />
             </div>
             <Button type="submit" className="w-full gap-2" size="lg" disabled={loading}>
-              {loading ? "Enregistrement…" : "Enregistrer"}
+              {loading ? t("resetPassword.saving") : t("resetPassword.save")}
               {!loading && <ArrowRight className="w-4 h-4" />}
             </Button>
           </form>

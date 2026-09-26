@@ -65,6 +65,8 @@
     "yourStory": "Votre récit",
     "storyPlaceholder": "Racontez votre séjour Amani aux Comores…",
     "charCount": "{{count}}/1000 · min. 20 caractères",
+    "tags": "Tags (optionnel)",
+    "tagsPlaceholder": "coworking, plage, immersion (séparés par des virgules)",
     "photo": "Photo (optionnel)",
     "cancel": "Annuler",
     "sending": "Envoi…",

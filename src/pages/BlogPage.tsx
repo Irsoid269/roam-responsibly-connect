@@ -1,24 +1,28 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { Calendar, Clock, User, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useBlogPosts } from "@/hooks/useCatalogQueries";
 import { format } from "date-fns";
-import { fr } from "date-fns/locale";
+import { fr, enUS } from "date-fns/locale";
 
 const BlogPage = () => {
+  const { t, i18n } = useTranslation("blog");
+  const dateLocale = i18n.language === "en" ? enUS : fr;
   const { data: posts = [], isLoading, isError } = useBlogPosts();
   const [category, setCategory] = useState<string | null>(null);
+  const allLabel = t("all");
 
   const categories = [
-    "Tous",
+    allLabel,
     ...Array.from(new Set(posts.map((p) => p.category).filter(Boolean))),
   ];
 
   const filtered = posts.filter(
-    (p) => !category || category === "Tous" || p.category === category
+    (p) => !category || category === allLabel || p.category === category
   );
   const featuredPost = filtered.find((p) => p.featured) || filtered[0];
   const regularPosts = filtered.filter((p) => p.id !== featuredPost?.id);
@@ -33,11 +37,10 @@ const BlogPage = () => {
             className="text-center max-w-3xl mx-auto"
           >
             <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
-              Blog & Récits
+              {t("title")}
             </h1>
             <p className="text-lg text-muted-foreground">
-              Inspirez-vous des aventures de notre communauté et découvrez nos
-              conseils pour voyager de manière responsable aux Comores.
+              {t("subtitle")}
             </p>
           </motion.div>
         </div>
@@ -50,12 +53,12 @@ const BlogPage = () => {
               <Button
                 key={cat}
                 variant={
-                  (category === null && cat === "Tous") || category === cat
+                  (category === null && cat === allLabel) || category === cat
                     ? "default"
                     : "outline"
                 }
                 size="sm"
-                onClick={() => setCategory(cat === "Tous" ? null : cat)}
+                onClick={() => setCategory(cat === allLabel ? null : cat)}
               >
                 {cat}
               </Button>
@@ -70,12 +73,12 @@ const BlogPage = () => {
         </div>
       ) : isError ? (
         <div className="text-center py-24 text-muted-foreground">
-          Impossible de charger le blog. Appliquez la migration{" "}
+          {t("loadError")}{" "}
           <code className="text-sm">blog_events_cms</code>.
         </div>
       ) : filtered.length === 0 ? (
         <div className="text-center py-24 text-muted-foreground">
-          Aucun article pour le moment.
+          {t("empty")}
         </div>
       ) : (
         <>
@@ -110,7 +113,7 @@ const BlogPage = () => {
                         <span className="flex items-center gap-1">
                           <Calendar className="w-4 h-4" />
                           {format(new Date(featuredPost.published_at), "d MMMM yyyy", {
-                            locale: fr,
+                            locale: dateLocale,
                           })}
                         </span>
                         <span className="flex items-center gap-1">

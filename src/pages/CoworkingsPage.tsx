@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { useSearchParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { 
-  Search, Filter, Star, Wifi, MapPin, 
+  Search, Star, Wifi, MapPin,
   Clock, Laptop, Loader2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -27,6 +28,7 @@ const defaultImage = "https://images.unsplash.com/photo-1497366216548-3752607029
 type CoworkingSpace = NonNullable<ReturnType<typeof useCoworkings>["data"]>[number];
 
 const CoworkingsPage = () => {
+  const { t } = useTranslation("coworkings");
   const [searchParams] = useSearchParams();
   const destinationId = searchParams.get("destination") || undefined;
   const initialFrom = toDateFromParam(searchParams.get("from") || undefined);
@@ -51,24 +53,20 @@ const CoworkingsPage = () => {
     <>
     <main className="page-main">
         <PageHero
-          eyebrow="Espaces vérifiés"
-          title="Espaces de coworking"
-          description="Trouvez l'espace de travail idéal pour votre séjour, avec WiFi rapide et impact carbone minimal."
+          eyebrow={t("eyebrow")}
+          title={t("title")}
+          description={t("description")}
         >
-          <div className="flex flex-col sm:flex-row gap-3 max-w-2xl mx-auto">
-            <div className="relative flex-1">
+          <div className="max-w-2xl mx-auto">
+            <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
               <Input
-                placeholder="Rechercher un espace..."
+                placeholder={t("searchPlaceholder")}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-10 h-12 bg-background/80 backdrop-blur-sm"
               />
             </div>
-            <Button size="lg" variant="outline" className="h-12">
-              <Filter className="w-4 h-4 mr-2" />
-              Filtres
-            </Button>
           </div>
         </PageHero>
 
@@ -82,25 +80,25 @@ const CoworkingsPage = () => {
             ) : coworkings.length === 0 ? (
               <div className="text-center py-16">
                 <Laptop className="w-12 h-12 mx-auto mb-4 text-muted-foreground opacity-50" />
-                <h3 className="text-lg font-medium text-foreground">Aucun espace disponible</h3>
-                <p className="text-muted-foreground mt-1">Les espaces de coworking seront ajoutés prochainement</p>
+                <h3 className="text-lg font-medium text-foreground">{t("empty.title")}</h3>
+                <p className="text-muted-foreground mt-1">{t("empty.description")}</p>
               </div>
             ) : (
             <>
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
               <p className="text-muted-foreground">
-                <span className="font-medium text-foreground">{filteredCoworkings.length}</span> espaces trouvés
+                <span className="font-medium text-foreground">{filteredCoworkings.length}</span> {t("resultsFound")}
               </p>
-              
+
               <Select value={sortBy} onValueChange={setSortBy}>
                 <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Trier par" />
+                  <SelectValue placeholder={t("sortBy")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="popular">Populaire</SelectItem>
-                  <SelectItem value="price-low">Prix croissant</SelectItem>
-                  <SelectItem value="price-high">Prix décroissant</SelectItem>
-                  <SelectItem value="wifi">Vitesse WiFi</SelectItem>
+                  <SelectItem value="popular">{t("sort.popular")}</SelectItem>
+                  <SelectItem value="price-low">{t("sort.priceLow")}</SelectItem>
+                  <SelectItem value="price-high">{t("sort.priceHigh")}</SelectItem>
+                  <SelectItem value="wifi">{t("sort.wifi")}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -180,18 +178,18 @@ const CoworkingsPage = () => {
                           <span className="text-lg font-bold text-foreground">
                             {coworking.price_per_day}€
                           </span>
-                          <span className="text-sm text-muted-foreground">/jour</span>
+                          <span className="text-sm text-muted-foreground">{t("perDay")}</span>
                         </div>
                       </div>
 
-                      <Button 
+                      <Button
                         className="w-full mt-4"
                         onClick={() => {
                           setSelectedCoworking(coworking);
                           setBookingDialogOpen(true);
                         }}
                       >
-                        Réserver
+                        {t("book")}
                       </Button>
                     </CardContent>
                   </Card>
@@ -202,8 +200,8 @@ const CoworkingsPage = () => {
             {filteredCoworkings.length === 0 && searchQuery && (
               <div className="text-center py-16">
                 <Laptop className="w-12 h-12 mx-auto mb-4 text-muted-foreground opacity-50" />
-                <h3 className="text-lg font-medium text-foreground">Aucun espace trouvé</h3>
-                <p className="text-muted-foreground mt-1">Essayez une autre recherche</p>
+                <h3 className="text-lg font-medium text-foreground">{t("noResults.title")}</h3>
+                <p className="text-muted-foreground mt-1">{t("noResults.description")}</p>
               </div>
             )}
             </>

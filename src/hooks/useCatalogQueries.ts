@@ -159,6 +159,48 @@ export function useAccommodations(destinationId?: string) {
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
+/** Real activity taxonomy (cahier des charges "univers") — used to filter/browse activities. */
+export function useUniverses() {
+  return useQuery({
+    queryKey: ["universes"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("universes")
+        .select("*")
+        .order("sort_order");
+      if (error) throw error;
+      return data ?? [];
+    },
+    staleTime: 5 * 60_000,
+  });
+}
+
+/** Featured activities for the homepage teaser (falls back to any activity if none is flagged). */
+export function useHomeActivities(limit = 4) {
+  return useQuery({
+    queryKey: [...queryKeys.activities, "home", limit],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("activities")
+        .select("*")
+        .eq("featured", true)
+        .order("name")
+        .limit(limit);
+      if (error) throw error;
+      if (data && data.length > 0) return data;
+
+      const { data: any, error: err2 } = await supabase
+        .from("activities")
+        .select("*")
+        .order("name")
+        .limit(limit);
+      if (err2) throw err2;
+      return any ?? [];
+    },
+    staleTime: 60_000,
+  });
+}
+
 export function useActivities(destinationId?: string) {
   return useQuery({
     queryKey: [...queryKeys.activities, destinationId || "all"],
@@ -379,6 +421,7 @@ export function useSubmitCommunityStory() {
       destination: string;
       content: string;
       imageUrl?: string | null;
+      tags?: string[];
     }) => {
       const { error } = await supabase.from("community_stories").insert({
         user_id: payload.userId,
@@ -387,6 +430,7 @@ export function useSubmitCommunityStory() {
         destination: payload.destination,
         content: payload.content,
         image_url: payload.imageUrl || null,
+        tags: payload.tags ?? [],
         status: "pending",
       });
       if (error) throw error;
@@ -522,7 +566,7 @@ export const defaultHomepageCta = {
   badge_text: "Prêt pour l'aventure ?",
   title: "Planifiez votre premier\nséjour Amani aux Comores",
   description:
-    "Rejoignez une communauté de plus de 12 000 professionnels qui ont choisi de travailler autrement, en harmonie avec la planète.",
+    "Rejoignez une communauté grandissante de professionnels qui ont choisi de travailler autrement, en harmonie avec la planète.",
   primary_label: "Commencer gratuitement",
   primary_url: "/signup",
   secondary_label: "Voir une démo",
@@ -990,6 +1034,7 @@ export function useCreateReport() {
       targetId: string;
       reason: ReportReason;
       comment?: string;
+      evidenceUrl?: string | null;
     }) => {
       const { error } = await supabase.from("reports").insert({
         reporter_user_id: payload.reporterUserId,
@@ -997,6 +1042,7 @@ export function useCreateReport() {
         target_id: payload.targetId,
         reason: payload.reason,
         comment: payload.comment || null,
+        evidence_url: payload.evidenceUrl || null,
       });
       if (error) throw error;
     },
@@ -1010,6 +1056,7 @@ export interface ReportRow {
   target_id: string;
   reason: ReportReason;
   comment: string | null;
+  evidence_url: string | null;
   status: "open" | "in_review" | "actioned" | "rejected";
   created_at: string;
   resolved_at: string | null;
@@ -1118,6 +1165,86 @@ export function useDuplicateRegistrationSignals() {
       return (data ?? []) as DuplicateIpSignal[];
     },
     staleTime: 60_000,
+  });
+}
+
+// ---------------------------------------------------------------------------
+// RGPD (cahier §7.1/§9) — export et suppression des données personnelles
+// ---------------------------------------------------------------------------
+
+export function useExportMyData() {
+  return useMutation({
+    mutationFn: async (userId: string) => {
+      const [profile, reservations, reviews, stories, donations, participations] =
+        await Promise.all([
+          supabase.from("profiles").select("*").eq("user_id", userId).maybeSingle(),
+          supabase
+            .from("reservations")
+            .select("*, reservation_items(*)")
+            .eq("user_id", userId),
+          supabase.from("reviews").select("*").eq("user_id", userId),
+          supabase.from("community_stories").select("*").eq("user_id", userId),
+          supabase.from("donations").select("*").eq("user_id", userId),
+          supabase.from("action_participations").select("*").eq("user_id", userId),
+        ]);
+
+      const payload = {
+        exported_at: new Date().toISOString(),
+        profile: profile.data ?? null,
+        reservations: reservations.data ?? [],
+        reviews: reviews.data ?? [],
+        community_stories: stories.data ?? [],
+        donations: donations.data ?? [],
+        action_participations: participations.data ?? [],
+      };
+
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `amani-mes-donnees-${new Date().toISOString().slice(0, 10)}.json`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    },
+  });
+}
+
+export function useDeleteAccount() {
+  return useMutation({
+    mutationFn: async () => {
+      const { data, error } = await supabase.functions.invoke("delete-account");
+      if (error) throw error;
+      return data;
+    },
+  });
+}
+
+export function useSavePushSubscription() {
+  return useMutation({
+    mutationFn: async (payload: { userId: string; subscription: PushSubscription }) => {
+      const json = payload.subscription.toJSON();
+      const { error } = await supabase.from("push_subscriptions").upsert(
+        {
+          user_id: payload.userId,
+          endpoint: json.endpoint!,
+          p256dh: json.keys!.p256dh,
+          auth_key: json.keys!.auth,
+        },
+        { onConflict: "endpoint" }
+      );
+      if (error) throw error;
+    },
+  });
+}
+
+export function useRemovePushSubscription() {
+  return useMutation({
+    mutationFn: async (endpoint: string) => {
+      const { error } = await supabase.from("push_subscriptions").delete().eq("endpoint", endpoint);
+      if (error) throw error;
+    },
   });
 }
 

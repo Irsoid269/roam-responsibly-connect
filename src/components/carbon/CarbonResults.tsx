@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import {
   Plane,
   Home,
@@ -31,10 +32,11 @@ interface CarbonResultsProps {
 }
 
 const CarbonResults = ({ results, onReset, onSave, saving, saved }: CarbonResultsProps) => {
+  const { t } = useTranslation("carbonCalculator");
   const categories = [
     {
       key: "transport",
-      label: "Transport",
+      label: t("steps.transport"),
       icon: Plane,
       value: results.transport,
       color: "bg-eco-e",
@@ -42,7 +44,7 @@ const CarbonResults = ({ results, onReset, onSave, saving, saved }: CarbonResult
     },
     {
       key: "accommodation",
-      label: "Hébergement",
+      label: t("steps.accommodation"),
       icon: Home,
       value: results.accommodation,
       color: "bg-eco-c",
@@ -50,7 +52,7 @@ const CarbonResults = ({ results, onReset, onSave, saving, saved }: CarbonResult
     },
     {
       key: "mobility",
-      label: "Mobilité",
+      label: t("steps.mobility"),
       icon: Bike,
       value: results.mobility,
       color: "bg-eco-b",
@@ -58,7 +60,7 @@ const CarbonResults = ({ results, onReset, onSave, saving, saved }: CarbonResult
     },
     {
       key: "activities",
-      label: "Activités",
+      label: t("steps.activities"),
       icon: Mountain,
       value: results.activities,
       color: "bg-eco-a",
@@ -80,10 +82,10 @@ const CarbonResults = ({ results, onReset, onSave, saving, saved }: CarbonResult
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div>
             <h2 className="font-display text-2xl md:text-3xl font-medium mb-2">
-              Votre empreinte carbone
+              {t("results.title")}
             </h2>
             <p className="text-carbon-foreground/70">
-              Résultat de votre estimation de séjour · Amani Resorts
+              {t("results.subtitle")}
             </p>
           </div>
 
@@ -111,7 +113,7 @@ const CarbonResults = ({ results, onReset, onSave, saving, saved }: CarbonResult
           className="text-center py-8"
         >
           <p className="text-sm uppercase tracking-luxury text-muted-foreground mb-2">
-            Émissions totales estimées
+            {t("results.totalEmissions")}
           </p>
           <p className="text-6xl md:text-7xl font-display font-medium text-foreground mb-2">
             {results.total}
@@ -133,24 +135,24 @@ const CarbonResults = ({ results, onReset, onSave, saving, saved }: CarbonResult
             {comparison < 0 ? (
               <>
                 <TrendingDown className="w-4 h-4" />
-                {Math.abs(comparison)}% en dessous de la moyenne
+                {t("results.belowAverage", { percent: Math.abs(comparison) })}
               </>
             ) : comparison > 0 ? (
               <>
                 <AlertTriangle className="w-4 h-4" />
-                {comparison}% au-dessus de la moyenne
+                {t("results.aboveAverage", { percent: comparison })}
               </>
             ) : (
               <>
                 <CheckCircle className="w-4 h-4" />
-                Dans la moyenne
+                {t("results.average")}
               </>
             )}
           </div>
         </motion.div>
 
         <div className="space-y-4">
-          <h3 className="text-lg font-semibold">Détail par poste</h3>
+          <h3 className="text-lg font-semibold">{t("results.breakdown")}</h3>
 
           <div className="space-y-3">
             {categories.map((category, index) => {
@@ -196,7 +198,7 @@ const CarbonResults = ({ results, onReset, onSave, saving, saved }: CarbonResult
 
         <div className="bg-muted/50 rounded-2xl p-6">
           <h4 className="text-sm font-medium text-muted-foreground mb-4">
-            Répartition visuelle
+            {t("results.visualBreakdown")}
           </h4>
           <div className="flex items-end justify-center gap-4 h-40">
             {categories.map((category, index) => (
@@ -223,7 +225,7 @@ const CarbonResults = ({ results, onReset, onSave, saving, saved }: CarbonResult
         <div className="flex flex-col sm:flex-row gap-3">
           <Button variant="outline" onClick={onReset} className="gap-2 flex-1">
             <RefreshCw className="w-4 h-4" />
-            Nouvelle estimation
+            {t("results.newEstimate")}
           </Button>
           {onSave && (
             <Button
@@ -233,12 +235,12 @@ const CarbonResults = ({ results, onReset, onSave, saving, saved }: CarbonResult
               className="gap-2 flex-1"
             >
               <Save className="w-4 h-4" />
-              {saved ? "Enregistré" : saving ? "Enregistrement…" : "Sauver dans mon profil"}
+              {saved ? t("results.savedLabel") : saving ? t("results.saving") : t("results.saveToProfile")}
             </Button>
           )}
           <Button variant="ghost" className="gap-2">
             <Share2 className="w-4 h-4" />
-            Partager
+            {t("results.share")}
           </Button>
         </div>
       </div>

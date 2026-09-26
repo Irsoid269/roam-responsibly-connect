@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { Mail, Lock, Eye, EyeOff, ArrowRight, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,6 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import amaniSymbol from "@/assets/amani-symbol-gold.jpg";
 
 const SignupPage = () => {
+  const { t } = useTranslation("authPages");
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -26,8 +28,8 @@ const SignupPage = () => {
     
     if (!acceptTerms) {
       toast({
-        title: "Conditions requises",
-        description: "Veuillez accepter les conditions d'utilisation",
+        title: t("signup.termsRequiredTitle"),
+        description: t("signup.termsRequiredDescription"),
         variant: "destructive",
       });
       return;
@@ -36,17 +38,17 @@ const SignupPage = () => {
     setLoading(true);
 
     const { error } = await signUp(email, password, fullName);
-    
+
     if (error) {
       toast({
-        title: "Erreur d'inscription",
+        title: t("signup.signupError"),
         description: error.message,
         variant: "destructive",
       });
     } else {
       toast({
-        title: "Compte créé !",
-        description: "Vérifiez votre email pour confirmer votre compte.",
+        title: t("signup.accountCreatedTitle"),
+        description: t("signup.accountCreatedDescription"),
       });
       navigate("/login");
     }
@@ -72,11 +74,10 @@ const SignupPage = () => {
                 className="w-20 h-20 mx-auto mb-6 rounded-full object-cover ring-2 ring-accent/40"
               />
               <h2 className="font-display text-3xl font-medium mb-4">
-                Rejoignez Amani Resorts
+                {t("signup.sideTitle")}
               </h2>
               <p className="text-lg opacity-90 max-w-md mx-auto">
-                Séjours éco-luxe aux Comores : mesurez, réduisez et compensez
-                votre empreinte à chaque voyage.
+                {t("signup.sideDescription")}
               </p>
             </motion.div>
           </div>
@@ -103,15 +104,15 @@ const SignupPage = () => {
           </Link>
 
           <h1 className="font-display text-3xl md:text-4xl font-medium text-foreground mb-2">
-            Créer un compte
+            {t("signup.title")}
           </h1>
           <p className="text-muted-foreground mb-8">
-            Rejoignez Amani Resorts et planifiez votre prochain séjour aux Comores.
+            {t("signup.subtitle")}
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <div className="space-y-2">
-              <Label htmlFor="fullName">Nom complet</Label>
+              <Label htmlFor="fullName">{t("signup.fullName")}</Label>
               <div className="relative">
                 <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                 <Input
@@ -127,7 +128,7 @@ const SignupPage = () => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">{t("signup.email")}</Label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                 <Input
@@ -143,7 +144,7 @@ const SignupPage = () => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password">Mot de passe</Label>
+              <Label htmlFor="password">{t("signup.password")}</Label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                 <Input
@@ -164,7 +165,7 @@ const SignupPage = () => {
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
               </div>
-              <p className="text-xs text-muted-foreground">Minimum 6 caractères</p>
+              <p className="text-xs text-muted-foreground">{t("signup.minChars")}</p>
             </div>
 
             <div className="flex items-start gap-3">
@@ -174,27 +175,27 @@ const SignupPage = () => {
                 onCheckedChange={(checked) => setAcceptTerms(checked as boolean)}
               />
               <Label htmlFor="terms" className="text-sm text-muted-foreground cursor-pointer">
-                J'accepte les{" "}
+                {t("signup.acceptPrefix")}{" "}
                 <Link to="/terms" className="text-primary hover:underline">
-                  conditions d'utilisation
+                  {t("signup.termsLink")}
                 </Link>{" "}
-                et la{" "}
+                {t("signup.acceptAnd")}{" "}
                 <Link to="/privacy" className="text-primary hover:underline">
-                  politique de confidentialité
+                  {t("signup.privacyLink")}
                 </Link>
               </Label>
             </div>
 
             <Button type="submit" className="w-full" size="lg" disabled={loading}>
-              {loading ? "Création..." : "Créer mon compte"}
+              {loading ? t("signup.creating") : t("signup.submit")}
               <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
           </form>
 
           <p className="text-center text-muted-foreground mt-6">
-            Déjà un compte ?{" "}
+            {t("signup.hasAccount")}{" "}
             <Link to="/login" className="text-primary font-medium hover:underline">
-              Se connecter
+              {t("signup.login")}
             </Link>
           </p>
         </motion.div>

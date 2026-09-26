@@ -8,46 +8,61 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Link } from "react-router-dom";
 import EcoScoreLegend from "@/components/carbon/EcoScoreLegend";
+import { useTranslation } from "react-i18next";
 
-const impactStats = [
-  { icon: TreePine, label: "CO₂ compensé", value: "45,000 kg", growth: "+23%" },
-  { icon: Users, label: "Voyageurs engagés", value: "2,850+", growth: "+45%" },
-  { icon: Globe, label: "Projets soutenus", value: "12", growth: "+3" },
-  { icon: Award, label: "Arbres plantés", value: "8,500", growth: "+1,200" },
+const impactStatsIcons = [TreePine, Users, Globe, Award];
+const impactStatsData = [
+  { value: "45,000 kg", growth: "+23%" },
+  { value: "2,850+", growth: "+45%" },
+  { value: "12", growth: "+3" },
+  { value: "8,500", growth: "+1,200" },
 ];
 
-const compensationProjects = [
+const compensationProjectsData = [
   {
-    name: "Reforestation Amazonie",
-    location: "Brésil",
     progress: 78,
-    target: "10,000 arbres",
     image: "https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?w=800",
   },
   {
-    name: "Protection Mangroves",
-    location: "Indonésie",
     progress: 92,
-    target: "500 hectares",
     image: "https://images.unsplash.com/photo-1559827291-72ee739d0d9a?w=800",
   },
   {
-    name: "Énergie Solaire Villages",
-    location: "Kenya",
     progress: 45,
-    target: "25 villages",
     image: "https://images.unsplash.com/photo-1509391366360-2e959784a276?w=800",
   },
 ];
 
-const emissionBreakdown = [
-  { category: "Transport aérien", icon: Plane, percentage: 65, color: "bg-eco-e" },
-  { category: "Hébergement", icon: Building, percentage: 20, color: "bg-eco-c" },
-  { category: "Mobilité locale", icon: Bike, percentage: 10, color: "bg-eco-b" },
-  { category: "Activités", icon: Heart, percentage: 5, color: "bg-eco-a" },
+const emissionBreakdownIcons = [Plane, Building, Bike, Heart];
+const emissionBreakdownData = [
+  { percentage: 65, color: "bg-eco-e" },
+  { percentage: 20, color: "bg-eco-c" },
+  { percentage: 10, color: "bg-eco-b" },
+  { percentage: 5, color: "bg-eco-a" },
 ];
 
 const ImpactPage = () => {
+  const { t } = useTranslation("impact");
+
+  const impactStats = impactStatsData.map((stat, i) => ({
+    ...stat,
+    icon: impactStatsIcons[i],
+    label: t(`stats.${i}.label`),
+  }));
+
+  const compensationProjects = compensationProjectsData.map((project, i) => ({
+    ...project,
+    name: t(`projects.${i}.name`),
+    location: t(`projects.${i}.location`),
+    target: t(`projects.${i}.target`),
+  }));
+
+  const emissionBreakdown = emissionBreakdownData.map((item, i) => ({
+    ...item,
+    icon: emissionBreakdownIcons[i],
+    category: t(`emissions.${i}`),
+  }));
+
   return (
     <main className="page-main">
         {/* Hero Section */}
@@ -60,26 +75,25 @@ const ImpactPage = () => {
             >
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-carbon-foreground/10 text-sm font-medium mb-6">
                 <Leaf className="w-4 h-4" />
-                Notre engagement
+                {t("hero.eyebrow")}
               </div>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-                Notre impact
+                {t("hero.titleLine1")}
                 <br />
-                <span className="text-carbon-saved">environnemental</span>
+                <span className="text-carbon-saved">{t("hero.titleLine2")}</span>
               </h1>
               <p className="text-lg md:text-xl text-carbon-foreground/80 leading-relaxed mb-8">
-                Ensemble, nous construisons un tourisme plus responsable. 
-                Découvrez comment votre communauté contribue à un avenir durable.
+                {t("hero.description")}
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link to="/carbon-calculator">
                   <Button size="lg" variant="secondary">
                     <Target className="w-4 h-4 mr-2" />
-                    Calculer mon impact
+                    {t("hero.calculate")}
                   </Button>
                 </Link>
                 <Button size="lg" variant="outline" className="border-carbon-foreground/30 text-carbon-foreground hover:bg-carbon-foreground/10">
-                  En savoir plus
+                  {t("hero.learnMore")}
                 </Button>
               </div>
             </motion.div>
@@ -117,16 +131,16 @@ const ImpactPage = () => {
               className="max-w-4xl mx-auto"
             >
               <h2 className="text-3xl font-bold text-center mb-4">
-                Comprendre les émissions du voyage
+                {t("breakdown.title")}
               </h2>
               <p className="text-muted-foreground text-center mb-12 max-w-2xl mx-auto">
-                Voici comment se répartissent en moyenne les émissions carbone d'un séjour Amani Resorts.
+                {t("breakdown.description")}
               </p>
 
               <div className="grid md:grid-cols-2 gap-8">
                 <Card>
                   <CardHeader>
-                    <CardTitle>Répartition des émissions</CardTitle>
+                    <CardTitle>{t("breakdown.cardTitle")}</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <EcoScoreLegend className="mb-4" />
@@ -152,47 +166,22 @@ const ImpactPage = () => {
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <TrendingDown className="w-5 h-5 text-primary" />
-                      Comment réduire ?
+                      {t("reduce.title")}
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
                     <ul className="space-y-3">
-                      <li className="flex items-start gap-3">
-                        <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                          <span className="text-xs font-bold text-primary">1</span>
-                        </div>
-                        <p className="text-sm text-muted-foreground">
-                          <strong className="text-foreground">Privilégiez le train</strong> pour les trajets &lt; 1000km - 
-                          jusqu'à 90% d'émissions en moins
-                        </p>
-                      </li>
-                      <li className="flex items-start gap-3">
-                        <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                          <span className="text-xs font-bold text-primary">2</span>
-                        </div>
-                        <p className="text-sm text-muted-foreground">
-                          <strong className="text-foreground">Restez plus longtemps</strong> - un séjour de 3 mois 
-                          émet 3x moins qu'un aller-retour mensuel
-                        </p>
-                      </li>
-                      <li className="flex items-start gap-3">
-                        <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                          <span className="text-xs font-bold text-primary">3</span>
-                        </div>
-                        <p className="text-sm text-muted-foreground">
-                          <strong className="text-foreground">Choisissez des hébergements éco-certifiés</strong> avec 
-                          énergie renouvelable
-                        </p>
-                      </li>
-                      <li className="flex items-start gap-3">
-                        <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                          <span className="text-xs font-bold text-primary">4</span>
-                        </div>
-                        <p className="text-sm text-muted-foreground">
-                          <strong className="text-foreground">Mobilité douce sur place</strong> - vélo, marche, 
-                          transports en commun
-                        </p>
-                      </li>
+                      {[0, 1, 2, 3].map((i) => (
+                        <li key={i} className="flex items-start gap-3">
+                          <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <span className="text-xs font-bold text-primary">{i + 1}</span>
+                          </div>
+                          <p className="text-sm text-muted-foreground">
+                            <strong className="text-foreground">{t(`reduce.tips.${i}.strong`)}</strong>{" "}
+                            {t(`reduce.tips.${i}.rest`)}
+                          </p>
+                        </li>
+                      ))}
                     </ul>
                   </CardContent>
                 </Card>
@@ -210,10 +199,10 @@ const ImpactPage = () => {
               viewport={{ once: true }}
             >
               <h2 className="text-3xl font-bold text-center mb-4">
-                Projets de compensation
+                {t("projectsTitle")}
               </h2>
               <p className="text-muted-foreground text-center mb-12 max-w-2xl mx-auto">
-                Vos contributions financent des projets environnementaux certifiés à travers le monde.
+                {t("projectsDescription")}
               </p>
 
               <div className="grid md:grid-cols-3 gap-6">
@@ -240,7 +229,7 @@ const ImpactPage = () => {
                       </div>
                       <CardContent className="p-4">
                         <div className="flex items-center justify-between mb-2">
-                          <span className="text-sm text-muted-foreground">Objectif: {project.target}</span>
+                          <span className="text-sm text-muted-foreground">{t("goal")}: {project.target}</span>
                           <span className="text-sm font-medium text-primary">{project.progress}%</span>
                         </div>
                         <Progress value={project.progress} className="h-2" />
@@ -253,7 +242,7 @@ const ImpactPage = () => {
               <div className="text-center mt-8">
                 <Link to="/partners">
                   <Button variant="outline">
-                    Voir tous nos partenaires
+                    {t("viewPartners")}
                   </Button>
                 </Link>
               </div>
@@ -272,14 +261,14 @@ const ImpactPage = () => {
             >
               <Leaf className="w-12 h-12 mx-auto mb-4 opacity-80" />
               <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                Calculez votre empreinte
+                {t("cta.title")}
               </h2>
               <p className="text-lg opacity-80 mb-8 max-w-xl mx-auto">
-                Estimez l'impact de votre prochain voyage et découvrez comment le réduire.
+                {t("cta.description")}
               </p>
               <Link to="/carbon-calculator">
                 <Button size="lg" variant="secondary">
-                  Accéder au calculateur
+                  {t("cta.button")}
                 </Button>
               </Link>
             </motion.div>

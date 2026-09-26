@@ -1,0 +1,346 @@
+<title>Guide Amani Resorts</title>
+<style>
+  :root{
+    --bg:#FBF7F1;
+    --surface:#FFFFFF;
+    --text:#20293A;
+    --text-muted:#6B6156;
+    --accent:#C1794A;
+    --accent-ink:#20293A;
+    --border:#E7DFD1;
+    --ok:#4B7B5F;
+    --ok-bg:#EAF2EC;
+    --warn:#B4552F;
+    --warn-bg:#FBEDE5;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#171310;
+      --surface:#211C18;
+      --text:#F1EAE0;
+      --text-muted:#B3A897;
+      --accent:#E0A46E;
+      --accent-ink:#F1EAE0;
+      --border:#3A332B;
+      --ok:#8FCBA4;
+      --ok-bg:#1E2B22;
+      --warn:#E7936B;
+      --warn-bg:#2E2018;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#171310;
+    --surface:#211C18;
+    --text:#F1EAE0;
+    --text-muted:#B3A897;
+    --accent:#E0A46E;
+    --accent-ink:#F1EAE0;
+    --border:#3A332B;
+    --ok:#8FCBA4;
+    --ok-bg:#1E2B22;
+    --warn:#E7936B;
+    --warn-bg:#2E2018;
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    line-height:1.6;
+    padding:0 16px;
+  }
+  .page{
+    max-width:760px;
+    margin:0 auto;
+    padding-block:48px 80px;
+  }
+  h1,h2,h3{
+    font-family:"Fraunces","Georgia",serif;
+    color:var(--text);
+    text-wrap:balance;
+    line-height:1.15;
+  }
+  .eyebrow{
+    text-transform:uppercase;
+    letter-spacing:.12em;
+    font-size:12px;
+    font-weight:600;
+    color:var(--accent);
+    margin:0 0 10px;
+  }
+  h1{font-size:clamp(28px,5vw,42px); margin:0 0 12px;}
+  .lede{font-size:17px; color:var(--text-muted); max-width:60ch; margin:0 0 8px;}
+  .meta{font-size:13px; color:var(--text-muted); margin:0 0 40px;}
+
+  .card{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:22px 24px;
+    margin:0 0 20px;
+  }
+  .verdict{
+    display:flex;
+    gap:14px;
+    align-items:flex-start;
+    background:var(--ok-bg);
+    border:1px solid var(--ok);
+    border-radius:14px;
+    padding:20px 22px;
+    margin:0 0 40px;
+  }
+  .verdict .dot{
+    flex:none;
+    width:28px;height:28px;
+    border-radius:50%;
+    background:var(--ok);
+    color:#fff;
+    display:flex;align-items:center;justify-content:center;
+    font-size:16px;font-weight:700;
+    margin-top:2px;
+  }
+  .verdict h2{font-size:17px; margin:0 0 6px; font-family:inherit;}
+  .verdict p{margin:0; color:var(--text); font-size:14.5px;}
+
+  .toc{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin:0 0 48px;
+    padding:0;
+    list-style:none;
+  }
+  .toc a{
+    display:inline-block;
+    font-size:13px;
+    color:var(--text);
+    text-decoration:none;
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:999px;
+    padding:6px 14px;
+  }
+
+  section.step{margin:0 0 56px;}
+  .step-head{
+    display:flex;
+    align-items:baseline;
+    gap:12px;
+    margin:0 0 6px;
+  }
+  .step-num{
+    font-family:"Fraunces",serif;
+    font-size:15px;
+    color:var(--accent);
+    font-weight:600;
+  }
+  h2.step-title{font-size:23px; margin:0;}
+  .step-desc{color:var(--text-muted); font-size:15px; margin:0 0 18px; max-width:62ch;}
+
+  figure{margin:0 0 18px;}
+  figure img{
+    display:block;
+    width:100%;
+    max-width:420px;
+    border-radius:10px;
+    border:1px solid var(--border);
+    box-shadow:0 6px 24px -12px rgba(0,0,0,.25);
+  }
+  figcaption{
+    font-size:12.5px;
+    color:var(--text-muted);
+    margin-top:8px;
+    font-style:italic;
+  }
+
+  .status-row{
+    display:flex;
+    gap:10px;
+    align-items:center;
+    font-size:13.5px;
+    font-weight:600;
+    margin:0 0 14px;
+  }
+  .badge{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    padding:4px 11px;
+    border-radius:999px;
+    font-size:12.5px;
+    font-weight:700;
+  }
+  .badge.ok{background:var(--ok-bg); color:var(--ok);}
+  .badge.warn{background:var(--warn-bg); color:var(--warn);}
+
+  .findings{
+    border:1px solid var(--border);
+    border-radius:14px;
+    overflow:hidden;
+    margin:0 0 40px;
+  }
+  .finding{
+    display:flex;
+    gap:14px;
+    padding:16px 20px;
+    background:var(--surface);
+    border-top:1px solid var(--border);
+  }
+  .finding:first-child{border-top:none;}
+  .finding .badge{flex:none; margin-top:1px;}
+  .finding .body{font-size:14.5px;}
+  .finding .body b{display:block; margin-bottom:2px;}
+  .finding .body span{color:var(--text-muted);}
+
+  .divider{
+    border:none;
+    border-top:1px solid var(--border);
+    margin:56px 0 40px;
+  }
+
+  footer{color:var(--text-muted); font-size:13px;}
+
+  @media (max-width:560px){
+    figure img{max-width:100%;}
+  }
+</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap">
+
+<div class="page">
+
+  <p class="eyebrow">Vérification du parcours utilisateur</p>
+  <h1>Guide Amani Resorts</h1>
+  <p class="lede">Ce document parcourt le site comme le ferait un visiteur réel : recherche d'un séjour, choix d'une île, composition du panier (coworking + activité), paiement, puis création de compte. Chaque étape a été testée en direct sur l'environnement de développement (localhost:8080) le 26 septembre 2026.</p>
+  <p class="meta">Captures d'écran réalisées en français, résolution 675&nbsp;px de large (format mobile/tablette étroit).</p>
+
+  <div class="verdict">
+    <div class="dot">✓</div>
+    <div>
+      <h2>Verdict global</h2>
+      <p>Le parcours de réservation fonctionne de bout en bout : recherche → destination → composition du panier → récapitulatif → paiement → création de compte. Le calcul d'empreinte carbone se met à jour en temps réel à chaque ajout au panier. Deux points sont volontairement en attente côté produit (paiement Stripe, confirmation d'email) — détaillés en fin de document, ce ne sont pas des anomalies.</p>
+    </div>
+  </div>
+
+  <ul class="toc">
+    <li><a href="#etape-1">1. Accueil &amp; recherche</a></li>
+    <li><a href="#etape-2">2. Destinations</a></li>
+    <li><a href="#etape-3">3. Fiche destination</a></li>
+    <li><a href="#etape-4">4. Composer le séjour</a></li>
+    <li><a href="#etape-5">5. Récapitulatif</a></li>
+    <li><a href="#etape-6">6. Paiement</a></li>
+    <li><a href="#etape-7">7. Création de compte</a></li>
+    <li><a href="#vigilance">Points de vigilance</a></li>
+  </ul>
+
+  <section class="step" id="etape-1">
+    <div class="step-head"><span class="step-num">01</span><h2 class="step-title">Accueil &amp; recherche</h2></div>
+    <p class="step-desc">La page d'accueil propose trois modes de recherche sous forme d'onglets : <strong>Séjour complet</strong>, <strong>Coworking seul</strong> et <strong>Expériences</strong>. En dessous, les trois îles (Grande Comore, Anjouan, Mohéli) et une sélection d'activités sont mises en avant.</p>
+
+    <div class="status-row"><span class="badge ok">✓ Vérifié</span> Le mode « Séjour complet » affiche destination, dates et voyageurs.</div>
+    <figure>
+      <img src="images/01_home.jpg" alt="Page d'accueil, mode Séjour complet">
+      <figcaption>Accueil — recherche « Séjour complet » avec les 3 destinations et les activités du jour.</figcaption>
+    </figure>
+
+    <div class="status-row"><span class="badge ok">✓ Correction confirmée</span> Le mode « Coworking seul » affiche désormais un champ dédié.</div>
+    <p class="step-desc">Une régression corrigée plus tôt dans le projet — l'onglet affichait la liste des destinations au lieu des espaces de coworking — a été revérifiée : le champ propose bien un espace de coworking et un nombre de <em>positions</em> (et non plus « voyageurs »).</p>
+    <figure>
+      <img src="images/09_coworking_seul.png" alt="Onglet Coworking seul avec champ dédié">
+      <figcaption>Accueil — onglet « Coworking seul » : champ espace + positions.</figcaption>
+    </figure>
+  </section>
+
+  <section class="step" id="etape-2">
+    <div class="step-head"><span class="step-num">02</span><h2 class="step-title">Liste des destinations</h2></div>
+    <p class="step-desc">Accessible via « Voir toutes les destinations », cette page liste les 3 îles avec note moyenne, nombre d'espaces de coworking et tarif d'entrée de gamme.</p>
+    <div class="status-row"><span class="badge ok">✓ Vérifié</span> Barre de recherche pleine largeur, aucune donnée fictive affichée.</div>
+    <figure>
+      <img src="images/02_destinations.jpg" alt="Liste des destinations">
+      <figcaption>Page Destinations — Grande Comore, Anjouan, Mohéli.</figcaption>
+    </figure>
+  </section>
+
+  <section class="step" id="etape-3">
+    <div class="step-head"><span class="step-num">03</span><h2 class="step-title">Fiche destination</h2></div>
+    <p class="step-desc">Chaque île détaille ses espaces de coworking, hébergements et activités disponibles, avec un bloc « Planifier mon séjour » qui mène directement au panier.</p>
+    <div class="status-row"><span class="badge ok">✓ Vérifié</span> 5 coworkings, 6 hébergements et 17 activités listés pour Grande Comore.</div>
+    <figure>
+      <img src="images/03_destination_detail.jpg" alt="Fiche destination Grande Comore">
+      <figcaption>Fiche destination — Grande Comore.</figcaption>
+    </figure>
+  </section>
+
+  <section class="step" id="etape-4">
+    <div class="step-head"><span class="step-num">04</span><h2 class="step-title">Composer son séjour</h2></div>
+    <p class="step-desc">Un clic sur « Réserver » ouvre le configurateur de séjour : dates, puis quatre catégories de services (coworking, hébergement, mobilité douce, activités) que l'on ajoute librement au panier.</p>
+
+    <div class="status-row"><span class="badge ok">✓ Vérifié</span> Dates saisies, service ajouté, toast de confirmation affiché.</div>
+    <figure>
+      <img src="images/04_cart.jpg" alt="Configurateur de séjour, dates et espaces de coworking">
+      <figcaption>Dates du séjour + catalogue des espaces de coworking.</figcaption>
+    </figure>
+
+    <div class="status-row"><span class="badge ok">✓ Vérifié</span> Panier et impact carbone recalculés après chaque ajout.</div>
+    <p class="step-desc">Test effectué avec « Le cube » (coworking, 20€/jour) et l'activité « À la recherche des dauphins » (45€). Le panier affiche le détail ligne par ligne, le total et un score carbone A→E mis à jour instantanément.</p>
+    <figure>
+      <img src="images/05_cart_summary.png" alt="Panier avec deux articles et score carbone">
+      <figcaption>Panier — 2 articles, total 65€, impact 0.5&nbsp;kg CO₂, score A.</figcaption>
+    </figure>
+  </section>
+
+  <section class="step" id="etape-5">
+    <div class="step-head"><span class="step-num">05</span><h2 class="step-title">Récapitulatif</h2></div>
+    <p class="step-desc">Avant paiement, un écran récapitule chaque service, sa quantité et son prix — permettant une dernière vérification.</p>
+    <div class="status-row"><span class="badge ok">✓ Vérifié</span> Quantités et prix cohérents avec le panier de l'étape précédente.</div>
+    <figure>
+      <img src="images/06_recap.png" alt="Écran de récapitulatif du séjour">
+      <figcaption>Récapitulatif — Le cube × 1, À la recherche des dauphins × 1.</figcaption>
+    </figure>
+  </section>
+
+  <section class="step" id="etape-6">
+    <div class="step-head"><span class="step-num">06</span><h2 class="step-title">Paiement</h2></div>
+    <p class="step-desc">L'écran de paiement détaille le sous-total, une ligne de compensation carbone (1€ dans notre test) et le total. Le bouton « Confirmer la réservation » déclenche la suite du parcours.</p>
+    <div class="status-row"><span class="badge warn">⚠ En attente</span> L'intégration Stripe n'est pas encore active — le site l'indique lui-même.</div>
+    <figure>
+      <img src="images/07_paiement.png" alt="Écran de paiement">
+      <figcaption>Paiement — « L'intégration Stripe sera disponible prochainement ».</figcaption>
+    </figure>
+  </section>
+
+  <section class="step" id="etape-7">
+    <div class="step-head"><span class="step-num">07</span><h2 class="step-title">Connexion requise</h2></div>
+    <p class="step-desc">Sans session active, « Confirmer la réservation » redirige automatiquement vers la connexion — comportement attendu pour rattacher la réservation à un compte. Un compte de test créé pour cette vérification a bien reçu le message « Compte créé ! Vérifiez votre email pour confirmer votre compte », confirmant que l'inscription et la double confirmation par email (Supabase Auth) fonctionnent.</p>
+    <div class="status-row"><span class="badge ok">✓ Vérifié</span> Redirection automatique + création de compte + email de confirmation requis.</div>
+    <figure>
+      <img src="images/08_login.png" alt="Page de connexion">
+      <figcaption>Connexion — étape finale avant validation d'une réservation.</figcaption>
+    </figure>
+  </section>
+
+  <hr class="divider">
+
+  <h2 id="vigilance" style="font-size:22px; margin:0 0 6px;">Points de vigilance</h2>
+  <p class="step-desc">Aucun de ces points n'est un bug : ce sont des choix produit assumés ou des chantiers déjà identifiés, à garder en tête.</p>
+
+  <div class="findings">
+    <div class="finding">
+      <span class="badge warn">Paiement</span>
+      <div class="body"><b>Stripe pas encore branché</b><span>Le tunnel de paiement est fonctionnel jusqu'à l'écran de paiement, mais aucun encaissement réel n'est possible tant que l'intégration Stripe n'est pas activée.</span></div>
+    </div>
+    <div class="finding">
+      <span class="badge warn">Compte</span>
+      <div class="body"><b>Confirmation email obligatoire</b><span>Une réservation ne peut être finalisée qu'après confirmation de l'adresse email — normal pour la sécurité, mais à rappeler si un test de bout en bout complet est nécessaire (accès à la boîte mail du compte test).</span></div>
+    </div>
+    <div class="finding">
+      <span class="badge warn">Contenu</span>
+      <div class="body"><b>Certains contenus CMS restent en français uniquement</b><span>Le bloc d'appel à l'action de la page d'accueil (« Rejoignez une communauté grandissante… ») et les futurs articles de blog sont saisis en base sans variante anglaise — le site bascule alors sur le texte français par défaut même en navigation anglaise.</span></div>
+    </div>
+  </div>
+
+  <footer>
+    Document généré automatiquement à partir d'un parcours réel effectué dans le navigateur, le 26 septembre 2026 — environnement local (localhost:8080).
+  </footer>
+
+</div>

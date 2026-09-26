@@ -638,6 +638,7 @@ export type Database = {
           moderated_at: string | null
           moderated_by: string | null
           status: string
+          tags: string[]
           updated_at: string
           user_id: string
         }
@@ -654,6 +655,7 @@ export type Database = {
           moderated_at?: string | null
           moderated_by?: string | null
           status?: string
+          tags?: string[]
           updated_at?: string
           user_id: string
         }
@@ -670,6 +672,7 @@ export type Database = {
           moderated_at?: string | null
           moderated_by?: string | null
           status?: string
+          tags?: string[]
           updated_at?: string
           user_id?: string
         }
@@ -849,6 +852,8 @@ export type Database = {
           highlight: string | null
           id: string
           image_url: string | null
+          latitude: number | null
+          longitude: number | null
           name: string
           rating: number | null
           show_in_hero: boolean
@@ -866,6 +871,8 @@ export type Database = {
           highlight?: string | null
           id?: string
           image_url?: string | null
+          latitude?: number | null
+          longitude?: number | null
           name: string
           rating?: number | null
           show_in_hero?: boolean
@@ -883,6 +890,8 @@ export type Database = {
           highlight?: string | null
           id?: string
           image_url?: string | null
+          latitude?: number | null
+          longitude?: number | null
           name?: string
           rating?: number | null
           show_in_hero?: boolean
@@ -1768,6 +1777,33 @@ export type Database = {
           },
         ]
       }
+      push_subscriptions: {
+        Row: {
+          auth_key: string
+          created_at: string
+          endpoint: string
+          id: string
+          p256dh: string
+          user_id: string
+        }
+        Insert: {
+          auth_key: string
+          created_at?: string
+          endpoint: string
+          id?: string
+          p256dh: string
+          user_id: string
+        }
+        Update: {
+          auth_key?: string
+          created_at?: string
+          endpoint?: string
+          id?: string
+          p256dh?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -1779,6 +1815,7 @@ export type Database = {
           full_name: string | null
           id: string
           is_banned: boolean
+          language: string
           total_carbon_saved: number | null
           trips_count: number | null
           updated_at: string
@@ -1794,6 +1831,7 @@ export type Database = {
           full_name?: string | null
           id?: string
           is_banned?: boolean
+          language?: string
           total_carbon_saved?: number | null
           trips_count?: number | null
           updated_at?: string
@@ -1809,6 +1847,7 @@ export type Database = {
           full_name?: string | null
           id?: string
           is_banned?: boolean
+          language?: string
           total_carbon_saved?: number | null
           trips_count?: number | null
           updated_at?: string
@@ -2030,6 +2069,7 @@ export type Database = {
         Row: {
           comment: string | null
           created_at: string
+          evidence_url: string | null
           id: string
           reason: string
           reporter_user_id: string
@@ -2042,6 +2082,7 @@ export type Database = {
         Insert: {
           comment?: string | null
           created_at?: string
+          evidence_url?: string | null
           id?: string
           reason: string
           reporter_user_id: string
@@ -2054,6 +2095,7 @@ export type Database = {
         Update: {
           comment?: string | null
           created_at?: string
+          evidence_url?: string | null
           id?: string
           reason?: string
           reporter_user_id?: string
@@ -2078,6 +2120,7 @@ export type Database = {
           target_id: string
           target_type: string
           user_id: string
+          verified: boolean
         }
         Insert: {
           author_display_name?: string | null
@@ -2091,6 +2134,7 @@ export type Database = {
           target_id: string
           target_type: string
           user_id: string
+          verified?: boolean
         }
         Update: {
           author_display_name?: string | null
@@ -2104,6 +2148,7 @@ export type Database = {
           target_id?: string
           target_type?: string
           user_id?: string
+          verified?: boolean
         }
         Relationships: []
       }

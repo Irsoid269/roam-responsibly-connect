@@ -17,6 +17,7 @@ import {
   useCoworkings,
   useAccommodations,
   useActivities,
+  useUniverses,
 } from "@/hooks/useCatalogQueries";
 import {
   parseBookingSearchParams,
@@ -69,6 +70,7 @@ interface Activity {
   price: number | null;
   duration_hours: number | null;
   category: string | null;
+  universe_id: string | null;
   eco_certified: boolean | null;
 }
 
@@ -81,6 +83,8 @@ const DestinationDetailPage = () => {
   const { data: coworkings = [], isLoading: cwLoading } = useCoworkings(id);
   const { data: accommodations = [], isLoading: acLoading } = useAccommodations(id);
   const { data: activities = [], isLoading: actLoading } = useActivities(id);
+  const { data: universes = [] } = useUniverses();
+  const universesById = Object.fromEntries(universes.map((u) => [u.id, u]));
   const [selectedTab, setSelectedTab] = useState("coworkings");
 
   const loading = destLoading || cwLoading || acLoading || actLoading;
@@ -123,15 +127,6 @@ const DestinationDetailPage = () => {
     coliving: t("detail.types.coliving"),
     hostel: t("detail.types.hostel"),
     "eco-lodge": t("detail.types.eco-lodge"),
-  };
-
-  const categoryLabels: Record<string, string> = {
-    culture: t("detail.categories.culture"),
-    nature: t("detail.categories.nature"),
-    sport: t("detail.categories.sport"),
-    wellness: t("detail.categories.wellness"),
-    gastronomy: t("detail.categories.gastronomy"),
-    "eco-tour": t("detail.categories.eco-tour"),
   };
 
   return (
@@ -387,17 +382,21 @@ const DestinationDetailPage = () => {
                                 )}
                               </div>
                               <div className="flex items-center gap-3 mt-2 text-sm text-muted-foreground">
-                                <Badge variant="outline">
-                                  {categoryLabels[activity.category || "culture"] || activity.category}
-                                </Badge>
+                                {activity.universe_id && universesById[activity.universe_id] && (
+                                  <Badge variant="outline">
+                                    {universesById[activity.universe_id].name}
+                                  </Badge>
+                                )}
                                 <span className="flex items-center gap-1">
                                   <Clock className="w-3 h-3" />
-                                  {activity.duration_hours}h
+                                  {activity.duration_hours != null ? `${activity.duration_hours}h` : t("detail.durationUpcoming")}
                                 </span>
                               </div>
                             </div>
                             <div className="text-right">
-                              <p className="text-lg font-bold text-foreground">{activity.price}€</p>
+                              <p className="text-lg font-bold text-foreground">
+                                {activity.price != null ? `${activity.price}€` : t("detail.priceOnRequest")}
+                              </p>
                               <Button size="sm" className="mt-2" asChild>
                                 <Link to={bookingPath}>{t("detail.book")}</Link>
                               </Button>

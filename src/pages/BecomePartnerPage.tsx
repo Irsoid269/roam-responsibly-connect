@@ -16,39 +16,22 @@ import {
 import { useAuth } from "@/hooks/useAuth";
 import { useSubmitPartnerApplication, useCatalogCounts } from "@/hooks/useCatalogQueries";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
-const partnerTypes = [
-  {
-    icon: Building,
-    title: "Hébergements",
-    description: "Hôtels, éco-lodges, coliving, appartements",
-    benefits: ["Visibilité auprès de voyageurs responsables", "Badge éco-responsable vérifié", "Revenus récurrents"],
-  },
-  {
-    icon: Laptop,
-    title: "Espaces de coworking",
-    description: "Coworkings, cafés travail, hubs créatifs",
-    benefits: ["Accès à une communauté internationale", "Réservations garanties", "Marketing inclus"],
-  },
-  {
-    icon: Leaf,
-    title: "Activités & Expériences",
-    description: "Tours, ateliers, sports, culture",
-    benefits: ["Certification éco-tourisme", "Plateforme de réservation", "Avis voyageurs"],
-  },
-];
-
-const requirements = [
-  "Engagement environnemental démontrable",
-  "Certification ou label écologique (recommandé)",
-  "Politique de réduction des déchets",
-  "Utilisation d'énergies renouvelables",
-  "Soutien aux communautés locales",
-  "Transparence sur les pratiques",
-];
+const partnerTypeIcons = [Building, Laptop, Leaf];
 
 const BecomePartnerPage = () => {
+  const { t } = useTranslation("becomePartner");
   const { user } = useAuth();
+
+  const partnerTypes = partnerTypeIcons.map((icon, i) => ({
+    icon,
+    title: t(`types.${i}.title`),
+    description: t(`types.${i}.description`),
+    benefits: t(`types.${i}.benefits`, { returnObjects: true }) as string[],
+  }));
+
+  const requirements = t("requirements", { returnObjects: true }) as string[];
   const { data: counts } = useCatalogCounts();
   const submit = useSubmitPartnerApplication();
   const [firstName, setFirstName] = useState("");
@@ -60,16 +43,16 @@ const BecomePartnerPage = () => {
   const [message, setMessage] = useState("");
 
   const liveStats = [
-    { value: `${counts?.travelers ?? "—"}+`, label: "Voyageurs" },
-    { value: `${counts?.destinations ?? "—"}`, label: "Destinations" },
-    { value: `${counts?.coworkings ?? "—"}`, label: "Coworkings" },
-    { value: "Éco", label: "Engagement" },
+    { value: `${counts?.travelers ?? "—"}+`, label: t("stats.travelers") },
+    { value: `${counts?.destinations ?? "—"}`, label: t("stats.destinations") },
+    { value: `${counts?.coworkings ?? "—"}`, label: t("stats.coworkings") },
+    { value: t("stats.ecoValue"), label: t("stats.ecoLabel") },
   ];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!firstName.trim() || !lastName.trim() || !email.trim() || !companyName.trim()) {
-      toast.error("Remplissez les champs obligatoires");
+      toast.error(t("toasts.fillRequired"));
       return;
     }
     try {
@@ -83,7 +66,7 @@ const BecomePartnerPage = () => {
         message: message.trim() || undefined,
         userId: user?.id,
       });
-      toast.success("Candidature envoyée — réponse sous 48h");
+      toast.success(t("toasts.success"));
       setMessage("");
       setCompanyName("");
       setWebsite("");
@@ -91,7 +74,7 @@ const BecomePartnerPage = () => {
       toast.error(
         err instanceof Error
           ? err.message
-          : "Envoi impossible — appliquez la migration partner_applications"
+          : t("toasts.error")
       );
     }
   };
@@ -108,14 +91,13 @@ const BecomePartnerPage = () => {
             >
               <Badge variant="outline" className="mb-4 bg-primary-foreground/10 border-primary-foreground/20 text-primary-foreground">
                 <Users className="w-3 h-3 mr-1" />
-                Rejoignez notre réseau
+                {t("eyebrow")}
               </Badge>
               <h1 className="text-4xl md:text-5xl font-bold mb-6">
-                Devenir partenaire
+                {t("title")}
               </h1>
               <p className="text-lg text-primary-foreground/80 mb-8">
-                Rejoignez une communauté de voyageurs responsables et développez votre activité 
-                tout en contribuant à un tourisme plus durable.
+                {t("description")}
               </p>
               <div className="flex justify-center gap-4">
                 {liveStats.map((stat, index) => (
@@ -139,10 +121,10 @@ const BecomePartnerPage = () => {
               className="text-center mb-12"
             >
               <h2 className="text-3xl font-bold text-foreground mb-4">
-                Types de partenariats
+                {t("typesTitle")}
               </h2>
               <p className="text-muted-foreground max-w-xl mx-auto">
-                Quel que soit votre secteur, nous avons une solution adaptée à vos besoins.
+                {t("typesDescription")}
               </p>
             </motion.div>
 
@@ -190,11 +172,10 @@ const BecomePartnerPage = () => {
                 viewport={{ once: true }}
               >
                 <h2 className="text-3xl font-bold text-foreground mb-4">
-                  Nos critères de sélection
+                  {t("requirementsTitle")}
                 </h2>
                 <p className="text-muted-foreground mb-6">
-                  Pour garantir une expérience de qualité à notre communauté, 
-                  nous sélectionnons nos partenaires selon des critères stricts de durabilité.
+                  {t("requirementsDescription")}
                 </p>
                 <ul className="space-y-3">
                   {requirements.map((req, index) => (
@@ -215,56 +196,56 @@ const BecomePartnerPage = () => {
               >
                 <Card>
                   <CardHeader>
-                    <CardTitle>Postuler maintenant</CardTitle>
+                    <CardTitle>{t("form.title")}</CardTitle>
                     <p className="text-sm text-muted-foreground">
-                      Remplissez ce formulaire et nous vous recontacterons sous 48h.
+                      {t("form.subtitle")}
                     </p>
                   </CardHeader>
                   <CardContent>
                     <form onSubmit={handleSubmit} className="space-y-4">
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <label className="text-sm font-medium mb-1 block">Prénom</label>
+                        <label className="text-sm font-medium mb-1 block">{t("form.firstName")}</label>
                         <Input value={firstName} onChange={(e) => setFirstName(e.target.value)} required />
                       </div>
                       <div>
-                        <label className="text-sm font-medium mb-1 block">Nom</label>
+                        <label className="text-sm font-medium mb-1 block">{t("form.lastName")}</label>
                         <Input value={lastName} onChange={(e) => setLastName(e.target.value)} required />
                       </div>
                     </div>
                     <div>
-                      <label className="text-sm font-medium mb-1 block">Email professionnel</label>
+                      <label className="text-sm font-medium mb-1 block">{t("form.email")}</label>
                       <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
                     </div>
                     <div>
-                      <label className="text-sm font-medium mb-1 block">Nom de l&apos;établissement</label>
+                      <label className="text-sm font-medium mb-1 block">{t("form.companyName")}</label>
                       <Input value={companyName} onChange={(e) => setCompanyName(e.target.value)} required />
                     </div>
                     <div>
-                      <label className="text-sm font-medium mb-1 block">Site web</label>
+                      <label className="text-sm font-medium mb-1 block">{t("form.website")}</label>
                       <Input value={website} onChange={(e) => setWebsite(e.target.value)} placeholder="https://" />
                     </div>
                     <div>
-                      <label className="text-sm font-medium mb-1 block">Type de partenariat</label>
+                      <label className="text-sm font-medium mb-1 block">{t("form.partnerType")}</label>
                       <Select value={partnerType} onValueChange={setPartnerType}>
                         <SelectTrigger>
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="accommodation">Hébergement</SelectItem>
-                          <SelectItem value="coworking">Espace de coworking</SelectItem>
-                          <SelectItem value="activity">Activité / Expérience</SelectItem>
-                          <SelectItem value="mobility">Service de mobilité</SelectItem>
-                          <SelectItem value="other">Autre</SelectItem>
+                          <SelectItem value="accommodation">{t("form.types.accommodation")}</SelectItem>
+                          <SelectItem value="coworking">{t("form.types.coworking")}</SelectItem>
+                          <SelectItem value="activity">{t("form.types.activity")}</SelectItem>
+                          <SelectItem value="mobility">{t("form.types.mobility")}</SelectItem>
+                          <SelectItem value="other">{t("form.types.other")}</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
                     <div>
-                      <label className="text-sm font-medium mb-1 block">Message</label>
+                      <label className="text-sm font-medium mb-1 block">{t("form.message")}</label>
                       <Textarea
                         value={message}
                         onChange={(e) => setMessage(e.target.value)}
-                        placeholder="Présentez votre établissement et vos engagements environnementaux…"
+                        placeholder={t("form.messagePlaceholder")}
                         rows={4}
                       />
                     </div>
@@ -273,7 +254,7 @@ const BecomePartnerPage = () => {
                         <Loader2 className="w-4 h-4 animate-spin" />
                       ) : (
                         <>
-                          Envoyer ma candidature
+                          {t("form.submit")}
                           <ArrowRight className="w-4 h-4 ml-2" />
                         </>
                       )}
@@ -301,12 +282,11 @@ const BecomePartnerPage = () => {
                 ))}
               </div>
               <blockquote className="text-xl text-foreground mb-6 italic">
-                "Rejoindre Amani Resorts a transformé notre activité. Nous avons vu une augmentation 
-                de 40% de nos réservations, avec des clients vraiment alignés avec nos valeurs."
+                {t("testimonial.quote")}
               </blockquote>
               <div>
-                <p className="font-semibold text-foreground">Maria Santos</p>
-                <p className="text-sm text-muted-foreground">Fondatrice, Eco Hub Moroni</p>
+                <p className="font-semibold text-foreground">{t("testimonial.author")}</p>
+                <p className="text-sm text-muted-foreground">{t("testimonial.role")}</p>
               </div>
             </motion.div>
           </div>

@@ -1,0 +1,90 @@
+{
+  "title": "Politique de confidentialité",
+  "lastUpdate": "Dernière mise à jour : 20 janvier 2026",
+  "sections": {
+    "intro": {
+      "title": "1. Introduction",
+      "body": "Amani Resorts (\"nous\", \"notre\", \"nos\") s'engage à protéger la vie privée des utilisateurs de notre plateforme. Cette politique de confidentialité explique comment nous collectons, utilisons, partageons et protégeons vos informations personnelles."
+    },
+    "dataCollected": {
+      "title": "2. Données collectées",
+      "intro": "Nous collectons les catégories de données suivantes :",
+      "items": [
+        { "label": "Données d'identification :", "text": "nom, prénom, adresse email, numéro de téléphone" },
+        { "label": "Données de réservation :", "text": "historique des réservations, préférences de voyage" },
+        { "label": "Données de paiement :", "text": "informations bancaires (traitées par Stripe)" },
+        { "label": "Données d'utilisation :", "text": "logs de connexion, pages visitées, interactions" },
+        { "label": "Données environnementales :", "text": "empreinte carbone calculée, compensations effectuées" }
+      ]
+    },
+    "dataUse": {
+      "title": "3. Utilisation des données",
+      "intro": "Vos données sont utilisées pour :",
+      "items": [
+        "Fournir et améliorer nos services de réservation",
+        "Calculer votre empreinte carbone et proposer des compensations",
+        "Communiquer avec vous concernant vos réservations",
+        "Personnaliser votre expérience utilisateur",
+        "Respecter nos obligations légales",
+        "Prévenir la fraude et assurer la sécurité"
+      ]
+    },
+    "dataSharing": {
+      "title": "4. Partage des données",
+      "intro": "Nous partageons vos données uniquement avec :",
+      "items": [
+        { "label": "Nos partenaires :", "text": "hébergements, coworkings et activités que vous réservez" },
+        { "label": "Prestataires de services :", "text": "paiement (Stripe), emailing, hébergement cloud" },
+        { "label": "Autorités :", "text": "si requis par la loi" }
+      ],
+      "noSale": "Nous ne vendons jamais vos données personnelles à des tiers."
+    },
+    "retention": {
+      "title": "5. Conservation des données",
+      "intro": "Nous conservons vos données personnelles aussi longtemps que nécessaire pour fournir nos services et respecter nos obligations légales :",
+      "items": [
+        "Données de compte : jusqu'à suppression du compte + 3 ans",
+        "Données de réservation : 10 ans (obligations comptables)",
+        "Données de navigation : 13 mois maximum"
+      ]
+    },
+    "rights": {
+      "title": "6. Vos droits",
+      "intro": "Conformément au RGPD, vous disposez des droits suivants :",
+      "items": [
+        { "label": "Accès :", "text": "obtenir une copie de vos données" },
+        { "label": "Rectification :", "text": "corriger vos données inexactes" },
+        { "label": "Effacement :", "text": "demander la suppression de vos données" },
+        { "label": "Portabilité :", "text": "recevoir vos données dans un format structuré" },
+        { "label": "Opposition :", "text": "vous opposer au traitement de vos données" },
+        { "label": "Limitation :", "text": "limiter le traitement de vos données" }
+      ],
+      "contactNote": "Pour exercer ces droits, contactez-nous à privacy@amaniresorts.com."
+    },
+    "security": {
+      "title": "7. Sécurité",
+      "intro": "Nous mettons en œuvre des mesures de sécurité techniques et organisationnelles appropriées pour protéger vos données :",
+      "items": [
+        "Chiffrement SSL/TLS pour toutes les transmissions",
+        "Stockage sécurisé sur des serveurs en Europe (UE)",
+        "Accès restreint aux données personnelles",
+        "Audits de sécurité réguliers"
+      ]
+    },
+    "cookies": {
+      "title": "8. Cookies",
+      "body": "Nous utilisons des cookies pour améliorer votre expérience.",
+      "link": "Politique cookies",
+      "forMoreDetails": "pour plus de détails."
+    },
+    "contact": {
+      "title": "9. Contact",
+      "intro": "Pour toute question concernant cette politique ou vos données personnelles :",
+      "address": "Adresse : Avenue de la Corniche, Moroni, Comores"
+    },
+    "changes": {
+      "title": "10. Modifications",
+      "body": "Nous pouvons mettre à jour cette politique de temps en temps. Toute modification sera publiée sur cette page avec une nouvelle date de mise à jour. Nous vous informerons par email des changements significatifs."
+    }
+  }
+}

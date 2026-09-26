@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { Mail, ArrowLeft, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,6 +11,7 @@ import { toast } from "sonner";
 import amaniSymbol from "@/assets/amani-symbol-gold.jpg";
 
 const ForgotPasswordPage = () => {
+  const { t } = useTranslation("authPages");
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
@@ -25,7 +27,7 @@ const ForgotPasswordPage = () => {
       return;
     }
     setSent(true);
-    toast.success("Email envoyé si ce compte existe");
+    toast.success(t("forgotPassword.sent"));
   };
 
   return (
@@ -42,27 +44,27 @@ const ForgotPasswordPage = () => {
           </span>
         </Link>
 
-        <h1 className="font-display text-3xl font-medium mb-2">Mot de passe oublié</h1>
+        <h1 className="font-display text-3xl font-medium mb-2">{t("forgotPassword.title")}</h1>
         <p className="text-muted-foreground mb-8">
-          Entrez votre email : nous vous enverrons un lien de réinitialisation.
+          {t("forgotPassword.subtitle")}
         </p>
 
         {sent ? (
           <div className="rounded-xl border bg-muted/40 p-6 space-y-4">
             <p className="text-sm leading-relaxed">
-              Vérifiez votre boîte mail ({email}). Le lien expire après quelques minutes.
+              {t("forgotPassword.checkInbox", { email })}
             </p>
             <Button asChild variant="outline" className="w-full">
               <Link to="/login">
                 <ArrowLeft className="w-4 h-4" />
-                Retour à la connexion
+                {t("forgotPassword.backToLogin")}
               </Link>
             </Button>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-5">
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">{t("forgotPassword.email")}</Label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                 <Input
@@ -76,7 +78,7 @@ const ForgotPasswordPage = () => {
               </div>
             </div>
             <Button type="submit" className="w-full gap-2" size="lg" disabled={loading}>
-              {loading ? "Envoi…" : "Envoyer le lien"}
+              {loading ? t("forgotPassword.sending") : t("forgotPassword.submit")}
               {!loading && <ArrowRight className="w-4 h-4" />}
             </Button>
             <Link
@@ -84,7 +86,7 @@ const ForgotPasswordPage = () => {
               className="flex items-center justify-center gap-2 text-sm text-muted-foreground hover:text-foreground"
             >
               <ArrowLeft className="w-4 h-4" />
-              Retour
+              {t("forgotPassword.back")}
             </Link>
           </form>
         )}

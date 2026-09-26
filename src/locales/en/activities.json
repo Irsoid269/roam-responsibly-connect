@@ -1,0 +1,17 @@
+{
+  "eyebrow": "Responsible experiences",
+  "title": "Activities",
+  "description": "Live unique, authentic experiences that respect the environment and support local communities.",
+  "searchPlaceholder": "Search for an activity...",
+  "all": "All",
+  "availableActivities": "activities available",
+  "ecoCertified": "Eco-certified",
+  "durationPending": "Duration coming soon",
+  "neutral": "Neutral",
+  "onRequest": "On request",
+  "book": "Book",
+  "noResults": {
+    "title": "No activity found",
+    "description": "Try another search"
+  }
+}

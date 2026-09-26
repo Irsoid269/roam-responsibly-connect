@@ -1,0 +1,57 @@
+{
+  "title": "Politique des cookies",
+  "lastUpdate": "Dernière mise à jour : 20 janvier 2026",
+  "whatIs": {
+    "title": "Qu'est-ce qu'un cookie ?",
+    "description": "Un cookie est un petit fichier texte déposé sur votre appareil (ordinateur, smartphone, tablette) lors de la visite d'un site web. Il permet de stocker des informations relatives à votre navigation et de vous reconnaître lors de vos prochaines visites."
+  },
+  "typesTitle": "Types de cookies utilisés",
+  "types": [
+    {
+      "title": "Cookies essentiels",
+      "description": "Nécessaires au fonctionnement du site. Ils ne peuvent pas être désactivés.",
+      "examples": ["Session utilisateur", "Panier de réservation", "Préférences de langue"]
+    },
+    {
+      "title": "Cookies analytiques",
+      "description": "Nous aident à comprendre comment vous utilisez le site pour l'améliorer.",
+      "examples": ["Google Analytics", "Hotjar", "Statistiques de navigation"]
+    },
+    {
+      "title": "Cookies fonctionnels",
+      "description": "Permettent des fonctionnalités avancées et une personnalisation.",
+      "examples": ["Préférences de recherche", "Historique récent", "Recommandations"]
+    },
+    {
+      "title": "Cookies marketing",
+      "description": "Utilisés pour vous montrer des publicités pertinentes.",
+      "examples": ["Facebook Pixel", "Google Ads", "Retargeting"]
+    }
+  ],
+  "retention": {
+    "title": "Durée de conservation",
+    "description": "La durée de conservation des cookies varie selon leur type :",
+    "session": { "label": "Cookies de session :", "value": "supprimés à la fermeture du navigateur" },
+    "persistent": { "label": "Cookies persistants :", "value": "conservés jusqu'à 13 mois maximum" },
+    "thirdParty": { "label": "Cookies tiers :", "value": "durée définie par le tiers concerné" }
+  },
+  "preferences": {
+    "title": "Gérer vos préférences",
+    "description": "Vous pouvez à tout moment modifier vos préférences en matière de cookies :",
+    "options": [
+      "Via le bandeau cookies lors de votre première visite",
+      "Via les paramètres de votre navigateur",
+      "En cliquant sur le bouton ci-dessous"
+    ],
+    "button": "Gérer mes préférences cookies"
+  },
+  "browserConfig": {
+    "title": "Configuration du navigateur",
+    "description": "Vous pouvez configurer votre navigateur pour accepter ou refuser les cookies. Voici les liens vers les instructions des principaux navigateurs :",
+    "note": "Note : la désactivation de certains cookies peut affecter le fonctionnement du site."
+  },
+  "contact": {
+    "title": "Contact",
+    "description": "Pour toute question concernant notre utilisation des cookies :"
+  }
+}
