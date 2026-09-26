@@ -92,7 +92,7 @@ const ImpactPage = () => {
                     {t("hero.calculate")}
                   </Button>
                 </Link>
-                <Button size="lg" variant="outline" className="border-carbon-foreground/30 text-carbon-foreground hover:bg-carbon-foreground/10">
+                <Button size="lg" variant="outline" className="bg-transparent border-carbon-foreground/30 text-carbon-foreground hover:bg-carbon-foreground/10">
                   {t("hero.learnMore")}
                 </Button>
               </div>
